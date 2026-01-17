@@ -1,0 +1,109 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+modules.xml
+out/
+
+# VS Code
+.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Android specific names
+generated/
+gen/
+/android/feature/gen/
+/android/bin/
+/android/local.properties
+/android/gradle-wrapper.properties
+
+# iOS specific names
+/ios/Flutter/App.framework
+/ios/Flutter/Flutter.framework
+/ios/Flutter/Generated.xcconfig
+/ios/ServiceDefinitions.json
+/ios/Runner/GeneratedPluginRegistrant.*
+
+# Checkpoints / Backups
+.gemini/
+.agent/
+*.bak
+
+# ---------------------------------------
+# SECURITY & SECRETS (STRICT)
+# ---------------------------------------
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Android Signing Keys
+*.jks
+*.keystore
+key.properties
+
+# iOS Signing Keys
+*.p12
+*.mobileprovision
+
+# Firebase / Google Services
+google-services.json
+GoogleService-Info.plist
+
+# General Keys
+*.pem
+*.key
+*.cer
+id_rsa
+id_rsa.pub
+known_hosts
+
+# Fastlane (if used later)
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+# CocoaPods
+/ios/Pods/
+/macos/Pods/
