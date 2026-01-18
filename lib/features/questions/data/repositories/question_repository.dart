@@ -12,6 +12,13 @@ final questionRepositoryProvider = Provider<QuestionRepository>((ref) {
 
 abstract class QuestionRepository {
   Future<Either<Failure, List<QuestionModel>>> getQuestions({int page = 1});
+  Future<Either<Failure, List<CourseDetails>>> getCourses();
+  Future<Either<Failure, void>> createQuestion({
+    required String title,
+    required String content,
+    required int courseId,
+    required int teacherId,
+  });
 }
 
 class QuestionRepositoryImpl implements QuestionRepository {
@@ -46,6 +53,52 @@ class QuestionRepositoryImpl implements QuestionRepository {
       print("[QuestionRepository] Parse Error: $e");
       print(stack);
       return Left(ServerFailure("Veri işleme hatası: $e"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CourseDetails>>> getCourses() async {
+    try {
+      final response = await _dio.get(ApiEndpoints.courses);
+      final data = response.data;
+
+      if (data is List) {
+        final courses = data.map((e) => CourseDetails.fromJson(e)).toList();
+        return Right(courses);
+      } else {
+        return Left(
+          ServerFailure("Beklenmeyen veri formatı (Liste bekleniyordu)"),
+        );
+      }
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure("Dersler yüklenirken hata oluştu: $e"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> createQuestion({
+    required String title,
+    required String content,
+    required int courseId,
+    required int teacherId,
+  }) async {
+    try {
+      await _dio.post(
+        ApiEndpoints.questions,
+        data: {
+          'title': title,
+          'content': content,
+          'course': courseId,
+          'target_teacher_id': teacherId,
+        },
+      );
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure("Soru oluşturulurken hata oluştu: $e"));
     }
   }
 }

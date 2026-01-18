@@ -94,6 +94,20 @@ class QuestionCard extends StatelessWidget {
               // FOOTER: Course + Answers
               Row(
                 children: [
+                  const Icon(
+                    Icons.chat_bubble_outline,
+                    size: 18,
+                    color: AppColors.textSecondary,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    "${question.answers.length} Cevap",
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const Spacer(),
                   if (question.courseDetails != null)
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -123,21 +137,6 @@ class QuestionCard extends StatelessWidget {
                         ],
                       ),
                     ),
-
-                  const Spacer(),
-                  const Icon(
-                    Icons.chat_bubble_outline,
-                    size: 18,
-                    color: AppColors.textSecondary,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    "${question.answers.length} Cevap",
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
                 ],
               ),
             ],

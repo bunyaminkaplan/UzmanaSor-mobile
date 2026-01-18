@@ -12,6 +12,7 @@ _QuestionModel _$QuestionModelFromJson(Map<String, dynamic> json) =>
       title: json['title'] as String,
       content: json['content'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
+      isSolved: json['is_solved'] as bool? ?? false,
       priority: (json['question_priority'] as num?)?.toInt(),
       author: json['question_author'] == null
           ? null
@@ -44,6 +45,7 @@ Map<String, dynamic> _$QuestionModelToJson(_QuestionModel instance) =>
       'title': instance.title,
       'content': instance.content,
       'created_at': instance.createdAt.toIso8601String(),
+      'is_solved': instance.isSolved,
       'question_priority': instance.priority,
       'question_author': instance.author,
       'question_current_handler': instance.currentHandler,
@@ -72,6 +74,11 @@ _CourseDetails _$CourseDetailsFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       title: json['title'] as String,
       code: json['code'] as String?,
+      teachers:
+          (json['teachers'] as List<dynamic>?)
+              ?.map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$CourseDetailsToJson(_CourseDetails instance) =>
@@ -79,6 +86,7 @@ Map<String, dynamic> _$CourseDetailsToJson(_CourseDetails instance) =>
       'id': instance.id,
       'title': instance.title,
       'code': instance.code,
+      'teachers': instance.teachers,
     };
 
 _ClassTermDetails _$ClassTermDetailsFromJson(Map<String, dynamic> json) =>

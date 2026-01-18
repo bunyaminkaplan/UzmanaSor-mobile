@@ -23,6 +23,7 @@ class UzmanTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
   final bool readOnly;
+  final int maxLines;
 
   const UzmanTextField({
     super.key,
@@ -36,6 +37,7 @@ class UzmanTextField extends StatelessWidget {
     this.suffixIcon,
     this.validator,
     this.readOnly = false,
+    this.maxLines = 1,
   });
 
   @override
@@ -59,6 +61,7 @@ class UzmanTextField extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w500),
           validator: validator,
           readOnly: readOnly,
+          maxLines: maxLines,
           decoration: InputDecoration(
             hintText: hint,
             errorText: errorText,

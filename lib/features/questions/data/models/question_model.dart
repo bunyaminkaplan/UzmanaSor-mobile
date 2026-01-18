@@ -14,6 +14,8 @@ abstract class QuestionModel with _$QuestionModel {
 
     @JsonKey(name: 'created_at') required DateTime createdAt,
 
+    @Default(false) @JsonKey(name: 'is_solved') bool isSolved,
+
     @JsonKey(name: 'question_priority')
     int? priority, // Backend sends Integer (1, 2, 3)
     // Nested User Object (Author)
@@ -57,6 +59,7 @@ abstract class CourseDetails with _$CourseDetails {
     required int id,
     required String title,
     String? code,
+    @Default([]) List<UserModel> teachers,
   }) = _CourseDetails;
 
   factory CourseDetails.fromJson(Map<String, dynamic> json) =>

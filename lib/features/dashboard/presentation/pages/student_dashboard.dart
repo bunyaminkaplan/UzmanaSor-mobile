@@ -6,6 +6,7 @@ import 'package:mobile/core/ui_kit/navigation/uzman_drawer.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 
 import 'package:mobile/features/dashboard/presentation/pages/feed_view.dart';
+import 'package:mobile/features/questions/presentation/pages/ask_question_page.dart';
 
 class StudentDashboard extends ConsumerWidget {
   const StudentDashboard({super.key});
@@ -52,6 +53,15 @@ class StudentDashboard extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const AskQuestionPage()),
+          );
+        },
+        backgroundColor: AppColors.cyan,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

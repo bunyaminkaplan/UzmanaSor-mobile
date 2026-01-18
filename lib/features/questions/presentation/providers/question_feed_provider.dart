@@ -4,16 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/features/questions/data/models/question_model.dart';
 import 'package:mobile/features/questions/data/repositories/question_repository.dart';
 
+import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
+
 final questionFeedProvider =
-    AsyncNotifierProvider<QuestionFeedNotifier, List<QuestionModel>>(() {
+    AsyncNotifierProvider.autoDispose<
+      QuestionFeedNotifier,
+      List<QuestionModel>
+    >(() {
       return QuestionFeedNotifier();
     });
 
-class QuestionFeedNotifier extends AsyncNotifier<List<QuestionModel>> {
-  late final QuestionRepository _repository;
+class QuestionFeedNotifier
+    extends AutoDisposeAsyncNotifier<List<QuestionModel>> {
+  late QuestionRepository _repository;
 
   @override
   FutureOr<List<QuestionModel>> build() async {
+    // Watch Auth Provider to force refresh when user changes (Login/Logout)
+    ref.watch(authProvider);
+
     _repository = ref.watch(questionRepositoryProvider);
     return _fetchQuestions();
   }
