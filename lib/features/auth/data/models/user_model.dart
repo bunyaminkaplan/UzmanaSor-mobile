@@ -4,41 +4,30 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
-enum UserRole {
-  @JsonValue('student')
-  student,
-  @JsonValue('teacher')
-  teacher,
-  @JsonValue('admin')
-  admin,
-  @JsonValue('rector')
-  rector,
-  @JsonValue('dean')
-  dean,
-  @JsonValue('department_head')
-  departmentHead,
-  unknown,
-}
-
 @freezed
 abstract class UserModel with _$UserModel {
-  // fieldRename: FieldRename.snake -> JSON'dan gelen snake_case'i otomatik camelCase'e çevirir.
+  // Config: fieldRename maps JSON snake_case to Dart camelCase automatically
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory UserModel({
     required int id,
-    // Since we removed fieldRename: FieldRename.snake, we must be explicit
     required String username,
     String? email,
-    @JsonKey(name: 'first_name') String? firstName,
-    @JsonKey(name: 'last_name') String? lastName,
+    String? firstName,
+    String? lastName,
 
-    // Role alanı React'te 'user_type' olarak geçiyor (AuthContext.jsx satır 25)
-    // Eğer backend'den gelen field ismi 'user_type' ise bunu belirtmeliyiz.
-    // Varsayılan olarak snake_case olduğu için 'user_type' -> 'userType' eşleşmesi otomatik olur
-    // ama @JsonKey ile force etmek daha güvenlidir.
-    @JsonKey(name: 'user_type', unknownEnumValue: UserRole.unknown)
-    UserRole? role,
+    // User Type: 'student', 'r_student', 'teacher', 'dean', 'rector', 'admin'
+    // We use String here to match flexibility of backend response
+    @JsonKey(name: 'user_type') required String userType,
 
-    // Profil resmi vb.
+    // Approval & Hierarchy
+    @Default(false) bool isApproved,
+    @Default(false) bool isDepartmentHead,
+
+    // Details (Backend sends simplified ID/Name maps occasionally)
+    Map<String, dynamic>? departmentDetails,
+    Map<String, dynamic>? facultyDetails,
+
+    // Profile
     String? profileImage,
   }) = _UserModel;
 

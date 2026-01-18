@@ -12,12 +12,12 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   email: json['email'] as String?,
   firstName: json['first_name'] as String?,
   lastName: json['last_name'] as String?,
-  role: $enumDecodeNullable(
-    _$UserRoleEnumMap,
-    json['user_type'],
-    unknownValue: UserRole.unknown,
-  ),
-  profileImage: json['profileImage'] as String?,
+  userType: json['user_type'] as String,
+  isApproved: json['is_approved'] as bool? ?? false,
+  isDepartmentHead: json['is_department_head'] as bool? ?? false,
+  departmentDetails: json['department_details'] as Map<String, dynamic>?,
+  facultyDetails: json['faculty_details'] as Map<String, dynamic>?,
+  profileImage: json['profile_image'] as String?,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -27,16 +27,10 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'email': instance.email,
       'first_name': instance.firstName,
       'last_name': instance.lastName,
-      'user_type': _$UserRoleEnumMap[instance.role],
-      'profileImage': instance.profileImage,
+      'user_type': instance.userType,
+      'is_approved': instance.isApproved,
+      'is_department_head': instance.isDepartmentHead,
+      'department_details': instance.departmentDetails,
+      'faculty_details': instance.facultyDetails,
+      'profile_image': instance.profileImage,
     };
-
-const _$UserRoleEnumMap = {
-  UserRole.student: 'student',
-  UserRole.teacher: 'teacher',
-  UserRole.admin: 'admin',
-  UserRole.rector: 'rector',
-  UserRole.dean: 'dean',
-  UserRole.departmentHead: 'department_head',
-  UserRole.unknown: 'unknown',
-};

@@ -12,7 +12,7 @@ _QuestionModel _$QuestionModelFromJson(Map<String, dynamic> json) =>
       title: json['title'] as String,
       content: json['content'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
-      priority: json['question_priority'] as String?,
+      priority: (json['question_priority'] as num?)?.toInt(),
       author: json['question_author'] == null
           ? null
           : UserModel.fromJson(json['question_author'] as Map<String, dynamic>),

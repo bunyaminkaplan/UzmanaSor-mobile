@@ -48,4 +48,12 @@ class ApiEndpoints {
   // Statistics
   static const String statsRector = 'core/stats/rector/';
   static const String statsDean = 'core/stats/dean/';
+
+  // --- ASSIGNMENT ENDPOINTS ---
+  static const String toggleDeptHead =
+      'core/teachers/{id}/toggle-head/'; // Replace {id}
+  static const String assignAdvisor = 'core/dept-head/assign-advisor/';
+  static const String advisorStudents = 'core/advisor/students/';
+  static const String setRepresentative =
+      'core/advisor/students/set-representative/';
 }

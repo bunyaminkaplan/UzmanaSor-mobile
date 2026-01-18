@@ -15,7 +15,7 @@ abstract class QuestionModel with _$QuestionModel {
     @JsonKey(name: 'created_at') required DateTime createdAt,
 
     @JsonKey(name: 'question_priority')
-    String? priority, // 'high', 'medium', 'low'
+    int? priority, // Backend sends Integer (1, 2, 3)
     // Nested User Object (Author)
     // React: question.question_author.username -> `question_author`
     @JsonKey(name: 'question_author') UserModel? author,
