@@ -12,7 +12,6 @@ _QuestionModel _$QuestionModelFromJson(Map<String, dynamic> json) =>
       title: json['title'] as String,
       content: json['content'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
-      isSolved: json['is_solved'] as bool? ?? false,
       priority: (json['question_priority'] as num?)?.toInt(),
       author: json['question_author'] == null
           ? null
@@ -21,6 +20,11 @@ _QuestionModel _$QuestionModelFromJson(Map<String, dynamic> json) =>
           ? null
           : UserModel.fromJson(
               json['question_current_handler'] as Map<String, dynamic>,
+            ),
+      oldHandler: json['question_old_handler'] == null
+          ? null
+          : UserModel.fromJson(
+              json['question_old_handler'] as Map<String, dynamic>,
             ),
       courseDetails: json['course_details'] == null
           ? null
@@ -45,10 +49,10 @@ Map<String, dynamic> _$QuestionModelToJson(_QuestionModel instance) =>
       'title': instance.title,
       'content': instance.content,
       'created_at': instance.createdAt.toIso8601String(),
-      'is_solved': instance.isSolved,
       'question_priority': instance.priority,
       'question_author': instance.author,
       'question_current_handler': instance.currentHandler,
+      'question_old_handler': instance.oldHandler,
       'course_details': instance.courseDetails,
       'class_term_details': instance.classTermDetails,
       'answers': instance.answers,

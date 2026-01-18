@@ -6,6 +6,7 @@ import 'package:mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/admin/presentation/pages/assignment_hub_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/dashboard_dispatcher.dart';
+import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   // We need to listen to auth state changes to trigger redirects
@@ -51,6 +52,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/assignments',
         builder: (context, state) => const AssignmentHubPage(),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfilePage(),
       ),
     ],
   );

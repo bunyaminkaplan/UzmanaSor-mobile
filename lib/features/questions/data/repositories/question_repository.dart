@@ -5,6 +5,7 @@ import 'package:mobile/core/constants/api_endpoints.dart';
 import 'package:mobile/core/errors/failure.dart';
 import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/features/questions/data/models/question_model.dart';
+import 'package:mobile/features/auth/data/models/user_model.dart';
 
 final questionRepositoryProvider = Provider<QuestionRepository>((ref) {
   return QuestionRepositoryImpl(ref.read(dioProvider));
@@ -14,11 +15,16 @@ abstract class QuestionRepository {
   Future<Either<Failure, List<QuestionModel>>> getQuestions({int page = 1});
   Future<Either<Failure, QuestionModel>> getQuestion(int id);
   Future<Either<Failure, List<CourseDetails>>> getCourses();
+  Future<Either<Failure, List<UserModel>>> getTeachers();
   Future<Either<Failure, void>> createQuestion({
     required String title,
     required String content,
     required int courseId,
     required int teacherId,
+  });
+  Future<Either<Failure, void>> forwardQuestion({
+    required int questionId,
+    required int newHandlerId,
   });
   Future<Either<Failure, void>> postAnswer({
     required int questionId,
@@ -55,8 +61,8 @@ class QuestionRepositoryImpl implements QuestionRepository {
     } on DioException catch (e) {
       return Left(ServerFailure.fromDioError(e));
     } catch (e, stack) {
-      print("[QuestionRepository] Parse Error: $e");
-      print(stack);
+      print("🔴 [DEBUG] CRITICAL ERROR in Repository (getQuestions): $e");
+      print("🔴 [DEBUG] Stack: $stack");
       return Left(ServerFailure("Veri işleme hatası: $e"));
     }
   }
@@ -77,7 +83,9 @@ class QuestionRepositoryImpl implements QuestionRepository {
       }
     } on DioException catch (e) {
       return Left(ServerFailure.fromDioError(e));
-    } catch (e) {
+    } catch (e, stack) {
+      print("🔴 [DEBUG] CRITICAL ERROR in Repository (getCourses): $e");
+      print("🔴 [DEBUG] Stack: $stack");
       return Left(ServerFailure("Dersler yüklenirken hata oluştu: $e"));
     }
   }
@@ -114,8 +122,52 @@ class QuestionRepositoryImpl implements QuestionRepository {
       return Right(QuestionModel.fromJson(response.data));
     } on DioException catch (e) {
       return Left(ServerFailure.fromDioError(e));
-    } catch (e) {
+    } catch (e, stack) {
+      print("🔴 [DEBUG] CRITICAL ERROR in Repository (getQuestion): $e");
+      print("🔴 [DEBUG] Stack: $stack");
       return Left(ServerFailure("Soru detayları alınırken hata oluştu: $e"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<UserModel>>> getTeachers() async {
+    try {
+      final response = await _dio.get(ApiEndpoints.teachers);
+      final data = response.data;
+      if (data is List) {
+        final teachers = data.map((e) => UserModel.fromJson(e)).toList();
+        return Right(teachers);
+      } else {
+        return Left(
+          ServerFailure("Beklenmeyen veri formatı (Liste bekleniyordu)"),
+        );
+      }
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e, stack) {
+      print("🔴 [DEBUG] CRITICAL ERROR in Repository (getTeachers): $e");
+      print("🔴 [DEBUG] Stack: $stack");
+      return Left(ServerFailure("Eğitmenler yüklenirken hata oluştu: $e"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> forwardQuestion({
+    required int questionId,
+    required int newHandlerId,
+  }) async {
+    try {
+      // Backend expects: POST /core/questions/{id}/forward/
+      // Body: { "recipient_id": 123 }
+      await _dio.post(
+        ApiEndpoints.questionForward(questionId),
+        data: {'recipient_id': newHandlerId},
+      );
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure("Soru yönlendirilirken hata oluştu: $e"));
     }
   }
 

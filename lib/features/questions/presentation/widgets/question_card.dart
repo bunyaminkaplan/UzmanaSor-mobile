@@ -66,12 +66,43 @@ class QuestionCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (question.priority == 'high')
-                    const Icon(
-                      Icons.priority_high,
-                      color: AppColors.error,
-                      size: 20,
-                    ),
+                  // Status Badges (Right Aligned)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (question.isSolved)
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Icon(
+                            Icons.check_circle,
+                            color: AppColors.success,
+                            size: 20,
+                          ),
+                        ),
+                      if (question.oldHandler != null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Tooltip(
+                            message:
+                                "Yönlendirildi: ${question.oldHandler?.firstName ?? '?'}",
+                            child: const Icon(
+                              Icons.forward_to_inbox,
+                              color: AppColors.orange,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      if (question.priority != null && question.priority! > 1)
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Icon(
+                            Icons.priority_high,
+                            color: AppColors.error,
+                            size: 20,
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(height: 12),

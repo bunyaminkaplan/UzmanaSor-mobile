@@ -4,6 +4,9 @@ import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/questions/presentation/widgets/widgets.dart';
 import 'package:mobile/features/questions/data/models/question_model.dart';
 import 'package:mobile/features/questions/data/repositories/question_repository.dart';
+import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
+import 'package:mobile/features/auth/data/models/user_model.dart';
+import 'package:mobile/features/questions/presentation/providers/question_feed_provider.dart';
 
 class QuestionDetailPage extends ConsumerStatefulWidget {
   final QuestionModel question;
@@ -79,6 +82,89 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
     }
   }
 
+  void _showForwardModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surfaceLight,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => ForwardTeacherSheet(
+        currentHandlerId: _currentQuestion.currentHandler?.id,
+        onTeacherSelected: (teacher) {
+          Navigator.pop(context); // Close modal
+          _confirmForward(teacher);
+        },
+      ),
+    );
+  }
+
+  void _confirmForward(UserModel newHandler) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Emin misiniz?"),
+        content: Text(
+          "Soruyu ${newHandler.firstName} ${newHandler.lastName} kişisine yönlendirmek üzeresiniz.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("İptal"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context); // Close dialog
+              await _executeForward(newHandler.id);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.orange,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text("Yönlendir"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _executeForward(int newHandlerId) async {
+    final result = await ref
+        .read(questionRepositoryProvider)
+        .forwardQuestion(
+          questionId: _currentQuestion.id,
+          newHandlerId: newHandlerId,
+        );
+
+    if (mounted) {
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(failure.message),
+              backgroundColor: AppColors.error,
+            ),
+          );
+        },
+        (_) async {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Soru başarıyla yönlendirildi ve listenizden kaldırıldı.',
+              ),
+              backgroundColor: AppColors.success,
+            ),
+          );
+
+          // Invalidate feed and exit
+          ref.invalidate(questionFeedProvider);
+          if (mounted) Navigator.of(context).pop();
+        },
+      );
+    }
+  }
+
   @override
   void dispose() {
     _answerController.dispose();
@@ -87,12 +173,29 @@ class _QuestionDetailPageState extends ConsumerState<QuestionDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(authProvider).value;
+    // Show forward button only for Teachers, Deans, etc.
+    final canForward =
+        user != null &&
+        (user.userType == 'teacher' ||
+            user.userType == 'dean' ||
+            user.userType == 'department_head' ||
+            user.isDepartmentHead);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Soru Detayı'),
         backgroundColor: AppColors.surfaceLight,
         foregroundColor: AppColors.navy,
         scrolledUnderElevation: 0,
+        actions: [
+          if (canForward)
+            IconButton(
+              icon: const Icon(Icons.forward_to_inbox, color: AppColors.orange),
+              tooltip: "Soruyu Yönlendir",
+              onPressed: _showForwardModal,
+            ),
+        ],
       ),
       backgroundColor: AppColors.bgLight,
       body: Column(

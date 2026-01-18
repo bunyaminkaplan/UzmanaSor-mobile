@@ -15,15 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$QuestionModel {
 
- int get id; String get title; String get content;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'is_solved') bool get isSolved;@JsonKey(name: 'question_priority') int? get priority;// Backend sends Integer (1, 2, 3)
-// Nested User Object (Author)
-// React: question.question_author.username -> `question_author`
-@JsonKey(name: 'question_author') UserModel? get author;// Nested User Object (Current Handler - Advisor)
-@JsonKey(name: 'question_current_handler') UserModel? get currentHandler;// Nested Course Object
-// React: question.course_details.title
-@JsonKey(name: 'course_details') CourseDetails? get courseDetails;// Nested Class Term Details
-@JsonKey(name: 'class_term_details') ClassTermDetails? get classTermDetails;// Answers List
- List<AnswerModel> get answers;
+ int get id; String get title; String get content;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'question_priority') int? get priority;@JsonKey(name: 'question_author') UserModel? get author;@JsonKey(name: 'question_current_handler') UserModel? get currentHandler;@JsonKey(name: 'question_old_handler') UserModel? get oldHandler;@JsonKey(name: 'course_details') CourseDetails? get courseDetails;@JsonKey(name: 'class_term_details') ClassTermDetails? get classTermDetails; List<AnswerModel> get answers;
 /// Create a copy of QuestionModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,16 +28,16 @@ $QuestionModelCopyWith<QuestionModel> get copyWith => _$QuestionModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuestionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSolved, isSolved) || other.isSolved == isSolved)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.author, author) || other.author == author)&&(identical(other.currentHandler, currentHandler) || other.currentHandler == currentHandler)&&(identical(other.courseDetails, courseDetails) || other.courseDetails == courseDetails)&&(identical(other.classTermDetails, classTermDetails) || other.classTermDetails == classTermDetails)&&const DeepCollectionEquality().equals(other.answers, answers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuestionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.author, author) || other.author == author)&&(identical(other.currentHandler, currentHandler) || other.currentHandler == currentHandler)&&(identical(other.oldHandler, oldHandler) || other.oldHandler == oldHandler)&&(identical(other.courseDetails, courseDetails) || other.courseDetails == courseDetails)&&(identical(other.classTermDetails, classTermDetails) || other.classTermDetails == classTermDetails)&&const DeepCollectionEquality().equals(other.answers, answers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,content,createdAt,isSolved,priority,author,currentHandler,courseDetails,classTermDetails,const DeepCollectionEquality().hash(answers));
+int get hashCode => Object.hash(runtimeType,id,title,content,createdAt,priority,author,currentHandler,oldHandler,courseDetails,classTermDetails,const DeepCollectionEquality().hash(answers));
 
 @override
 String toString() {
-  return 'QuestionModel(id: $id, title: $title, content: $content, createdAt: $createdAt, isSolved: $isSolved, priority: $priority, author: $author, currentHandler: $currentHandler, courseDetails: $courseDetails, classTermDetails: $classTermDetails, answers: $answers)';
+  return 'QuestionModel(id: $id, title: $title, content: $content, createdAt: $createdAt, priority: $priority, author: $author, currentHandler: $currentHandler, oldHandler: $oldHandler, courseDetails: $courseDetails, classTermDetails: $classTermDetails, answers: $answers)';
 }
 
 
@@ -56,11 +48,11 @@ abstract mixin class $QuestionModelCopyWith<$Res>  {
   factory $QuestionModelCopyWith(QuestionModel value, $Res Function(QuestionModel) _then) = _$QuestionModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String content,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'is_solved') bool isSolved,@JsonKey(name: 'question_priority') int? priority,@JsonKey(name: 'question_author') UserModel? author,@JsonKey(name: 'question_current_handler') UserModel? currentHandler,@JsonKey(name: 'course_details') CourseDetails? courseDetails,@JsonKey(name: 'class_term_details') ClassTermDetails? classTermDetails, List<AnswerModel> answers
+ int id, String title, String content,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'question_priority') int? priority,@JsonKey(name: 'question_author') UserModel? author,@JsonKey(name: 'question_current_handler') UserModel? currentHandler,@JsonKey(name: 'question_old_handler') UserModel? oldHandler,@JsonKey(name: 'course_details') CourseDetails? courseDetails,@JsonKey(name: 'class_term_details') ClassTermDetails? classTermDetails, List<AnswerModel> answers
 });
 
 
-$UserModelCopyWith<$Res>? get author;$UserModelCopyWith<$Res>? get currentHandler;$CourseDetailsCopyWith<$Res>? get courseDetails;$ClassTermDetailsCopyWith<$Res>? get classTermDetails;
+$UserModelCopyWith<$Res>? get author;$UserModelCopyWith<$Res>? get currentHandler;$UserModelCopyWith<$Res>? get oldHandler;$CourseDetailsCopyWith<$Res>? get courseDetails;$ClassTermDetailsCopyWith<$Res>? get classTermDetails;
 
 }
 /// @nodoc
@@ -73,16 +65,16 @@ class _$QuestionModelCopyWithImpl<$Res>
 
 /// Create a copy of QuestionModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? content = null,Object? createdAt = null,Object? isSolved = null,Object? priority = freezed,Object? author = freezed,Object? currentHandler = freezed,Object? courseDetails = freezed,Object? classTermDetails = freezed,Object? answers = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? content = null,Object? createdAt = null,Object? priority = freezed,Object? author = freezed,Object? currentHandler = freezed,Object? oldHandler = freezed,Object? courseDetails = freezed,Object? classTermDetails = freezed,Object? answers = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,isSolved: null == isSolved ? _self.isSolved : isSolved // ignore: cast_nullable_to_non_nullable
-as bool,priority: freezed == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
+as DateTime,priority: freezed == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
 as int?,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as UserModel?,currentHandler: freezed == currentHandler ? _self.currentHandler : currentHandler // ignore: cast_nullable_to_non_nullable
+as UserModel?,oldHandler: freezed == oldHandler ? _self.oldHandler : oldHandler // ignore: cast_nullable_to_non_nullable
 as UserModel?,courseDetails: freezed == courseDetails ? _self.courseDetails : courseDetails // ignore: cast_nullable_to_non_nullable
 as CourseDetails?,classTermDetails: freezed == classTermDetails ? _self.classTermDetails : classTermDetails // ignore: cast_nullable_to_non_nullable
 as ClassTermDetails?,answers: null == answers ? _self.answers : answers // ignore: cast_nullable_to_non_nullable
@@ -112,6 +104,18 @@ $UserModelCopyWith<$Res>? get currentHandler {
 
   return $UserModelCopyWith<$Res>(_self.currentHandler!, (value) {
     return _then(_self.copyWith(currentHandler: value));
+  });
+}/// Create a copy of QuestionModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserModelCopyWith<$Res>? get oldHandler {
+    if (_self.oldHandler == null) {
+    return null;
+  }
+
+  return $UserModelCopyWith<$Res>(_self.oldHandler!, (value) {
+    return _then(_self.copyWith(oldHandler: value));
   });
 }/// Create a copy of QuestionModel
 /// with the given fields replaced by the non-null parameter values.
@@ -219,10 +223,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String content, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_solved')  bool isSolved, @JsonKey(name: 'question_priority')  int? priority, @JsonKey(name: 'question_author')  UserModel? author, @JsonKey(name: 'question_current_handler')  UserModel? currentHandler, @JsonKey(name: 'course_details')  CourseDetails? courseDetails, @JsonKey(name: 'class_term_details')  ClassTermDetails? classTermDetails,  List<AnswerModel> answers)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String content, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'question_priority')  int? priority, @JsonKey(name: 'question_author')  UserModel? author, @JsonKey(name: 'question_current_handler')  UserModel? currentHandler, @JsonKey(name: 'question_old_handler')  UserModel? oldHandler, @JsonKey(name: 'course_details')  CourseDetails? courseDetails, @JsonKey(name: 'class_term_details')  ClassTermDetails? classTermDetails,  List<AnswerModel> answers)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _QuestionModel() when $default != null:
-return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.isSolved,_that.priority,_that.author,_that.currentHandler,_that.courseDetails,_that.classTermDetails,_that.answers);case _:
+return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.priority,_that.author,_that.currentHandler,_that.oldHandler,_that.courseDetails,_that.classTermDetails,_that.answers);case _:
   return orElse();
 
 }
@@ -240,10 +244,10 @@ return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.isSolve
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String content, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_solved')  bool isSolved, @JsonKey(name: 'question_priority')  int? priority, @JsonKey(name: 'question_author')  UserModel? author, @JsonKey(name: 'question_current_handler')  UserModel? currentHandler, @JsonKey(name: 'course_details')  CourseDetails? courseDetails, @JsonKey(name: 'class_term_details')  ClassTermDetails? classTermDetails,  List<AnswerModel> answers)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String content, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'question_priority')  int? priority, @JsonKey(name: 'question_author')  UserModel? author, @JsonKey(name: 'question_current_handler')  UserModel? currentHandler, @JsonKey(name: 'question_old_handler')  UserModel? oldHandler, @JsonKey(name: 'course_details')  CourseDetails? courseDetails, @JsonKey(name: 'class_term_details')  ClassTermDetails? classTermDetails,  List<AnswerModel> answers)  $default,) {final _that = this;
 switch (_that) {
 case _QuestionModel():
-return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.isSolved,_that.priority,_that.author,_that.currentHandler,_that.courseDetails,_that.classTermDetails,_that.answers);case _:
+return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.priority,_that.author,_that.currentHandler,_that.oldHandler,_that.courseDetails,_that.classTermDetails,_that.answers);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -260,10 +264,10 @@ return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.isSolve
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String content, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'is_solved')  bool isSolved, @JsonKey(name: 'question_priority')  int? priority, @JsonKey(name: 'question_author')  UserModel? author, @JsonKey(name: 'question_current_handler')  UserModel? currentHandler, @JsonKey(name: 'course_details')  CourseDetails? courseDetails, @JsonKey(name: 'class_term_details')  ClassTermDetails? classTermDetails,  List<AnswerModel> answers)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String content, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'question_priority')  int? priority, @JsonKey(name: 'question_author')  UserModel? author, @JsonKey(name: 'question_current_handler')  UserModel? currentHandler, @JsonKey(name: 'question_old_handler')  UserModel? oldHandler, @JsonKey(name: 'course_details')  CourseDetails? courseDetails, @JsonKey(name: 'class_term_details')  ClassTermDetails? classTermDetails,  List<AnswerModel> answers)?  $default,) {final _that = this;
 switch (_that) {
 case _QuestionModel() when $default != null:
-return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.isSolved,_that.priority,_that.author,_that.currentHandler,_that.courseDetails,_that.classTermDetails,_that.answers);case _:
+return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.priority,_that.author,_that.currentHandler,_that.oldHandler,_that.courseDetails,_that.classTermDetails,_that.answers);case _:
   return null;
 
 }
@@ -274,30 +278,21 @@ return $default(_that.id,_that.title,_that.content,_that.createdAt,_that.isSolve
 /// @nodoc
 @JsonSerializable()
 
-class _QuestionModel implements QuestionModel {
-  const _QuestionModel({required this.id, required this.title, required this.content, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'is_solved') this.isSolved = false, @JsonKey(name: 'question_priority') this.priority, @JsonKey(name: 'question_author') this.author, @JsonKey(name: 'question_current_handler') this.currentHandler, @JsonKey(name: 'course_details') this.courseDetails, @JsonKey(name: 'class_term_details') this.classTermDetails, final  List<AnswerModel> answers = const []}): _answers = answers;
+class _QuestionModel extends QuestionModel {
+  const _QuestionModel({required this.id, required this.title, required this.content, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'question_priority') this.priority, @JsonKey(name: 'question_author') this.author, @JsonKey(name: 'question_current_handler') this.currentHandler, @JsonKey(name: 'question_old_handler') this.oldHandler, @JsonKey(name: 'course_details') this.courseDetails, @JsonKey(name: 'class_term_details') this.classTermDetails, final  List<AnswerModel> answers = const []}): _answers = answers,super._();
   factory _QuestionModel.fromJson(Map<String, dynamic> json) => _$QuestionModelFromJson(json);
 
 @override final  int id;
 @override final  String title;
 @override final  String content;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
-@override@JsonKey(name: 'is_solved') final  bool isSolved;
 @override@JsonKey(name: 'question_priority') final  int? priority;
-// Backend sends Integer (1, 2, 3)
-// Nested User Object (Author)
-// React: question.question_author.username -> `question_author`
 @override@JsonKey(name: 'question_author') final  UserModel? author;
-// Nested User Object (Current Handler - Advisor)
 @override@JsonKey(name: 'question_current_handler') final  UserModel? currentHandler;
-// Nested Course Object
-// React: question.course_details.title
+@override@JsonKey(name: 'question_old_handler') final  UserModel? oldHandler;
 @override@JsonKey(name: 'course_details') final  CourseDetails? courseDetails;
-// Nested Class Term Details
 @override@JsonKey(name: 'class_term_details') final  ClassTermDetails? classTermDetails;
-// Answers List
  final  List<AnswerModel> _answers;
-// Answers List
 @override@JsonKey() List<AnswerModel> get answers {
   if (_answers is EqualUnmodifiableListView) return _answers;
   // ignore: implicit_dynamic_type
@@ -318,16 +313,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuestionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isSolved, isSolved) || other.isSolved == isSolved)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.author, author) || other.author == author)&&(identical(other.currentHandler, currentHandler) || other.currentHandler == currentHandler)&&(identical(other.courseDetails, courseDetails) || other.courseDetails == courseDetails)&&(identical(other.classTermDetails, classTermDetails) || other.classTermDetails == classTermDetails)&&const DeepCollectionEquality().equals(other._answers, _answers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuestionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.priority, priority) || other.priority == priority)&&(identical(other.author, author) || other.author == author)&&(identical(other.currentHandler, currentHandler) || other.currentHandler == currentHandler)&&(identical(other.oldHandler, oldHandler) || other.oldHandler == oldHandler)&&(identical(other.courseDetails, courseDetails) || other.courseDetails == courseDetails)&&(identical(other.classTermDetails, classTermDetails) || other.classTermDetails == classTermDetails)&&const DeepCollectionEquality().equals(other._answers, _answers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,content,createdAt,isSolved,priority,author,currentHandler,courseDetails,classTermDetails,const DeepCollectionEquality().hash(_answers));
+int get hashCode => Object.hash(runtimeType,id,title,content,createdAt,priority,author,currentHandler,oldHandler,courseDetails,classTermDetails,const DeepCollectionEquality().hash(_answers));
 
 @override
 String toString() {
-  return 'QuestionModel(id: $id, title: $title, content: $content, createdAt: $createdAt, isSolved: $isSolved, priority: $priority, author: $author, currentHandler: $currentHandler, courseDetails: $courseDetails, classTermDetails: $classTermDetails, answers: $answers)';
+  return 'QuestionModel(id: $id, title: $title, content: $content, createdAt: $createdAt, priority: $priority, author: $author, currentHandler: $currentHandler, oldHandler: $oldHandler, courseDetails: $courseDetails, classTermDetails: $classTermDetails, answers: $answers)';
 }
 
 
@@ -338,11 +333,11 @@ abstract mixin class _$QuestionModelCopyWith<$Res> implements $QuestionModelCopy
   factory _$QuestionModelCopyWith(_QuestionModel value, $Res Function(_QuestionModel) _then) = __$QuestionModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String content,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'is_solved') bool isSolved,@JsonKey(name: 'question_priority') int? priority,@JsonKey(name: 'question_author') UserModel? author,@JsonKey(name: 'question_current_handler') UserModel? currentHandler,@JsonKey(name: 'course_details') CourseDetails? courseDetails,@JsonKey(name: 'class_term_details') ClassTermDetails? classTermDetails, List<AnswerModel> answers
+ int id, String title, String content,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'question_priority') int? priority,@JsonKey(name: 'question_author') UserModel? author,@JsonKey(name: 'question_current_handler') UserModel? currentHandler,@JsonKey(name: 'question_old_handler') UserModel? oldHandler,@JsonKey(name: 'course_details') CourseDetails? courseDetails,@JsonKey(name: 'class_term_details') ClassTermDetails? classTermDetails, List<AnswerModel> answers
 });
 
 
-@override $UserModelCopyWith<$Res>? get author;@override $UserModelCopyWith<$Res>? get currentHandler;@override $CourseDetailsCopyWith<$Res>? get courseDetails;@override $ClassTermDetailsCopyWith<$Res>? get classTermDetails;
+@override $UserModelCopyWith<$Res>? get author;@override $UserModelCopyWith<$Res>? get currentHandler;@override $UserModelCopyWith<$Res>? get oldHandler;@override $CourseDetailsCopyWith<$Res>? get courseDetails;@override $ClassTermDetailsCopyWith<$Res>? get classTermDetails;
 
 }
 /// @nodoc
@@ -355,16 +350,16 @@ class __$QuestionModelCopyWithImpl<$Res>
 
 /// Create a copy of QuestionModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? content = null,Object? createdAt = null,Object? isSolved = null,Object? priority = freezed,Object? author = freezed,Object? currentHandler = freezed,Object? courseDetails = freezed,Object? classTermDetails = freezed,Object? answers = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? content = null,Object? createdAt = null,Object? priority = freezed,Object? author = freezed,Object? currentHandler = freezed,Object? oldHandler = freezed,Object? courseDetails = freezed,Object? classTermDetails = freezed,Object? answers = null,}) {
   return _then(_QuestionModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,isSolved: null == isSolved ? _self.isSolved : isSolved // ignore: cast_nullable_to_non_nullable
-as bool,priority: freezed == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
+as DateTime,priority: freezed == priority ? _self.priority : priority // ignore: cast_nullable_to_non_nullable
 as int?,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as UserModel?,currentHandler: freezed == currentHandler ? _self.currentHandler : currentHandler // ignore: cast_nullable_to_non_nullable
+as UserModel?,oldHandler: freezed == oldHandler ? _self.oldHandler : oldHandler // ignore: cast_nullable_to_non_nullable
 as UserModel?,courseDetails: freezed == courseDetails ? _self.courseDetails : courseDetails // ignore: cast_nullable_to_non_nullable
 as CourseDetails?,classTermDetails: freezed == classTermDetails ? _self.classTermDetails : classTermDetails // ignore: cast_nullable_to_non_nullable
 as ClassTermDetails?,answers: null == answers ? _self._answers : answers // ignore: cast_nullable_to_non_nullable
@@ -395,6 +390,18 @@ $UserModelCopyWith<$Res>? get currentHandler {
 
   return $UserModelCopyWith<$Res>(_self.currentHandler!, (value) {
     return _then(_self.copyWith(currentHandler: value));
+  });
+}/// Create a copy of QuestionModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserModelCopyWith<$Res>? get oldHandler {
+    if (_self.oldHandler == null) {
+    return null;
+  }
+
+  return $UserModelCopyWith<$Res>(_self.oldHandler!, (value) {
+    return _then(_self.copyWith(oldHandler: value));
   });
 }/// Create a copy of QuestionModel
 /// with the given fields replaced by the non-null parameter values.
@@ -995,7 +1002,6 @@ as List<UserModel>,
 /// @nodoc
 mixin _$ClassTermDetails {
 
-// React: department_name, term_display
 @JsonKey(name: 'department_name') String? get departmentName;@JsonKey(name: 'term_display') String? get termDisplay;
 /// Create a copy of ClassTermDetails
 /// with the given fields replaced by the non-null parameter values.
@@ -1194,7 +1200,6 @@ class _ClassTermDetails implements ClassTermDetails {
   const _ClassTermDetails({@JsonKey(name: 'department_name') this.departmentName, @JsonKey(name: 'term_display') this.termDisplay});
   factory _ClassTermDetails.fromJson(Map<String, dynamic> json) => _$ClassTermDetailsFromJson(json);
 
-// React: department_name, term_display
 @override@JsonKey(name: 'department_name') final  String? departmentName;
 @override@JsonKey(name: 'term_display') final  String? termDisplay;
 

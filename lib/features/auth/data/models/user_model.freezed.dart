@@ -19,7 +19,8 @@ mixin _$UserModel {
 // We use String here to match flexibility of backend response
 @JsonKey(name: 'user_type') String get userType;// Approval & Hierarchy
  bool get isApproved; bool get isDepartmentHead;// Details (Backend sends simplified ID/Name maps occasionally)
- Map<String, dynamic>? get departmentDetails; Map<String, dynamic>? get facultyDetails;// Profile
+ Map<String, dynamic>? get departmentDetails; Map<String, dynamic>? get facultyDetails;// Extra Fields
+ String? get phone; String? get studentNumber; String? get studentTerm; DateTime? get dateJoined;// Profile
  String? get profileImage;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -33,16 +34,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.isDepartmentHead, isDepartmentHead) || other.isDepartmentHead == isDepartmentHead)&&const DeepCollectionEquality().equals(other.departmentDetails, departmentDetails)&&const DeepCollectionEquality().equals(other.facultyDetails, facultyDetails)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.isDepartmentHead, isDepartmentHead) || other.isDepartmentHead == isDepartmentHead)&&const DeepCollectionEquality().equals(other.departmentDetails, departmentDetails)&&const DeepCollectionEquality().equals(other.facultyDetails, facultyDetails)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.studentNumber, studentNumber) || other.studentNumber == studentNumber)&&(identical(other.studentTerm, studentTerm) || other.studentTerm == studentTerm)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,email,firstName,lastName,userType,isApproved,isDepartmentHead,const DeepCollectionEquality().hash(departmentDetails),const DeepCollectionEquality().hash(facultyDetails),profileImage);
+int get hashCode => Object.hash(runtimeType,id,username,email,firstName,lastName,userType,isApproved,isDepartmentHead,const DeepCollectionEquality().hash(departmentDetails),const DeepCollectionEquality().hash(facultyDetails),phone,studentNumber,studentTerm,dateJoined,profileImage);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, username: $username, email: $email, firstName: $firstName, lastName: $lastName, userType: $userType, isApproved: $isApproved, isDepartmentHead: $isDepartmentHead, departmentDetails: $departmentDetails, facultyDetails: $facultyDetails, profileImage: $profileImage)';
+  return 'UserModel(id: $id, username: $username, email: $email, firstName: $firstName, lastName: $lastName, userType: $userType, isApproved: $isApproved, isDepartmentHead: $isDepartmentHead, departmentDetails: $departmentDetails, facultyDetails: $facultyDetails, phone: $phone, studentNumber: $studentNumber, studentTerm: $studentTerm, dateJoined: $dateJoined, profileImage: $profileImage)';
 }
 
 
@@ -53,7 +54,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String username, String? email, String? firstName, String? lastName,@JsonKey(name: 'user_type') String userType, bool isApproved, bool isDepartmentHead, Map<String, dynamic>? departmentDetails, Map<String, dynamic>? facultyDetails, String? profileImage
+ int id, String username, String? email, String? firstName, String? lastName,@JsonKey(name: 'user_type') String userType, bool isApproved, bool isDepartmentHead, Map<String, dynamic>? departmentDetails, Map<String, dynamic>? facultyDetails, String? phone, String? studentNumber, String? studentTerm, DateTime? dateJoined, String? profileImage
 });
 
 
@@ -70,7 +71,7 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? email = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? userType = null,Object? isApproved = null,Object? isDepartmentHead = null,Object? departmentDetails = freezed,Object? facultyDetails = freezed,Object? profileImage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? email = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? userType = null,Object? isApproved = null,Object? isDepartmentHead = null,Object? departmentDetails = freezed,Object? facultyDetails = freezed,Object? phone = freezed,Object? studentNumber = freezed,Object? studentTerm = freezed,Object? dateJoined = freezed,Object? profileImage = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -82,7 +83,11 @@ as String,isApproved: null == isApproved ? _self.isApproved : isApproved // igno
 as bool,isDepartmentHead: null == isDepartmentHead ? _self.isDepartmentHead : isDepartmentHead // ignore: cast_nullable_to_non_nullable
 as bool,departmentDetails: freezed == departmentDetails ? _self.departmentDetails : departmentDetails // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,facultyDetails: freezed == facultyDetails ? _self.facultyDetails : facultyDetails // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String?,studentNumber: freezed == studentNumber ? _self.studentNumber : studentNumber // ignore: cast_nullable_to_non_nullable
+as String?,studentTerm: freezed == studentTerm ? _self.studentTerm : studentTerm // ignore: cast_nullable_to_non_nullable
+as String?,dateJoined: freezed == dateJoined ? _self.dateJoined : dateJoined // ignore: cast_nullable_to_non_nullable
+as DateTime?,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -168,10 +173,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String username,  String? email,  String? firstName,  String? lastName, @JsonKey(name: 'user_type')  String userType,  bool isApproved,  bool isDepartmentHead,  Map<String, dynamic>? departmentDetails,  Map<String, dynamic>? facultyDetails,  String? profileImage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String username,  String? email,  String? firstName,  String? lastName, @JsonKey(name: 'user_type')  String userType,  bool isApproved,  bool isDepartmentHead,  Map<String, dynamic>? departmentDetails,  Map<String, dynamic>? facultyDetails,  String? phone,  String? studentNumber,  String? studentTerm,  DateTime? dateJoined,  String? profileImage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastName,_that.userType,_that.isApproved,_that.isDepartmentHead,_that.departmentDetails,_that.facultyDetails,_that.profileImage);case _:
+return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastName,_that.userType,_that.isApproved,_that.isDepartmentHead,_that.departmentDetails,_that.facultyDetails,_that.phone,_that.studentNumber,_that.studentTerm,_that.dateJoined,_that.profileImage);case _:
   return orElse();
 
 }
@@ -189,10 +194,10 @@ return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String username,  String? email,  String? firstName,  String? lastName, @JsonKey(name: 'user_type')  String userType,  bool isApproved,  bool isDepartmentHead,  Map<String, dynamic>? departmentDetails,  Map<String, dynamic>? facultyDetails,  String? profileImage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String username,  String? email,  String? firstName,  String? lastName, @JsonKey(name: 'user_type')  String userType,  bool isApproved,  bool isDepartmentHead,  Map<String, dynamic>? departmentDetails,  Map<String, dynamic>? facultyDetails,  String? phone,  String? studentNumber,  String? studentTerm,  DateTime? dateJoined,  String? profileImage)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastName,_that.userType,_that.isApproved,_that.isDepartmentHead,_that.departmentDetails,_that.facultyDetails,_that.profileImage);case _:
+return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastName,_that.userType,_that.isApproved,_that.isDepartmentHead,_that.departmentDetails,_that.facultyDetails,_that.phone,_that.studentNumber,_that.studentTerm,_that.dateJoined,_that.profileImage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +214,10 @@ return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String username,  String? email,  String? firstName,  String? lastName, @JsonKey(name: 'user_type')  String userType,  bool isApproved,  bool isDepartmentHead,  Map<String, dynamic>? departmentDetails,  Map<String, dynamic>? facultyDetails,  String? profileImage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String username,  String? email,  String? firstName,  String? lastName, @JsonKey(name: 'user_type')  String userType,  bool isApproved,  bool isDepartmentHead,  Map<String, dynamic>? departmentDetails,  Map<String, dynamic>? facultyDetails,  String? phone,  String? studentNumber,  String? studentTerm,  DateTime? dateJoined,  String? profileImage)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastName,_that.userType,_that.isApproved,_that.isDepartmentHead,_that.departmentDetails,_that.facultyDetails,_that.profileImage);case _:
+return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastName,_that.userType,_that.isApproved,_that.isDepartmentHead,_that.departmentDetails,_that.facultyDetails,_that.phone,_that.studentNumber,_that.studentTerm,_that.dateJoined,_that.profileImage);case _:
   return null;
 
 }
@@ -224,7 +229,7 @@ return $default(_that.id,_that.username,_that.email,_that.firstName,_that.lastNa
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, required this.username, this.email, this.firstName, this.lastName, @JsonKey(name: 'user_type') required this.userType, this.isApproved = false, this.isDepartmentHead = false, final  Map<String, dynamic>? departmentDetails, final  Map<String, dynamic>? facultyDetails, this.profileImage}): _departmentDetails = departmentDetails,_facultyDetails = facultyDetails;
+  const _UserModel({required this.id, required this.username, this.email, this.firstName, this.lastName, @JsonKey(name: 'user_type') required this.userType, this.isApproved = false, this.isDepartmentHead = false, final  Map<String, dynamic>? departmentDetails, final  Map<String, dynamic>? facultyDetails, this.phone, this.studentNumber, this.studentTerm, this.dateJoined, this.profileImage}): _departmentDetails = departmentDetails,_facultyDetails = facultyDetails;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  int id;
@@ -258,6 +263,11 @@ class _UserModel implements UserModel {
   return EqualUnmodifiableMapView(value);
 }
 
+// Extra Fields
+@override final  String? phone;
+@override final  String? studentNumber;
+@override final  String? studentTerm;
+@override final  DateTime? dateJoined;
 // Profile
 @override final  String? profileImage;
 
@@ -274,16 +284,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.isDepartmentHead, isDepartmentHead) || other.isDepartmentHead == isDepartmentHead)&&const DeepCollectionEquality().equals(other._departmentDetails, _departmentDetails)&&const DeepCollectionEquality().equals(other._facultyDetails, _facultyDetails)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.userType, userType) || other.userType == userType)&&(identical(other.isApproved, isApproved) || other.isApproved == isApproved)&&(identical(other.isDepartmentHead, isDepartmentHead) || other.isDepartmentHead == isDepartmentHead)&&const DeepCollectionEquality().equals(other._departmentDetails, _departmentDetails)&&const DeepCollectionEquality().equals(other._facultyDetails, _facultyDetails)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.studentNumber, studentNumber) || other.studentNumber == studentNumber)&&(identical(other.studentTerm, studentTerm) || other.studentTerm == studentTerm)&&(identical(other.dateJoined, dateJoined) || other.dateJoined == dateJoined)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,email,firstName,lastName,userType,isApproved,isDepartmentHead,const DeepCollectionEquality().hash(_departmentDetails),const DeepCollectionEquality().hash(_facultyDetails),profileImage);
+int get hashCode => Object.hash(runtimeType,id,username,email,firstName,lastName,userType,isApproved,isDepartmentHead,const DeepCollectionEquality().hash(_departmentDetails),const DeepCollectionEquality().hash(_facultyDetails),phone,studentNumber,studentTerm,dateJoined,profileImage);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, username: $username, email: $email, firstName: $firstName, lastName: $lastName, userType: $userType, isApproved: $isApproved, isDepartmentHead: $isDepartmentHead, departmentDetails: $departmentDetails, facultyDetails: $facultyDetails, profileImage: $profileImage)';
+  return 'UserModel(id: $id, username: $username, email: $email, firstName: $firstName, lastName: $lastName, userType: $userType, isApproved: $isApproved, isDepartmentHead: $isDepartmentHead, departmentDetails: $departmentDetails, facultyDetails: $facultyDetails, phone: $phone, studentNumber: $studentNumber, studentTerm: $studentTerm, dateJoined: $dateJoined, profileImage: $profileImage)';
 }
 
 
@@ -294,7 +304,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String username, String? email, String? firstName, String? lastName,@JsonKey(name: 'user_type') String userType, bool isApproved, bool isDepartmentHead, Map<String, dynamic>? departmentDetails, Map<String, dynamic>? facultyDetails, String? profileImage
+ int id, String username, String? email, String? firstName, String? lastName,@JsonKey(name: 'user_type') String userType, bool isApproved, bool isDepartmentHead, Map<String, dynamic>? departmentDetails, Map<String, dynamic>? facultyDetails, String? phone, String? studentNumber, String? studentTerm, DateTime? dateJoined, String? profileImage
 });
 
 
@@ -311,7 +321,7 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? email = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? userType = null,Object? isApproved = null,Object? isDepartmentHead = null,Object? departmentDetails = freezed,Object? facultyDetails = freezed,Object? profileImage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? email = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? userType = null,Object? isApproved = null,Object? isDepartmentHead = null,Object? departmentDetails = freezed,Object? facultyDetails = freezed,Object? phone = freezed,Object? studentNumber = freezed,Object? studentTerm = freezed,Object? dateJoined = freezed,Object? profileImage = freezed,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -323,7 +333,11 @@ as String,isApproved: null == isApproved ? _self.isApproved : isApproved // igno
 as bool,isDepartmentHead: null == isDepartmentHead ? _self.isDepartmentHead : isDepartmentHead // ignore: cast_nullable_to_non_nullable
 as bool,departmentDetails: freezed == departmentDetails ? _self._departmentDetails : departmentDetails // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,facultyDetails: freezed == facultyDetails ? _self._facultyDetails : facultyDetails // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>?,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,phone: freezed == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String?,studentNumber: freezed == studentNumber ? _self.studentNumber : studentNumber // ignore: cast_nullable_to_non_nullable
+as String?,studentTerm: freezed == studentTerm ? _self.studentTerm : studentTerm // ignore: cast_nullable_to_non_nullable
+as String?,dateJoined: freezed == dateJoined ? _self.dateJoined : dateJoined // ignore: cast_nullable_to_non_nullable
+as DateTime?,profileImage: freezed == profileImage ? _self.profileImage : profileImage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

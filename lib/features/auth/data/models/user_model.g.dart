@@ -17,6 +17,12 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   isDepartmentHead: json['is_department_head'] as bool? ?? false,
   departmentDetails: json['department_details'] as Map<String, dynamic>?,
   facultyDetails: json['faculty_details'] as Map<String, dynamic>?,
+  phone: json['phone'] as String?,
+  studentNumber: json['student_number'] as String?,
+  studentTerm: json['student_term'] as String?,
+  dateJoined: json['date_joined'] == null
+      ? null
+      : DateTime.parse(json['date_joined'] as String),
   profileImage: json['profile_image'] as String?,
 );
 
@@ -32,5 +38,9 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'is_department_head': instance.isDepartmentHead,
       'department_details': instance.departmentDetails,
       'faculty_details': instance.facultyDetails,
+      'phone': instance.phone,
+      'student_number': instance.studentNumber,
+      'student_term': instance.studentTerm,
+      'date_joined': instance.dateJoined?.toIso8601String(),
       'profile_image': instance.profileImage,
     };

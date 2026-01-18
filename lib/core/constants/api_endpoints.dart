@@ -34,6 +34,7 @@ class ApiEndpoints {
 
   /// Parametre alan endpointler method olarak tanımlanır.
   static String questionDetail(dynamic id) => 'core/questions/$id/';
+  static String questionForward(dynamic id) => 'core/questions/$id/forward/';
 
   // Answers
   static const String answers = 'core/answers/';

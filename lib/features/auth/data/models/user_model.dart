@@ -27,6 +27,12 @@ abstract class UserModel with _$UserModel {
     Map<String, dynamic>? departmentDetails,
     Map<String, dynamic>? facultyDetails,
 
+    // Extra Fields
+    String? phone,
+    String? studentNumber,
+    String? studentTerm,
+    DateTime? dateJoined,
+
     // Profile
     String? profileImage,
   }) = _UserModel;

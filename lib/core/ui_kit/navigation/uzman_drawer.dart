@@ -115,7 +115,7 @@ class UzmanDrawer extends ConsumerWidget {
                   title: 'Profilim',
                   onTap: () {
                     context.pop();
-                    // context.go('/profile'); // Not implemented yet
+                    context.push('/profile');
                   },
                 ),
 

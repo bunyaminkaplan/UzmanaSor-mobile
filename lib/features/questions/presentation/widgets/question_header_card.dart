@@ -2,16 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/core/utils/date_formatter.dart';
 import 'package:mobile/features/questions/data/models/question_model.dart';
+import 'package:mobile/features/questions/presentation/widgets/question_metadata_panel.dart';
 
-class QuestionHeaderCard extends StatelessWidget {
+class QuestionHeaderCard extends StatefulWidget {
   final QuestionModel question;
 
   const QuestionHeaderCard({super.key, required this.question});
 
   @override
+  State<QuestionHeaderCard> createState() => _QuestionHeaderCardState();
+}
+
+class _QuestionHeaderCardState extends State<QuestionHeaderCard> {
+  bool _isExpanded = true;
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(16),
@@ -23,70 +30,137 @@ class QuestionHeaderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 16,
-                backgroundColor: AppColors.cyan.withValues(alpha: 0.1),
-                child: Text(
-                  question.author?.username.substring(0, 1).toUpperCase() ??
-                      "A",
-                  style: const TextStyle(
-                    color: AppColors.cyan,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          // 1. TOP HEADER (Always Visible) - Avatar, Name, Badges, ExpandToggle
+          InkWell(
+            onTap: () => setState(() => _isExpanded = !_isExpanded),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
                 children: [
-                  Text(
-                    question.author?.username ?? "Anonim",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                  // Avatar
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: AppColors.cyan.withValues(alpha: 0.1),
+                    child: Text(
+                      widget.question.author?.username[0].toUpperCase() ?? "A",
+                      style: const TextStyle(
+                        color: AppColors.cyan,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  Text(
-                    DateFormatter.formatTimeAgo(question.createdAt),
-                    style: const TextStyle(
-                      color: AppColors.textMuted,
-                      fontSize: 12,
+                  const SizedBox(width: 12),
+
+                  // Name & Time
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${widget.question.author?.firstName ?? 'Anonim'} ${widget.question.author?.lastName ?? ''}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: AppColors.navy,
+                          ),
+                        ),
+                        Text(
+                          DateFormatter.formatTimeAgo(
+                            widget.question.createdAt,
+                          ),
+                          style: const TextStyle(
+                            color: AppColors.textMuted,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+
+                  // Status Icons
+                  if (widget.question.isSolved)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: Icon(
+                        Icons.check_circle,
+                        color: AppColors.success,
+                        size: 20,
+                      ),
+                    ),
+                  if (widget.question.oldHandler != null)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8.0),
+                      child: Icon(
+                        Icons.forward_to_inbox,
+                        color: AppColors.orange,
+                        size: 20,
+                      ),
+                    ),
+
+                  // Toggle Icon
+                  Icon(
+                    _isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: AppColors.textSecondary,
                   ),
                 ],
               ),
-              const Spacer(),
-              if (question.isSolved)
-                const Icon(Icons.check_circle, color: AppColors.success),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            question.title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.navy,
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            question.content,
-            style: const TextStyle(fontSize: 14, height: 1.5),
-          ),
-          const SizedBox(height: 16),
-          if (question.courseDetails != null)
-            Chip(
-              label: Text(question.courseDetails!.title),
-              backgroundColor: AppColors.bgLight,
-              labelStyle: const TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
+
+          // 2. CONTENT AREA (Collapsible)
+          // Using plain if since AnimatedCrossFade might be overkill/complex for text resizing
+          if (_isExpanded) ...[
+            const Divider(height: 1),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title
+                  Text(
+                    widget.question.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.navy,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Content
+                  Text(
+                    widget.question.content,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.6,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // 3. RICH METADATA PANEL
+                  QuestionMetadataPanel(question: widget.question),
+                ],
               ),
-              side: BorderSide.none,
             ),
+          ] else ...[
+            // Collapsed Summary (Title Truncated)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: Text(
+                widget.question.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

@@ -56,7 +56,8 @@ Future<void> setupDio(Dio dio, PersistCookieJar cookieJar) async {
   dio.interceptors.add(CookieManager(cookieJar));
   dio.interceptors.add(CsrfInterceptor(cookieJar));
 
-  // Log Interceptor (Dev Only)
+  // Log Interceptor (Dev Only) - DISABLED for production/clean console
+  /*
   dio.interceptors.add(
     LogInterceptor(
       request: true,
@@ -67,6 +68,7 @@ Future<void> setupDio(Dio dio, PersistCookieJar cookieJar) async {
       error: true,
     ),
   );
+  */
 }
 
 /// [CsrfInterceptor] - Django Session Auth güvenliği için kritik.
