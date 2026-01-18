@@ -12,12 +12,17 @@ final questionRepositoryProvider = Provider<QuestionRepository>((ref) {
 
 abstract class QuestionRepository {
   Future<Either<Failure, List<QuestionModel>>> getQuestions({int page = 1});
+  Future<Either<Failure, QuestionModel>> getQuestion(int id);
   Future<Either<Failure, List<CourseDetails>>> getCourses();
   Future<Either<Failure, void>> createQuestion({
     required String title,
     required String content,
     required int courseId,
     required int teacherId,
+  });
+  Future<Either<Failure, void>> postAnswer({
+    required int questionId,
+    required String content,
   });
 }
 
@@ -99,6 +104,36 @@ class QuestionRepositoryImpl implements QuestionRepository {
       return Left(ServerFailure.fromDioError(e));
     } catch (e) {
       return Left(ServerFailure("Soru oluşturulurken hata oluştu: $e"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, QuestionModel>> getQuestion(int id) async {
+    try {
+      final response = await _dio.get(ApiEndpoints.questionDetail(id));
+      return Right(QuestionModel.fromJson(response.data));
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure("Soru detayları alınırken hata oluştu: $e"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> postAnswer({
+    required int questionId,
+    required String content,
+  }) async {
+    try {
+      await _dio.post(
+        ApiEndpoints.answers,
+        data: {'question': questionId, 'content': content},
+      );
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure("Cevap gönderilirken hata oluştu: $e"));
     }
   }
 }

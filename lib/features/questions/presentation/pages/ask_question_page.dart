@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/theme/app_colors.dart';
-import 'package:mobile/core/ui_kit/uzman_button.dart';
-import 'package:mobile/core/ui_kit/uzman_text_field.dart';
+import 'package:mobile/core/ui_kit/ui_kit.dart';
 import 'package:mobile/features/auth/data/models/user_model.dart';
 import 'package:mobile/features/questions/data/models/question_model.dart';
 import 'package:mobile/features/questions/data/repositories/question_repository.dart';
@@ -172,84 +171,38 @@ class _AskQuestionPageState extends ConsumerState<AskQuestionPage> {
                     const SizedBox(height: 20),
 
                     // Course Dropdown
-                    const Text(
-                      'Ders',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.navy,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceLight,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<CourseDetails>(
-                          value: _selectedCourse,
-                          hint: const Text('Ders Seçiniz'),
-                          isExpanded: true,
-                          items: _courses.map((course) {
-                            return DropdownMenuItem(
-                              value: course,
-                              child: Text(course.title),
-                            );
-                          }).toList(),
-                          onChanged: _onCourseChanged,
-                        ),
-                      ),
+                    UzmanDropdown<CourseDetails>(
+                      value: _selectedCourse,
+                      items: _courses.map((course) {
+                        return DropdownMenuItem(
+                          value: course,
+                          child: Text(course.title),
+                        );
+                      }).toList(),
+                      hint: 'Ders Seçiniz',
+                      onChanged: _onCourseChanged,
                     ),
                     const SizedBox(height: 20),
 
-                    // Teacher Dropdown (Animated visibility logic handled by plain check here)
+                    // Teacher Dropdown
                     if (_selectedCourse != null) ...[
-                      const Text(
-                        'Öğretmen',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.navy,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceLight,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.border),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<UserModel>(
-                            value: _selectedTeacher,
-                            hint: const Text('Öğretmen Seçiniz'),
-                            isExpanded: true,
-                            items: _availableTeachers.map((teacher) {
-                              return DropdownMenuItem(
-                                value: teacher,
-                                child: Text(
-                                  "${teacher.firstName} ${teacher.lastName}",
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (val) =>
-                                setState(() => _selectedTeacher = val),
-                          ),
-                        ),
-                      ),
-                      if (_availableTeachers.isEmpty)
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            'Bu dersi veren öğretmen bulunamadı.',
-                            style: TextStyle(
-                              color: AppColors.error,
-                              fontSize: 12,
+                      UzmanDropdown<UserModel>(
+                        value: _selectedTeacher,
+                        items: _availableTeachers.map((teacher) {
+                          return DropdownMenuItem(
+                            value: teacher,
+                            child: Text(
+                              "${teacher.firstName} ${teacher.lastName}",
                             ),
-                          ),
-                        ),
+                          );
+                        }).toList(),
+                        hint: 'Öğretmen Seçiniz',
+                        onChanged: (val) =>
+                            setState(() => _selectedTeacher = val),
+                        errorText: _availableTeachers.isEmpty
+                            ? 'Bu dersi veren öğretmen bulunamadı.'
+                            : null,
+                      ),
                     ],
 
                     const SizedBox(height: 32),

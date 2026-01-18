@@ -46,13 +46,7 @@ class FeedView extends ConsumerWidget {
             separatorBuilder: (context, index) => const SizedBox(height: 16),
             itemBuilder: (context, index) {
               final question = questions[index];
-              return QuestionCard(
-                question: question,
-                onTap: () {
-                  // Navigate to detail
-                  // context.push('/question/${question.id}');
-                },
-              );
+              return QuestionCard(question: question);
             },
           ),
         );

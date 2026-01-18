@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/core/utils/date_formatter.dart';
 import 'package:mobile/features/questions/data/models/question_model.dart';
+import 'package:mobile/features/questions/presentation/pages/question_detail_page.dart';
 
 class QuestionCard extends StatelessWidget {
   final QuestionModel question;
-  final VoidCallback? onTap;
 
-  const QuestionCard({super.key, required this.question, this.onTap});
+  const QuestionCard({super.key, required this.question});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,13 @@ class QuestionCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => QuestionDetailPage(question: question),
+            ),
+          );
+        },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
