@@ -1,185 +1,229 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_shadows.dart';
+import 'package:mobile/core/ui_kit/ui_kit.dart';
 import 'package:mobile/core/utils/date_formatter.dart';
 import 'package:mobile/features/questions/data/models/question_model.dart';
 import 'package:mobile/features/questions/presentation/pages/question_detail_page.dart';
 
-class QuestionCard extends StatelessWidget {
+class QuestionCard extends StatefulWidget {
   final QuestionModel question;
 
   const QuestionCard({super.key, required this.question});
 
   @override
+  State<QuestionCard> createState() => _QuestionCardState();
+}
+
+class _QuestionCardState extends State<QuestionCard>
+    with SingleTickerProviderStateMixin {
+  bool _isExpanded = false;
+
+  void _toggleExpanded() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => QuestionDetailPage(question: question),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: AppShadows.medium,
+        border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(15),
+        child: InkWell(
+          onTap: _toggleExpanded,
+          borderRadius: BorderRadius.circular(15),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. HEADER (ALWAYS VISIBLE)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Icon
+                    const Padding(
+                      padding: EdgeInsets.only(top: 2),
+                      child: Icon(
+                        Icons.help_outline,
+                        color: AppColors.primaryCyan,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // Title
+                    Expanded(
+                      child: Text(
+                        widget.question.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15, // Slightly compact
+                          color: AppColors.textHeading,
+                        ),
+                        maxLines: _isExpanded ? null : 1,
+                        overflow: _isExpanded ? null : TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Status Badge
+                    _buildStatusBadge(),
+                  ],
+                ),
+
+                // 2. EXPANDABLE BODY
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  child: _isExpanded
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 12),
+                            const Divider(height: 1),
+                            const SizedBox(height: 12),
+
+                            // Metadata Row
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_today_outlined,
+                                  size: 14,
+                                  color: AppColors.textMuted,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  DateFormatter.formatTimeAgo(
+                                    widget.question.createdAt,
+                                  ),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textMuted,
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (widget.question.courseDetails != null) ...[
+                                  Icon(
+                                    Icons.book_outlined,
+                                    size: 14,
+                                    color: AppColors.textMuted,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Flexible(
+                                    child: Text(
+                                      widget.question.courseDetails!.title,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.textMuted,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+
+                            // Content Snippet
+                            Text(
+                              widget.question.content,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: AppColors.textBody,
+                                fontSize: 13,
+                                height: 1.5,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Footer Action
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Answers Count
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.chat_bubble_outline,
+                                      size: 16,
+                                      color: AppColors.textMuted,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "${widget.question.answers.length} Cevap",
+                                      style: const TextStyle(
+                                        color: AppColors.textMuted,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                // Detail Button
+                                OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            QuestionDetailPage(
+                                              question: widget.question,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.primaryCyan,
+                                    side: const BorderSide(
+                                      color: AppColors.primaryCyan,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    "Detayları Gör ->",
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ],
             ),
-          );
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // HEADER: Author + Time
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: AppColors.cyan.withOpacity(0.2),
-                    child: Text(
-                      question.author?.firstName?[0] ?? '?',
-                      style: const TextStyle(
-                        color: AppColors.cyan,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${question.author?.firstName ?? 'Anonim'} ${question.author?.lastName ?? ''}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: AppColors.navy,
-                          ),
-                        ),
-                        Text(
-                          DateFormatter.formatTimeAgo(question.createdAt),
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Status Badges (Right Aligned)
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (question.isSolved)
-                        const Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Icon(
-                            Icons.check_circle,
-                            color: AppColors.success,
-                            size: 20,
-                          ),
-                        ),
-                      if (question.oldHandler != null)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Tooltip(
-                            message:
-                                "Yönlendirildi: ${question.oldHandler?.firstName ?? '?'}",
-                            child: const Icon(
-                              Icons.forward_to_inbox,
-                              color: AppColors.orange,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      if (question.priority != null && question.priority! > 1)
-                        const Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Icon(
-                            Icons.priority_high,
-                            color: AppColors.error,
-                            size: 20,
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // BODY: Title + Content
-              Text(
-                question.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                question.content,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: AppColors.textPrimary,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // FOOTER: Course + Answers
-              Row(
-                children: [
-                  const Icon(
-                    Icons.chat_bubble_outline,
-                    size: 18,
-                    color: AppColors.textSecondary,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    "${question.answers.length} Cevap",
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (question.courseDetails != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.bgLight,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.book_outlined,
-                            size: 14,
-                            color: AppColors.cyan,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            question.courseDetails!.title,
-                            style: const TextStyle(
-                              color: AppColors.cyan,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-            ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildStatusBadge() {
+    if (widget.question.answers.isNotEmpty) {
+      return const UzmanStatusBadge(variant: UzmanStatusVariant.solved);
+    } else if (widget.question.oldHandler != null) {
+      return const UzmanStatusBadge(variant: UzmanStatusVariant.forwarded);
+    } else {
+      return const UzmanStatusBadge(variant: UzmanStatusVariant.pending);
+    }
   }
 }

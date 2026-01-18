@@ -14,45 +14,36 @@ class StudentDashboard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider).value;
+    final displayName = user?.firstName ?? user?.username ?? 'Öğrenci';
 
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackground,
       appBar: UzmanAppBar(
         title: "Öğrenci Paneli",
         onProfileTap: () {
-          // TODO: Navigate to Profile
+          // handled by router usually or drawer
         },
       ),
       drawer: const UzmanDrawer(),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.check_circle_outline,
-                size: 80,
-                color: AppColors.success,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // COMPACT HEADER
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+            child: Text(
+              "Hoşgeldin, $displayName",
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textHeading,
               ),
-              const SizedBox(height: 24),
-              Text(
-                "Hoşgeldin, ${user?.username ?? 'Öğrenci'}",
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Rol: ${user?.userType.toUpperCase() ?? 'Unknown'}",
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 32),
-              const SizedBox(height: 16),
-              const Expanded(child: FeedView()),
-            ],
+            ),
           ),
-        ),
+
+          // FEED
+          const Expanded(child: FeedView()),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -60,7 +51,7 @@ class StudentDashboard extends ConsumerWidget {
             MaterialPageRoute(builder: (context) => const AskQuestionPage()),
           );
         },
-        backgroundColor: AppColors.cyan,
+        backgroundColor: AppColors.primaryCyan,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

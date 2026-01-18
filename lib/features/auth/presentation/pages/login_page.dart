@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_shadows.dart';
 import 'package:mobile/core/ui_kit/uzman_button.dart';
 import 'package:mobile/core/ui_kit/uzman_text_field.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
@@ -75,69 +76,82 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     });
 
     return Scaffold(
+      backgroundColor: AppColors.scaffoldBackground,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Logo Area (Placeholder)
-                const Icon(
-                  Icons.school, // Representative icon
-                  size: 80,
-                  color: AppColors.navy,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  "MALATYA\nTURGUT ÖZAL\nÜNİVERSİTESİ",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: AppColors.navy,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
+          child: Container(
+            constraints: const BoxConstraints(
+              maxWidth: 450,
+            ), // Web-like max width
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: AppShadows.medium,
+            ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Logo Area
+                  const Icon(
+                    Icons.school, // Representative icon
+                    size: 80,
+                    color: AppColors.primaryNavy,
                   ),
-                ),
-                const SizedBox(height: 48),
+                  const SizedBox(height: 24),
+                  Text(
+                    "MALATYA\nTURGUT ÖZAL\nÜNİVERSİTESİ",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: AppColors.textHeading,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
 
-                // Inputs
-                UzmanTextField(
-                  label: "Kullanıcı Adı",
-                  controller: _usernameController,
-                  prefixIcon: Icons.person_outline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Kullanıcı adı gerekli";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                UzmanTextField(
-                  label: "Şifre",
-                  controller: _passwordController,
-                  isPassword: true,
-                  prefixIcon: Icons.lock_outline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Şifre gerekli";
-                    }
-                    return null;
-                  },
-                ),
+                  // Inputs
+                  UzmanTextField(
+                    label: "Kullanıcı Adı",
+                    controller: _usernameController,
+                    prefixIcon: Icons.person_outline,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Kullanıcı adı gerekli";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  UzmanTextField(
+                    label: "Şifre",
+                    controller: _passwordController,
+                    isPassword: true,
+                    prefixIcon: Icons.lock_outline,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Şifre gerekli";
+                      }
+                      return null;
+                    },
+                  ),
 
-                const SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
-                // Action Button
-                UzmanButton(
-                  label: "Giriş Yap",
-                  onPressed: authState.isLoading ? null : _onLogin,
-                  isLoading: authState.isLoading,
-                  variant: ButtonVariant.primary,
-                ),
-              ],
+                  // Action Button
+                  UzmanButton(
+                    label: "Giriş Yap",
+                    onPressed: authState.isLoading ? null : _onLogin,
+                    isLoading: authState.isLoading,
+                    variant: ButtonVariant.primary,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -35,6 +35,7 @@ class AnswerInputArea extends StatelessWidget {
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: UzmanTextField(

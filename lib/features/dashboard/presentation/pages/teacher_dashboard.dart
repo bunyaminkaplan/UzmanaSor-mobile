@@ -13,63 +13,50 @@ class TeacherDashboard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider).value;
+    final displayName = user?.firstName ?? user?.lastName ?? 'Eğitmen';
 
     return Scaffold(
-      appBar: UzmanAppBar(
-        title: "Eğitmen Paneli", // Different title
-        onProfileTap: () {
-          // TODO: Navigate to Profile
-        },
-      ),
-      drawer:
-          const UzmanDrawer(), // Reusing the same drawer for now, logic inside can be conditional later
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.school_outlined, // Different icon for teacher
-                size: 80,
-                color: AppColors.orange, // Different color for teacher
-              ),
-              const SizedBox(height: 24),
-              Text(
-                "Hoşgeldin, Sayın ${user?.lastName ?? 'Eğitmen'}", // Formal greeting
-                style: Theme.of(context).textTheme.headlineSmall,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Rol: ${user?.userType.toUpperCase() ?? 'UNKNOWN'}",
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.bold,
+      backgroundColor: AppColors.scaffoldBackground,
+      appBar: UzmanAppBar(title: "Eğitmen Paneli", onProfileTap: () {}),
+      drawer: const UzmanDrawer(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // COMPACT HEADER
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Hoşgeldin, Sayın $displayName",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textHeading,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Only regular teachers (who might be advisors) see this
-              // If they are not department heads.
-              // Show to ALL teachers (Head or Advisor)
-              ActionChip(
-                avatar: const Icon(Icons.assignment_ind, size: 16),
-                label: Text(
-                  user?.isDepartmentHead == true
-                      ? "Atamalar & Danışmanlık"
-                      : "Sınıf Temsilcisi Seçimi",
+                // Action Chip for Assignments
+                ActionChip(
+                  avatar: const Icon(
+                    Icons.assignment_ind,
+                    size: 16,
+                    color: AppColors.textBody,
+                  ),
+                  label: const Text("İşlemler"),
+                  backgroundColor: AppColors.surfaceLight,
+                  side: BorderSide.none,
+                  onPressed: () {
+                    context.push('/assignments');
+                  },
                 ),
-                onPressed: () {
-                  context.push('/assignments');
-                },
-              ),
-              const SizedBox(height: 32),
-              const SizedBox(height: 24),
-              const Expanded(child: FeedView()),
-            ],
+              ],
+            ),
           ),
-        ),
+
+          // FEED
+          const Expanded(child: FeedView()),
+        ],
       ),
     );
   }

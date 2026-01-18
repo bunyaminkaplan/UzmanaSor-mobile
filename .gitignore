@@ -107,3 +107,5 @@ known_hosts
 # CocoaPods
 /ios/Pods/
 /macos/Pods/
+
+/android/.gradle/

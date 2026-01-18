@@ -1,3 +1,5 @@
+import 'package:mobile/core/constants/app_constants.dart';
+
 /// [ApiEndpoints] - Proje genelinde kullanılan API adreslerinin tek doğruluk kaynağıdır.
 ///
 /// React projesindeki `endpoints.js` dosyasının birebir karşılığıdır.
@@ -8,7 +10,7 @@ class ApiEndpoints {
 
   // TODO: Prod ortamı için bu kısımlar environment variable'dan okunmalı (flutter_dotenv)
   // Şimdilik development ortamı varsayılıyor.
-  static const String baseUrl = 'http://10.0.2.2:8000/api/v1/';
+  static String get baseUrl => AppConstants.baseUrl;
 
   // --- AUTHENTICATION ---
   static const String authMe = 'auth/me/';

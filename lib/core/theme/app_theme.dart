@@ -1,42 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 
 class AppTheme {
-  // --- LIGHT THEME ---
+  // LIGHT THEME
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    brightness: Brightness.light,
-    scaffoldBackgroundColor: AppColors.bgLight,
-    primaryColor: AppColors.navy,
-    colorScheme: const ColorScheme.light(
-      primary: AppColors.navy,
-      secondary: AppColors.cyan,
-      surface: AppColors.surfaceLight,
+    fontFamily: 'Roboto', // Or system default
+    scaffoldBackgroundColor: AppColors.scaffoldBackground,
+    primaryColor: AppColors.primaryNavy,
+
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primaryNavy,
+      primary: AppColors.primaryNavy,
+      secondary: AppColors.primaryCyan,
       error: AppColors.error,
+      surface: AppColors.cardBackground,
+      onSurface: AppColors.textHeading,
     ),
 
-    // Typography
-    textTheme: GoogleFonts.montserratTextTheme().apply(
-      bodyColor: AppColors.textPrimary,
-      displayColor: AppColors.textPrimary,
+    // APP BAR
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.scaffoldBackground,
+      elevation: 0,
+      centerTitle: true,
+      iconTheme: IconThemeData(color: AppColors.textHeading),
+      actionsIconTheme: IconThemeData(color: AppColors.primaryCyan),
+      titleTextStyle: TextStyle(
+        color: AppColors.textHeading,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
     ),
 
-    // Card Theme
-    // cardTheme: CardTheme(
-    //   color: AppColors.surfaceLight,
-    //   elevation: 2,
-    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-    //   surfaceTintColor: Colors.transparent, // Fixes M3 tint
-    // ),
+    // CARDS
+    cardTheme: CardThemeData(
+      color: AppColors.cardBackground,
+      elevation: 0, // Using manual shadows usually, or set low
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15), // MATCH TOKEN
+      ),
+    ),
 
-    // Input Decoration
+    // INPUTS
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.inputLight,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+      fillColor: AppColors.inputBackground,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10), // MATCH TOKEN
         borderSide: const BorderSide(color: AppColors.border),
       ),
       enabledBorder: OutlineInputBorder(
@@ -45,39 +57,68 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: AppColors.cyan, width: 2),
+        borderSide: const BorderSide(color: AppColors.primaryCyan, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: AppColors.error),
+      ),
+    ),
+
+    // ELEVATED BUTTONS
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primaryNavy,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // MATCH TOKEN
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     ),
   );
 
-  // --- DARK THEME ---
+  // DARK THEME (Optional/Future Proofing)
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.bgDark,
-    primaryColor: AppColors.navy, // Keeping brand ID even in dark mode
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.cyan, // Cyan pops better on dark
-      secondary: AppColors.orange,
-      surface: AppColors.surfaceDark,
+    scaffoldBackgroundColor: AppColors.scaffoldBackgroundDark,
+    primaryColor: AppColors.primaryNavy,
+
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primaryNavy,
+      brightness: Brightness.dark,
+      primary: AppColors
+          .primaryNavy, // Or lighter in dark mode? Usually Primary stays or shifts.
+      secondary: AppColors.primaryCyan,
       error: AppColors.error,
+      surface: AppColors.cardBackgroundDark,
     ),
 
-    // Typography
-    textTheme: GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: AppColors.scaffoldBackgroundDark,
+      elevation: 0,
+      centerTitle: true,
+      iconTheme: IconThemeData(color: AppColors.textHeadingDark),
+      titleTextStyle: TextStyle(
+        color: AppColors.textHeadingDark,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
 
-    // Card Theme
-    // cardTheme: CardTheme(
-    //   color: AppColors.surfaceDark,
-    //   elevation: 2,
-    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-    // ),
+    cardTheme: CardThemeData(
+      color: AppColors.cardBackgroundDark,
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    ),
 
-    // Input Decoration
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.inputDark,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+      fillColor: AppColors.inputBackgroundDark,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: AppColors.borderDark),
@@ -88,7 +129,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: AppColors.cyan, width: 2),
+        borderSide: const BorderSide(color: AppColors.primaryCyan, width: 2),
       ),
     ),
   );
