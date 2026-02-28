@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:mobile/core/network/api_client.dart';
 import 'package:mobile/core/router/app_router.dart';
 import 'package:mobile/core/theme/app_theme.dart';
 
-import 'package:mobile/core/network/dio_client.dart';
-
+// ---------------------------------------------------------------------------
+// main.dart — Uygulama giriş noktası.
+//
+// Başlatma sırası:
+//   1. Flutter engine hazırla
+//   2. ApiClient'ı async olarak oluştur (cookie jar dizini gerektiğinden)
+//   3. ProviderContainer'a apiClientProvider override'ı ile enjekte et
+//   4. MyApp'i UncontrolledProviderScope ile sar → GoRouter çalışsın
+// ---------------------------------------------------------------------------
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1. Create ProviderContainer to read providers before UI
-  final container = ProviderContainer();
+  // ApiClient async init (PersistCookieJar disk yolu gerektirir)
+  final apiClient = await ApiClient.create();
 
-  // 2. Initialize Cookies & Dio Interceptors
-  try {
-    final dio = container.read(dioProvider);
-    final cookieJar = await container.read(cookieJarProvider.future);
-    await setupDio(dio, cookieJar);
-    print("✅ Dio setup complete with Cookies.");
-  } catch (e) {
-    print("❌ Failed to setup Dio: $e");
-  }
+  // ProviderContainer — apiClient senkron Provider olarak override
+  final container = ProviderContainer(
+    overrides: [apiClientProvider.overrideWithValue(apiClient)],
+  );
 
-  // 3. Run App with the same container
   runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
 }
 
@@ -33,11 +36,11 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(goRouterProvider);
 
     return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
       title: 'UzmanaSor',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light, // Change to .dark to test dark mode
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
       routerConfig: router,
     );
   }

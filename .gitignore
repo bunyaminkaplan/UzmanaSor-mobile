@@ -107,3 +107,9 @@ known_hosts
 # CocoaPods
 /ios/Pods/
 /macos/Pods/
+
+# Generated files (freezed, json_serializable)
+# `flutter pub run build_runner build` ile üretilir.
+# Commit'e dahil edilir ama istenirse ignore edilebilir:
+# *.freezed.dart
+# *.g.dart

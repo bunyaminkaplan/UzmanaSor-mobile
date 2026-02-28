@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:mobile/core/theme/app_colors.dart';
-import 'package:mobile/core/ui_kit/uzman_button.dart';
-import 'package:mobile/core/ui_kit/uzman_text_field.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 
+/// Login sayfası — iskelet fazı.
+///
+/// Tam tasarım Faz 1'de yapılacak (Register tab, doğrulama vs).
+/// Bu sadece çalışan bir login formu sağlar.
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
@@ -16,6 +19,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -24,120 +28,118 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
-  void _onLogin() {
-    if (_formKey.currentState?.validate() ?? false) {
-      ref
-          .read(authProvider.notifier)
-          .login(_usernameController.text.trim(), _passwordController.text);
-    }
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    await ref
+        .read(authProvider.notifier)
+        .login(_usernameController.text.trim(), _passwordController.text);
   }
 
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
-
-    // Listen for errors to show snackbar
-    ref.listen(authProvider, (previous, next) {
-      if (next.isLoading) return;
-
-      if (next.hasError) {
-        // Extract failure message if it's our Failure type
-        // The provider wraps Failure in AsyncError, so we check the error property
-        final error = next.error;
-        String message = "Bir hata oluştu";
-
-        if (error.toString().isNotEmpty) {
-          // In a real app we'd cast to Failure, but simple toString works for now
-          // since Failure.toString() can be overriden or we access .message genericly
-          // Actually provider logic: AsyncValue.error(failure, ...)
-          // So error object IS the failure object.
-          try {
-            // accessing dynamic property 'message' if it exists
-            message = (error as dynamic).message;
-          } catch (_) {
-            message = error.toString();
-          }
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message), backgroundColor: AppColors.error),
-        );
-      } else if (next.value != null) {
-        // Success Navigation could happen here, or in main wrapper.
-        // For now, we just confirm login success visually or console.
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Giriş Başarılı! Yönlendiriliyor..."),
-            backgroundColor: AppColors.success,
-          ),
-        );
-      }
-    });
+    final theme = Theme.of(context);
 
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Logo Area (Placeholder)
-                const Icon(
-                  Icons.school, // Representative icon
-                  size: 80,
-                  color: AppColors.navy,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  "MALATYA\nTURGUT ÖZAL\nÜNİVERSİTESİ",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: AppColors.navy,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Logo / Başlık
+                  Icon(
+                    Icons.school_rounded,
+                    size: 72,
+                    color: AppColors.accentNavy,
                   ),
-                ),
-                const SizedBox(height: 48),
+                  const SizedBox(height: 16),
+                  Text('UzmanaSor', style: theme.textTheme.headlineMedium),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Hesabınıza giriş yapın',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
 
-                // Inputs
-                UzmanTextField(
-                  label: "Kullanıcı Adı",
-                  controller: _usernameController,
-                  prefixIcon: Icons.person_outline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Kullanıcı adı gerekli";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                UzmanTextField(
-                  label: "Şifre",
-                  controller: _passwordController,
-                  isPassword: true,
-                  prefixIcon: Icons.lock_outline,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Şifre gerekli";
-                    }
-                    return null;
-                  },
-                ),
+                  // Kullanıcı adı
+                  TextFormField(
+                    controller: _usernameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Kullanıcı Adı',
+                      prefixIcon: Icon(Icons.person_outline),
+                    ),
+                    textInputAction: TextInputAction.next,
+                    validator: (v) =>
+                        (v == null || v.trim().isEmpty) ? 'Zorunlu alan' : null,
+                  ),
+                  const SizedBox(height: 16),
 
-                const SizedBox(height: 32),
+                  // Şifre
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      labelText: 'Şifre',
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() => _obscurePassword = !_obscurePassword);
+                        },
+                      ),
+                    ),
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) => _handleLogin(),
+                    validator: (v) =>
+                        (v == null || v.isEmpty) ? 'Zorunlu alan' : null,
+                  ),
+                  const SizedBox(height: 8),
 
-                // Action Button
-                UzmanButton(
-                  label: "Giriş Yap",
-                  onPressed: authState.isLoading ? null : _onLogin,
-                  isLoading: authState.isLoading,
-                  variant: ButtonVariant.primary,
-                ),
-              ],
+                  // Hata mesajı
+                  if (authState.hasError)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        authState.error.toString(),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppColors.error,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+
+                  const SizedBox(height: 24),
+
+                  // Giriş butonu
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: authState.isLoading ? null : _handleLogin,
+                      child: authState.isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text('Giriş Yap'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -3,6 +3,9 @@ import 'package:dio/dio.dart';
 abstract class Failure {
   final String message;
   const Failure(this.message);
+
+  @override
+  String toString() => '$runtimeType: $message';
 }
 
 class ServerFailure extends Failure {

@@ -1,87 +1,144 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobile/core/constants/api_endpoints.dart';
+
 import 'package:mobile/core/errors/failure.dart';
-import 'package:mobile/core/network/dio_client.dart';
+import 'package:mobile/core/network/api_client.dart';
+import 'package:mobile/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:mobile/features/auth/data/models/user_model.dart';
+import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/domain/repositories/auth_repository.dart';
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepositoryImpl(ref.watch(dioProvider));
+// ---------------------------------------------------------------------------
+// Provider Zinciri:
+//   apiClientProvider (Provider<ApiClient>)
+//     → authRemoteDataSourceProvider (Provider<AuthRemoteDataSource>)
+//       → authRepositoryProvider (Provider<AuthRepository>)
+// ---------------------------------------------------------------------------
+
+/// DataSource provider
+final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) {
+  final apiClient = ref.watch(apiClientProvider);
+  return AuthRemoteDataSourceImpl(apiClient);
 });
 
-class AuthRepositoryImpl implements AuthRepository {
-  final Dio _dio;
+/// Repository provider
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  final dataSource = ref.watch(authRemoteDataSourceProvider);
+  return AuthRepositoryImpl(dataSource);
+});
 
-  AuthRepositoryImpl(this._dio);
+// ---------------------------------------------------------------------------
+// AuthRepositoryImpl
+// ---------------------------------------------------------------------------
+class AuthRepositoryImpl implements AuthRepository {
+  final AuthRemoteDataSource _dataSource;
+
+  AuthRepositoryImpl(this._dataSource);
 
   @override
-  Future<Either<Failure, UserModel>> login({
+  Future<Either<Failure, UserEntity>> login({
     required String username,
     required String password,
   }) async {
     try {
-      final response = await _dio.post(
-        ApiEndpoints.authLogin,
-        data: {'username': username, 'password': password},
+      final userModel = await _dataSource.loginUser(
+        username: username,
+        password: password,
       );
-
-      final user = UserModel.fromJson(response.data);
-      return Right(user);
+      return Right(userModel.toEntity());
     } on DioException catch (e) {
-      return Left(_handleDioError(e));
+      return Left(_mapDioException(e));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, UserModel>> checkAuth() async {
+  Future<Either<Failure, UserEntity>> checkAuth() async {
     try {
-      final response = await _dio.get(ApiEndpoints.authMe);
-      final user = UserModel.fromJson(response.data);
-      return Right(user);
+      final userModel = await _dataSource.getCurrentUser();
+      return Right(userModel.toEntity());
     } on DioException catch (e) {
-      return Left(_handleDioError(e));
+      return Left(_mapDioException(e));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
     }
   }
 
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      await _dio.post(ApiEndpoints.authLogout);
+      await _dataSource.logoutUser();
       return const Right(null);
     } on DioException catch (e) {
-      return Left(_handleDioError(e));
+      return Left(_mapDioException(e));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
     }
   }
 
-  Failure _handleDioError(DioException e) {
-    if (e.type == DioExceptionType.connectionTimeout ||
-        e.type == DioExceptionType.receiveTimeout) {
-      return const NetworkFailure('Connection timed out');
-    }
+  // --------------- Private Helpers ---------------
 
-    if (e.response != null) {
-      // Backend'den gelen hata mesajini yakalamaya calis
-      if (e.response?.data is Map) {
-        final data = e.response?.data as Map;
-        if (data.containsKey('detail')) {
-          return ServerFailure(data['detail'].toString());
+  Failure _mapDioException(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        return const NetworkFailure('Sunucuya bağlanırken zaman aşımı oluştu');
+
+      case DioExceptionType.connectionError:
+        return const NetworkFailure('İnternet bağlantısı bulunamadı');
+
+      case DioExceptionType.badResponse:
+        return _mapBadResponse(e.response);
+
+      case DioExceptionType.cancel:
+        return const ServerFailure('İstek iptal edildi');
+
+      case DioExceptionType.badCertificate:
+        return const NetworkFailure('Güvenlik sertifikası doğrulanamadı');
+
+      case DioExceptionType.unknown:
+        if (e.error.toString().contains('SocketException')) {
+          return const NetworkFailure('İnternet bağlantısı bulunamadı');
         }
-        // Django validation errors usually come as field: [errors]
-        if (data.isNotEmpty) {
-          return ServerFailure(data.values.first.toString());
-        }
+        return const ServerFailure('Beklenmeyen bir hata oluştu');
+    }
+  }
+
+  Failure _mapBadResponse(Response? response) {
+    final statusCode = response?.statusCode;
+    final data = response?.data;
+
+    if (data is Map<String, dynamic>) {
+      if (data.containsKey('detail')) {
+        return ServerFailure(data['detail'].toString());
       }
-      return ServerFailure('Server error: ${e.response?.statusCode}');
+      if (data.containsKey('error')) {
+        return ServerFailure(data['error'].toString());
+      }
+      if (data.isNotEmpty) {
+        final firstKey = data.keys.first;
+        final firstValue = data[firstKey];
+        if (firstValue is List && firstValue.isNotEmpty) {
+          return ServerFailure('$firstKey: ${firstValue.first}');
+        }
+        return ServerFailure('$firstKey: $firstValue');
+      }
     }
 
-    return const NetworkFailure('No internet connection');
+    switch (statusCode) {
+      case 401:
+        return const ServerFailure('Oturum süresi dolmuş veya yetkisiz erişim');
+      case 403:
+        return const ServerFailure('Bu işlem için yetkiniz bulunmuyor');
+      case 404:
+        return const ServerFailure('İstenen kaynak bulunamadı');
+      case 500:
+        return const ServerFailure('Sunucu hatası');
+      default:
+        return ServerFailure('Sunucu hatası: $statusCode');
+    }
   }
 }
