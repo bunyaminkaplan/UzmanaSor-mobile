@@ -24,6 +24,7 @@ class UserEntity {
   final String? studentTerm;
   final DateTime? dateJoined;
   final String? profileImage;
+  final bool isEmailVerified;
 
   const UserEntity({
     required this.id,
@@ -41,6 +42,7 @@ class UserEntity {
     this.studentTerm,
     this.dateJoined,
     this.profileImage,
+    this.isEmailVerified = false,
   });
 
   // --------------- Derived Getters (İş Mantığı) ---------------

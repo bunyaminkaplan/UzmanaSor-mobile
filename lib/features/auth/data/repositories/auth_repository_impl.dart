@@ -78,6 +78,64 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, UserEntity>> register({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String primaryRole,
+    String? phone,
+    String? studentNumber,
+    String? studentTerm,
+    int? facultyId,
+    int? departmentId,
+  }) async {
+    try {
+      final userModel = await _dataSource.registerUser(
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        primaryRole: primaryRole,
+        phone: phone,
+        studentNumber: studentNumber,
+        studentTerm: studentTerm,
+        facultyId: facultyId,
+        departmentId: departmentId,
+      );
+      return Right(userModel.toEntity());
+    } on DioException catch (e) {
+      return Left(_mapDioException(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> verifyCode(String code) async {
+    try {
+      final result = await _dataSource.verifyCode(code);
+      return Right(result);
+    } on DioException catch (e) {
+      return Left(_mapDioException(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> resendCode() async {
+    try {
+      final result = await _dataSource.resendCode();
+      return Right(result);
+    } on DioException catch (e) {
+      return Left(_mapDioException(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
+
   // --------------- Private Helpers ---------------
 
   Failure _mapDioException(DioException e) {

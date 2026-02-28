@@ -27,6 +27,26 @@ abstract class AuthRemoteDataSource {
   /// GET auth/me/ — Aktif session varsa UserModel döner, yoksa DioException fırlatır.
   Future<UserModel> getCurrentUser();
 
+  /// POST auth/register/ — Kayıt + otomatik login + doğrulama kodu gönderimi.
+  Future<UserModel> registerUser({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String primaryRole,
+    String? phone,
+    String? studentNumber,
+    String? studentTerm,
+    int? facultyId,
+    int? departmentId,
+  });
+
+  /// POST auth/verify-code/ — E-posta doğrulama kodu gönderir.
+  Future<Map<String, dynamic>> verifyCode(String code);
+
+  /// PUT auth/verify-code/ — Kodu yeniden gönderir.
+  Future<Map<String, dynamic>> resendCode();
+
   /// POST auth/logout/ — Session'ı invalidate eder ve cookie'leri temizler.
   Future<void> logoutUser();
 }
@@ -57,12 +77,55 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     return _parseUserFromResponse(response.data);
   }
 
+  @override
+  Future<UserModel> registerUser({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String primaryRole,
+    String? phone,
+    String? studentNumber,
+    String? studentTerm,
+    int? facultyId,
+    int? departmentId,
+  }) async {
+    final body = <String, dynamic>{
+      'email': email,
+      'password': password,
+      'first_name': firstName,
+      'last_name': lastName,
+      'primary_role': primaryRole,
+    };
+    if (phone != null && phone.isNotEmpty) body['phone'] = phone;
+    if (studentNumber != null) body['student_number'] = studentNumber;
+    if (studentTerm != null) body['student_term'] = studentTerm;
+    if (facultyId != null) body['faculty'] = facultyId;
+    if (departmentId != null) body['department'] = departmentId;
+
+    final response = await _apiClient.post(
+      ApiEndpoints.authRegister,
+      data: body,
+    );
+    return _parseUserFromResponse(response.data);
+  }
+
+  @override
+  Future<Map<String, dynamic>> verifyCode(String code) async {
+    final response = await _apiClient.post(
+      'auth/verify-code/',
+      data: {'code': code},
+    );
+    return response.data as Map<String, dynamic>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> resendCode() async {
+    final response = await _apiClient.put('auth/verify-code/');
+    return response.data as Map<String, dynamic>;
+  }
+
   /// Response verisini güvenli şekilde UserModel'e çevirir.
-  ///
-  /// Backend HTML veya null dönerse (ör: redirect sayfası, 302)
-  /// cast hatası (TypeError) yerine açık bir FormatException fırlatır.
-  /// Bu sayede Repository katmanındaki `catch (e)` bloğu tarafından
-  /// yakalanır ve UI'a Failure olarak iletilir.
   UserModel _parseUserFromResponse(dynamic data) {
     if (data is! Map<String, dynamic>) {
       throw FormatException(

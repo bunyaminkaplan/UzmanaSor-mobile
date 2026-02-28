@@ -1,14 +1,55 @@
-/// [ApiEndpoints] - Proje genelinde kullanılan API adreslerinin tek doğruluk kaynağıdır.
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+
+/// [ApiEndpoints] — Proje genelinde kullanılan API adreslerinin tek doğruluk kaynağıdır.
 ///
 /// React projesindeki `endpoints.js` dosyasının birebir karşılığıdır.
 /// Base URL ve tüm path tanımları burada bulunur.
+///
+/// Base URL Seçim Mantığı (öncelik sırasıyla):
+///   1. usePhysicalUSB = true → 127.0.0.1 (adb reverse ile fiziksel cihaz)
+///   2. Android Emulator → 10.0.2.2 (emulator'ün host alias'ı)
+///   3. iOS Simulator → 127.0.0.1 (localhost'a doğrudan erişim)
+///   4. Diğer → 127.0.0.1
 class ApiEndpoints {
-  // Private constructor to prevent instantiation
   ApiEndpoints._();
 
-  // TODO: Prod ortamı için bu kısımlar environment variable'dan okunmalı (flutter_dotenv)
-  // Şimdilik development ortamı varsayılıyor.
-  static const String baseUrl = 'http://10.0.2.2:8000/api/v1/';
+  // --------------- DEVELOPMENT AYARLARI ---------------
+  // Fiziksel cihazı USB ile bağlayıp `adb reverse tcp:8000 tcp:8000`
+  // çalıştırdığında bunu true yap.
+  static const bool usePhysicalUSB = true;
+
+  // WiFi üzerinden test ediyorsan bilgisayarının local IP'sini yaz.
+  // Örn: 192.168.1.100
+  static const bool useLocalWifi = false;
+  static const String localWifiIp = '192.168.1.100';
+
+  static const int _port = 8000;
+  static const String _apiPrefix = '/api/v1/';
+
+  /// Runtime'da cihaz tipine göre doğru baseUrl'i döner.
+  static String get baseUrl {
+    // 1. Fiziksel USB bağlantısı (adb reverse)
+    if (usePhysicalUSB) {
+      return 'http://127.0.0.1:$_port$_apiPrefix';
+    }
+
+    // 2. WiFi bağlantısı
+    if (useLocalWifi) {
+      return 'http://$localWifiIp:$_port$_apiPrefix';
+    }
+
+    // 3. Platform algılama (emulator/simulator)
+    if (!kIsWeb) {
+      if (Platform.isAndroid) {
+        // Android emulator: 10.0.2.2 host bilgisayara yönlendirir
+        return 'http://10.0.2.2:$_port$_apiPrefix';
+      }
+    }
+    // iOS simulator veya diğer: localhost
+    return 'http://127.0.0.1:$_port$_apiPrefix';
+  }
 
   // --- AUTHENTICATION ---
   static const String authMe = 'auth/me/';

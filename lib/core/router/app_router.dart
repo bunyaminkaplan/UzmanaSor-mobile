@@ -4,14 +4,21 @@ import 'package:go_router/go_router.dart';
 
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
-import 'package:mobile/features/auth/presentation/pages/login_page.dart';
+import 'package:mobile/features/auth/presentation/pages/auth_page.dart';
+import 'package:mobile/features/auth/presentation/pages/verify_page.dart';
 
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
 //
-// initialLocation: /dashboard (session varsa direkt açılır)
-// refreshListenable: AuthListenable (auth state değişince re-evaluate)
-// redirect: Auth guard — login/logout yönlendirmeleri
+// Route yapısı:
+//   /login       → AuthPage (Login + Register tab)
+//   /verify      → VerifyPage (E-posta doğrulama)
+//   /dashboard   → Placeholder (Faz 5'te gerçek dashboard)
+//
+// redirect mantığı:
+//   1. Loading → null (bekle)
+//   2. Unauthenticated → /login
+//   3. Authenticated + login sayfasında → /dashboard
 // ---------------------------------------------------------------------------
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -25,19 +32,31 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       // Loading iken yönlendirme yapma
       if (authState.isLoading) return null;
 
-      final isLoggedIn = authState.value != null;
-      final isOnLogin = state.matchedLocation == '/login';
+      final user = authState.value;
+      final isLoggedIn = user != null;
+      final currentPath = state.matchedLocation;
 
       // Giriş yapmamışsa → login'e
-      if (!isLoggedIn) return isOnLogin ? null : '/login';
+      if (!isLoggedIn) {
+        return currentPath == '/login' ? null : '/login';
+      }
 
-      // Giriş yapmışsa ve login'deyse → dashboard'a
-      if (isLoggedIn && isOnLogin) return '/dashboard';
+      // Giriş yapmış ama e-posta doğrulanmamışsa → verify'a
+      if (!user.isEmailVerified && currentPath != '/verify') {
+        return '/verify';
+      }
+
+      // E-posta doğrulanmış ve verify/login'deyse → dashboard'a
+      if (user.isEmailVerified &&
+          (currentPath == '/login' || currentPath == '/verify')) {
+        return '/dashboard';
+      }
 
       return null;
     },
     routes: [
-      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+      GoRoute(path: '/login', builder: (context, state) => const AuthPage()),
+      GoRoute(path: '/verify', builder: (context, state) => const VerifyPage()),
       GoRoute(
         path: '/dashboard',
         builder: (context, state) => const _PlaceholderPage(title: 'Dashboard'),
@@ -68,19 +87,44 @@ class AuthListenable extends ChangeNotifier {
   }
 }
 
-/// Geçici placeholder — iskelet fazında dashboard yerine gösterilir.
-class _PlaceholderPage extends StatelessWidget {
+/// Geçici placeholder — Faz 5'te gerçek dashboard ile değiştirilecek.
+class _PlaceholderPage extends ConsumerWidget {
   final String title;
   const _PlaceholderPage({required this.title});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authProvider).value;
+
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => ref.read(authProvider.notifier).logout(),
+          ),
+        ],
+      ),
       body: Center(
-        child: Text(
-          '$title — Faz 0 İskelet',
-          style: Theme.of(context).textTheme.headlineSmall,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Hoşgeldin, ${user?.fullName ?? 'Kullanıcı'}',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Rol: ${user?.userType ?? 'Bilinmiyor'}',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'Dashboard Faz 5\'te oluşturulacak.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
         ),
       ),
     );

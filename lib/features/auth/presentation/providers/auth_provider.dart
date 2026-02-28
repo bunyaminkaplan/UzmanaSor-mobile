@@ -84,4 +84,77 @@ class AuthNotifier extends AsyncNotifier<UserEntity?> {
     }
     state = const AsyncValue.data(null);
   }
+
+  /// Yeni kullanıcı kaydı oluşturur.
+  /// Backend otomatik login + doğrulama kodu gönderir.
+  Future<void> register({
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required String primaryRole,
+    String? phone,
+    String? studentNumber,
+    String? studentTerm,
+    int? facultyId,
+    int? departmentId,
+  }) async {
+    state = const AsyncValue.loading();
+
+    try {
+      final result = await _repository.register(
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        primaryRole: primaryRole,
+        phone: phone,
+        studentNumber: studentNumber,
+        studentTerm: studentTerm,
+        facultyId: facultyId,
+        departmentId: departmentId,
+      );
+
+      state = result.fold(
+        (failure) => AsyncValue.error(failure, StackTrace.current),
+        (user) => AsyncValue.data(user),
+      );
+    } catch (e, stackTrace) {
+      debugPrint('⚠️ register() hatası: $e');
+      state = AsyncValue.error(e, stackTrace);
+    }
+  }
+
+  /// E-posta doğrulama kodunu gönderir.
+  /// Başarılı olursa kullanıcı state'ini yeniden yükler.
+  Future<Map<String, dynamic>> verifyCode(String code) async {
+    try {
+      final result = await _repository.verifyCode(code);
+      return result.fold(
+        (failure) => {'success': false, 'error': failure.message},
+        (data) {
+          // Doğrulama başarılıysa kullanıcı bilgisini yeniden yükle
+          if (data['success'] == true) {
+            ref.invalidateSelf();
+          }
+          return data;
+        },
+      );
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  /// Doğrulama kodunu yeniden gönderir.
+  Future<Map<String, dynamic>> resendCode() async {
+    try {
+      final result = await _repository.resendCode();
+      return result.fold(
+        (failure) => {'success': false, 'error': failure.message},
+        (data) => data,
+      );
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
 }

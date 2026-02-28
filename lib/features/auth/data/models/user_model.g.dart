@@ -35,6 +35,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       ? null
       : DateTime.parse(json['date_joined'] as String),
   profileImage: json['profile_image'] as String?,
+  isEmailVerified: json['is_email_verified'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -65,4 +66,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'student_term': instance.studentTerm,
       'date_joined': instance.dateJoined?.toIso8601String(),
       'profile_image': instance.profileImage,
+      'is_email_verified': instance.isEmailVerified,
     };

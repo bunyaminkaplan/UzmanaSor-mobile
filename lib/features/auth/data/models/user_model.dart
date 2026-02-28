@@ -66,6 +66,7 @@ abstract class UserModel with _$UserModel {
     String? studentTerm,
     DateTime? dateJoined,
     String? profileImage,
+    @Default(false) bool isEmailVerified,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -102,6 +103,7 @@ extension UserModelMapper on UserModel {
       studentTerm: studentTerm,
       dateJoined: dateJoined,
       profileImage: profileImage,
+      isEmailVerified: isEmailVerified,
     );
   }
 }
