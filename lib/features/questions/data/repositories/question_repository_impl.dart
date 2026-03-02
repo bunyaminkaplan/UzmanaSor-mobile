@@ -43,6 +43,7 @@ class QuestionRepositoryImpl implements QuestionRepository {
     required String title,
     required String content,
     required int courseId,
+    required int targetTeacherId,
     bool isPublic = false,
   }) async {
     try {
@@ -50,6 +51,7 @@ class QuestionRepositoryImpl implements QuestionRepository {
         'title': title,
         'content': content,
         'course': courseId,
+        'target_teacher_id': targetTeacherId,
         'is_public': isPublic,
       });
       return Right(model.toEntity());

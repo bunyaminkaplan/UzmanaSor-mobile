@@ -6,6 +6,7 @@ import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/auth/presentation/pages/auth_page.dart';
 import 'package:mobile/features/auth/presentation/pages/verify_page.dart';
+import 'package:mobile/features/questions/presentation/pages/ask_question_page.dart';
 import 'package:mobile/features/questions/presentation/pages/question_list_page.dart';
 
 // ---------------------------------------------------------------------------
@@ -65,6 +66,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/questions',
         builder: (context, state) => const QuestionListPage(),
+      ),
+      GoRoute(
+        path: '/ask',
+        builder: (context, state) => const AskQuestionPage(),
       ),
     ],
   );

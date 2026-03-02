@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_card.dart';
@@ -14,6 +15,11 @@ class QuestionListPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Sorularım')),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => GoRouter.of(context).push('/ask'),
+        icon: const Icon(Icons.add),
+        label: const Text('Soru Sor'),
+      ),
       body: questionsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(

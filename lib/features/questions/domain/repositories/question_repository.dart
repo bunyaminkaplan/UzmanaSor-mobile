@@ -21,6 +21,7 @@ abstract class QuestionRepository {
     required String title,
     required String content,
     required int courseId,
+    required int targetTeacherId,
     bool isPublic,
   });
 
