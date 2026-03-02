@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/features/academic_units/presentation/providers/academic_units_provider.dart';
 
-/// Rol seçimi, öğrenci alanları ve fakülte/bölüm girişi widget'ları.
-/// RegisterPage'den çıkarılmıştır (SRP — form section'ları ayrı widget).
+/// Rol seçimi, öğrenci alanları ve fakülte/bölüm dropdown widget'ları.
 
 // ---------------------------------------------------------------------------
 // Rol Seçimi
 // ---------------------------------------------------------------------------
 
-/// Rol bazlı SegmentedButton widget'ı.
 class RoleSelector extends StatelessWidget {
   final String selectedRole;
   final ValueChanged<String> onChanged;
@@ -53,7 +53,6 @@ class RoleSelector extends StatelessWidget {
 // Öğrenci Alanları
 // ---------------------------------------------------------------------------
 
-/// Öğrenci numarası ve dönem/sınıf seçimi.
 class StudentFields extends StatelessWidget {
   final TextEditingController studentNumberCtrl;
   final String? selectedTerm;
@@ -113,56 +112,96 @@ class StudentFields extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Fakülte/Bölüm Alanları (Geçici — Faz 2'de dropdown olacak)
+// Fakülte & Bölüm Dropdown'ları (Backend'den dinamik)
 // ---------------------------------------------------------------------------
 
-/// Fakülte ve bölüm ID girişi.
-/// TODO: Faz 2'de AcademicUnits feature'ından dinamik dropdown'a dönüşecek.
-class AcademicFieldsTemp extends StatelessWidget {
+/// Fakülte ve bölüm seçim dropdown'ları.
+///
+/// Backend'den `GET core/academic-units/` ile fakülte listesini çeker.
+/// Fakülte seçilince bölüm dropdown'ı o fakültenin bölümlerini gösterir.
+class AcademicFields extends ConsumerWidget {
   final bool showFaculty;
   final bool showDepartment;
+  final int? selectedFacultyId;
+  final int? selectedDepartmentId;
   final ValueChanged<int?> onFacultyChanged;
   final ValueChanged<int?> onDepartmentChanged;
 
-  const AcademicFieldsTemp({
+  const AcademicFields({
     super.key,
     required this.showFaculty,
     required this.showDepartment,
+    required this.selectedFacultyId,
+    required this.selectedDepartmentId,
     required this.onFacultyChanged,
     required this.onDepartmentChanged,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (showFaculty) ...[
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Fakülte ID (opsiyonel)',
-              prefixIcon: Icon(Icons.school_outlined),
-              helperText: 'Faz 2\'de zorunlu dropdown olacak',
-              helperStyle: TextStyle(color: AppColors.textLight),
-            ),
-            keyboardType: TextInputType.number,
-            onChanged: (v) => onFacultyChanged(int.tryParse(v)),
-          ),
-          const SizedBox(height: 16),
-        ],
-        if (showDepartment) ...[
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Bölüm ID (opsiyonel)',
-              prefixIcon: Icon(Icons.business_outlined),
-              helperText: 'Faz 2\'de zorunlu dropdown olacak',
-              helperStyle: TextStyle(color: AppColors.textLight),
-            ),
-            keyboardType: TextInputType.number,
-            onChanged: (v) => onDepartmentChanged(int.tryParse(v)),
-          ),
-          const SizedBox(height: 16),
-        ],
-      ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!showFaculty && !showDepartment) return const SizedBox.shrink();
+
+    final facultiesAsync = ref.watch(facultiesProvider);
+
+    return facultiesAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          'Fakülte listesi yüklenemedi: $error',
+          style: const TextStyle(color: AppColors.error, fontSize: 12),
+        ),
+      ),
+      data: (faculties) {
+        // Seçili fakültenin bölümlerini bul
+        final selectedFaculty = selectedFacultyId != null
+            ? faculties.where((f) => f.id == selectedFacultyId).firstOrNull
+            : null;
+
+        return Column(
+          children: [
+            if (showFaculty) ...[
+              DropdownButtonFormField<int>(
+                decoration: const InputDecoration(
+                  labelText: 'Fakülte',
+                  prefixIcon: Icon(Icons.school_outlined),
+                ),
+                // ignore: deprecated_member_use
+                value: selectedFacultyId,
+                items: faculties.map((f) {
+                  return DropdownMenuItem(value: f.id, child: Text(f.name));
+                }).toList(),
+                onChanged: (id) {
+                  onFacultyChanged(id);
+                  // Fakülte değişince bölümü sıfırla
+                  onDepartmentChanged(null);
+                },
+                validator: (v) => v == null ? 'Fakülte seçimi zorunlu' : null,
+              ),
+              const SizedBox(height: 16),
+            ],
+            if (showDepartment && selectedFaculty != null) ...[
+              DropdownButtonFormField<int>(
+                decoration: const InputDecoration(
+                  labelText: 'Bölüm',
+                  prefixIcon: Icon(Icons.business_outlined),
+                ),
+                // ignore: deprecated_member_use
+                value: selectedDepartmentId,
+                items: selectedFaculty.departments.map((d) {
+                  return DropdownMenuItem(value: d.id, child: Text(d.name));
+                }).toList(),
+                onChanged: onDepartmentChanged,
+                validator: (v) => v == null ? 'Bölüm seçimi zorunlu' : null,
+              ),
+              const SizedBox(height: 16),
+            ],
+          ],
+        );
+      },
     );
   }
 }

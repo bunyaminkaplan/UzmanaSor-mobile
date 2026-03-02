@@ -188,12 +188,18 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // Fakülte/Bölüm (widget)
-                AcademicFieldsTemp(
+                // Fakülte/Bölüm dropdown (backend'den dinamik)
+                AcademicFields(
                   showFaculty: _needsFaculty,
                   showDepartment: _needsDepartment,
-                  onFacultyChanged: (id) => _selectedFacultyId = id,
-                  onDepartmentChanged: (id) => _selectedDepartmentId = id,
+                  selectedFacultyId: _selectedFacultyId,
+                  selectedDepartmentId: _selectedDepartmentId,
+                  onFacultyChanged: (id) => setState(() {
+                    _selectedFacultyId = id;
+                  }),
+                  onDepartmentChanged: (id) => setState(() {
+                    _selectedDepartmentId = id;
+                  }),
                 ),
 
                 // Öğrenci alanları (widget)
