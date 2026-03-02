@@ -7,6 +7,7 @@ import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/auth/presentation/pages/auth_page.dart';
 import 'package:mobile/features/auth/presentation/pages/verify_page.dart';
 import 'package:mobile/features/questions/presentation/pages/ask_question_page.dart';
+import 'package:mobile/features/questions/presentation/pages/question_detail_page.dart';
 import 'package:mobile/features/questions/presentation/pages/question_list_page.dart';
 
 // ---------------------------------------------------------------------------
@@ -70,6 +71,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/ask',
         builder: (context, state) => const AskQuestionPage(),
+      ),
+      GoRoute(
+        path: '/questions/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return QuestionDetailPage(questionId: id);
+        },
       ),
     ],
   );

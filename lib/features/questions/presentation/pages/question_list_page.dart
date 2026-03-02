@@ -81,9 +81,8 @@ class QuestionListPage extends ConsumerWidget {
                 final question = questions[index];
                 return QuestionCard(
                   question: question,
-                  onTap: () {
-                    // TODO: Faz 3B-3'te QuestionDetailPage'e navigate
-                  },
+                  onTap: () =>
+                      GoRouter.of(context).push('/questions/${question.id}'),
                 );
               },
             ),

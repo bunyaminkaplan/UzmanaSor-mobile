@@ -28,6 +28,9 @@ class QuestionEntity {
   final int? courseId;
   final CourseDetailsEntity? courseDetails;
 
+  // Sınıf/dönem bilgisi
+  final ClassTermDetailsEntity? classTermDetails;
+
   // Cevaplar
   final List<AnswerEntity> answers;
 
@@ -56,6 +59,7 @@ class QuestionEntity {
     this.repStatusDisplay,
     this.courseId,
     this.courseDetails,
+    this.classTermDetails,
     this.answers = const [],
     this.transitions = const [],
     this.lastForwardedBy,
@@ -74,6 +78,30 @@ class CourseDetailsEntity {
   String get displayName {
     if (courseCode != null && title != null) return '$courseCode — $title';
     return title ?? courseCode ?? 'Ders #$id';
+  }
+}
+
+/// Sınıf/dönem detay bilgisi (soru içinde nested).
+///
+/// Backend: `ClassTermSerializer` → {id, department_name, term_display, advisor_name}
+class ClassTermDetailsEntity {
+  final int id;
+  final String? departmentName;
+  final String? termDisplay;
+  final String? advisorName;
+
+  const ClassTermDetailsEntity({
+    required this.id,
+    this.departmentName,
+    this.termDisplay,
+    this.advisorName,
+  });
+
+  String get displayName {
+    if (departmentName != null && termDisplay != null) {
+      return '$departmentName — $termDisplay';
+    }
+    return departmentName ?? termDisplay ?? 'Sınıf #$id';
   }
 }
 

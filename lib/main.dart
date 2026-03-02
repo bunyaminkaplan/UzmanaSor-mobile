@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:mobile/core/network/api_client.dart';
 import 'package:mobile/core/router/app_router.dart';
@@ -16,6 +17,7 @@ import 'package:mobile/core/theme/app_theme.dart';
 // ---------------------------------------------------------------------------
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('tr_TR');
 
   // ApiClient async init (PersistCookieJar disk yolu gerektirir)
   final apiClient = await ApiClient.create();

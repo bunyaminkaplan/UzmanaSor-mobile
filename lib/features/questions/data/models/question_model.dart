@@ -30,6 +30,7 @@ class QuestionModel {
       repStatusDisplay: _json['rep_status_display'] as String?,
       courseId: _json['course'] as int?,
       courseDetails: _parseCourseDetails(_json['course_details']),
+      classTermDetails: _parseClassTermDetails(_json['class_term_details']),
       answers: _parseAnswers(_json['answers']),
       transitions: _parseTransitions(_json['transitions']),
       lastForwardedBy: _parseUser(_json['last_forwarded_by']),
@@ -74,6 +75,16 @@ CourseDetailsEntity? _parseCourseDetails(dynamic json) {
     id: json['id'] as int,
     courseCode: json['course_code'] as String?,
     title: json['title'] as String?,
+  );
+}
+
+ClassTermDetailsEntity? _parseClassTermDetails(dynamic json) {
+  if (json == null || json is! Map<String, dynamic>) return null;
+  return ClassTermDetailsEntity(
+    id: json['id'] as int,
+    departmentName: json['department_name'] as String?,
+    termDisplay: json['term_display'] as String?,
+    advisorName: json['advisor_name'] as String?,
   );
 }
 
