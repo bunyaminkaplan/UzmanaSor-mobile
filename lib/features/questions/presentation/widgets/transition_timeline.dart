@@ -5,7 +5,8 @@ import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 
 /// Soru geçiş tarihçesi timeline widget'ı.
 ///
-/// Backend: QuestionTransitionSerializer → son 5 geçiş.
+/// Aksiyon tipine göre özel renk/ikon gösterir ve fromUser/toUser
+/// verilerini kullanarak bağlamsal (contextual) cümleler kurar.
 class TransitionTimeline extends StatelessWidget {
   final List<TransitionEntity> transitions;
 
@@ -14,7 +15,7 @@ class TransitionTimeline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dateFormat = DateFormat('d MMM, HH:mm', 'tr_TR');
+    final dateFormat = DateFormat('d MMM yyyy, HH:mm', 'tr_TR');
 
     return Card(
       child: Padding(
@@ -34,77 +35,115 @@ class TransitionTimeline extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             ...transitions.asMap().entries.map((entry) {
               final index = entry.key;
               final t = entry.value;
               final isLast = index == transitions.length - 1;
 
+              final config = _getTimelineConfig(context, t.action);
+
               return IntrinsicHeight(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Timeline çizgisi + nokta
+                    // Sol Taraf: Timeline İkon ve Çizgisi
                     SizedBox(
-                      width: 24,
+                      width: 40,
                       child: Column(
                         children: [
                           Container(
-                            width: 10,
-                            height: 10,
+                            width: 32,
+                            height: 32,
                             decoration: BoxDecoration(
+                              color: config.bgColor,
                               shape: BoxShape.circle,
-                              color: theme.colorScheme.primary,
+                              border: Border.all(
+                                color: config.iconColor,
+                                width: 2,
+                              ),
+                            ),
+                            child: Icon(
+                              config.icon,
+                              size: 16,
+                              color: config.iconColor,
                             ),
                           ),
                           if (!isLast)
                             Expanded(
                               child: Container(
                                 width: 2,
+                                margin: const EdgeInsets.symmetric(vertical: 4),
                                 color: theme.colorScheme.outlineVariant,
                               ),
                             ),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    // İçerik
+                    const SizedBox(width: 12),
+                    // Sağ Taraf: İçerik Kartı
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
+                        padding: EdgeInsets.only(bottom: isLast ? 0 : 24),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Aksiyon Başlığı ve Tarih
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    t.actionDisplay ??
+                                        _fallbackActionName(t.action),
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: config.iconColor,
+                                    ),
+                                  ),
+                                ),
+                                if (t.createdAt != null)
+                                  Text(
+                                    dateFormat.format(t.createdAt!),
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: theme.colorScheme.outline,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            // Bağlamsal Cümle
                             Text(
-                              t.actionDisplay ?? t.action,
+                              _generateContextualMessage(t),
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
-                            if (t.performedBy != null)
-                              Text(
-                                t.performedBy!.fullName,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.outline,
+                            // Varsa Not (Örn: Red Sebebi, Yönlendirme Notu)
+                            if (t.note != null && t.note!.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: theme
+                                      .colorScheme
+                                      .surfaceContainerHighest
+                                      .withValues(alpha: 0.5),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: theme.colorScheme.outlineVariant,
+                                  ),
                                 ),
-                              ),
-                            if (t.note != null && t.note!.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4),
                                 child: Text(
-                                  t.note!,
+                                  '"${t.note}"',
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     fontStyle: FontStyle.italic,
                                   ),
                                 ),
                               ),
-                            if (t.createdAt != null)
-                              Text(
-                                dateFormat.format(t.createdAt!),
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: theme.colorScheme.outline,
-                                ),
-                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -118,4 +157,106 @@ class TransitionTimeline extends StatelessWidget {
       ),
     );
   }
+
+  /// Aksiyon tipine göre ikon, arkaplan ve icon rengi döndürür.
+  _TimelineConfig _getTimelineConfig(BuildContext context, String action) {
+    final cs = Theme.of(context).colorScheme;
+    return switch (action) {
+      'created' => _TimelineConfig(
+        icon: Icons.add,
+        iconColor: Colors.teal,
+        bgColor: Colors.teal.withValues(alpha: 0.1),
+      ),
+      'forwarded' => _TimelineConfig(
+        icon: Icons.double_arrow,
+        iconColor: Colors.blue,
+        bgColor: Colors.blue.withValues(alpha: 0.1),
+      ),
+      'rep_approved' => _TimelineConfig(
+        icon: Icons.check,
+        iconColor: Colors.green,
+        bgColor: Colors.green.withValues(alpha: 0.1),
+      ),
+      'rep_rejected' => _TimelineConfig(
+        icon: Icons.close,
+        iconColor: cs.error,
+        bgColor: cs.errorContainer,
+      ),
+      'resubmitted' => _TimelineConfig(
+        icon: Icons.refresh,
+        iconColor: Colors.orange,
+        bgColor: Colors.orange.withValues(alpha: 0.1),
+      ),
+      'answered' => _TimelineConfig(
+        icon: Icons.forum,
+        iconColor: Colors.purple,
+        bgColor: Colors.purple.withValues(alpha: 0.1),
+      ),
+      _ => _TimelineConfig(
+        icon: Icons.info_outline,
+        iconColor: cs.outline,
+        bgColor: cs.surfaceContainerHighest,
+      ),
+    };
+  }
+
+  /// Backend'den actionDisplay gelmezse (fallback).
+  String _fallbackActionName(String action) {
+    return switch (action) {
+      'created' => 'Oluşturuldu',
+      'forwarded' => 'Yönlendirildi',
+      'rep_approved' => 'Temsilci Onayladı',
+      'rep_rejected' => 'Temsilci Reddetti',
+      'resubmitted' => 'Yeniden Gönderildi',
+      'answered' => 'Cevaplandı',
+      _ => action.toUpperCase(),
+    };
+  }
+
+  /// from_user ve to_user verilerini kullanarak okunaklı cümle oluşturur.
+  String _generateContextualMessage(TransitionEntity t) {
+    final performer = t.performedBy?.fullName ?? 'Sistem';
+    final from = t.fromUser?.fullName;
+    final to = t.toUser?.fullName;
+
+    switch (t.action) {
+      case 'created':
+        return '$performer tarafından soru oluşturuldu.';
+
+      case 'forwarded':
+        if (from != null && to != null) {
+          return '$from, soruyu $to kişisine yönlendirdi.';
+        } else if (to != null) {
+          return '$performer tarafından $to kişisine yönlendirdi.';
+        }
+        return '$performer tarafından başka bir hocaya yönlendirildi.';
+
+      case 'rep_approved':
+        return 'Temsilci $performer tarafından soru onaylanarak yayına/hocaya iletildi.';
+
+      case 'rep_rejected':
+        return 'Temsilci $performer tarafından soru uygun bulunmayarak reddedildi.';
+
+      case 'resubmitted':
+        return '$performer, reddedilen soruyu düzenleyerek yeniden değerlendirmeye sundu.';
+
+      case 'answered':
+        return '$performer tarafından soruya cevap yazıldı.';
+
+      default:
+        return '$performer tarafından işlem gerçekleştirildi.';
+    }
+  }
+}
+
+class _TimelineConfig {
+  final IconData icon;
+  final Color iconColor;
+  final Color bgColor;
+
+  _TimelineConfig({
+    required this.icon,
+    required this.iconColor,
+    required this.bgColor,
+  });
 }

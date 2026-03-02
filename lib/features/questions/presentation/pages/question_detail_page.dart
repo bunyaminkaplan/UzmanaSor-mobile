@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
+import 'package:mobile/features/questions/domain/entities/question_status.dart';
 import 'package:mobile/features/questions/presentation/widgets/answer_list.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_header.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_info_panel.dart';
+import 'package:mobile/features/questions/presentation/widgets/teacher_answer_form.dart';
+import 'package:mobile/features/questions/presentation/widgets/teacher_forward_form.dart';
 import 'package:mobile/features/questions/presentation/widgets/transition_timeline.dart';
 
 /// Soru detay sayfası — orkestratör.
@@ -19,6 +23,8 @@ class QuestionDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final questionAsync = ref.watch(questionDetailProvider(questionId));
+    final authState = ref.watch(authProvider);
+    final isTeacher = authState.value?.userType == 'teacher';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Soru Detay')),
@@ -63,6 +69,16 @@ class QuestionDetailPage extends ConsumerWidget {
                 QuestionInfoPanel(question: question),
                 const SizedBox(height: 16),
                 AnswerListWidget(answers: question.answers),
+
+                // --------- HOCA AKSİYONLARI ---------
+                if (isTeacher && question.status != QuestionStatus.closed) ...[
+                  const SizedBox(height: 24),
+                  TeacherAnswerForm(questionId: question.id),
+                  const SizedBox(height: 16),
+                  TeacherForwardForm(questionId: question.id),
+                ],
+
+                // ------------------------------------
                 if (question.transitions.isNotEmpty) ...[
                   const SizedBox(height: 16),
                   TransitionTimeline(transitions: question.transitions),
