@@ -6,6 +6,7 @@ import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/auth/presentation/pages/auth_page.dart';
 import 'package:mobile/features/auth/presentation/pages/verify_page.dart';
+import 'package:mobile/features/questions/presentation/pages/question_list_page.dart';
 
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
@@ -60,6 +61,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/dashboard',
         builder: (context, state) => const _PlaceholderPage(title: 'Dashboard'),
+      ),
+      GoRoute(
+        path: '/questions',
+        builder: (context, state) => const QuestionListPage(),
       ),
     ],
   );
@@ -123,6 +128,12 @@ class _PlaceholderPage extends ConsumerWidget {
             Text(
               'Dashboard Faz 5\'te oluşturulacak.',
               style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () => GoRouter.of(context).push('/questions'),
+              icon: const Icon(Icons.question_answer_outlined),
+              label: const Text('Sorularım'),
             ),
           ],
         ),
