@@ -6,12 +6,15 @@ import 'package:mobile/features/questions/presentation/providers/question_provid
 import 'package:mobile/features/questions/presentation/widgets/question_card.dart';
 
 /// Soru listesi sayfası — dashboard'dan veya direkt route'tan erişilir.
+/// Backend'e `author=me` gönderir: sadece kullanıcının kendi sorularını getirir.
 class QuestionListPage extends ConsumerWidget {
   const QuestionListPage({super.key});
 
+  static const _queryParams = {'author': 'me'};
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final questionsAsync = ref.watch(questionsProvider(null));
+    final questionsAsync = ref.watch(questionsProvider(_queryParams));
 
     return Scaffold(
       appBar: AppBar(title: const Text('Sorularım')),
@@ -72,7 +75,7 @@ class QuestionListPage extends ConsumerWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(questionsProvider(null));
+              ref.invalidate(questionsProvider(_queryParams));
             },
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 8),

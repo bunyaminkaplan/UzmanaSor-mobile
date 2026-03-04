@@ -9,6 +9,7 @@ import 'package:mobile/features/auth/presentation/pages/verify_page.dart';
 import 'package:mobile/features/questions/presentation/pages/ask_question_page.dart';
 import 'package:mobile/features/questions/presentation/pages/question_detail_page.dart';
 import 'package:mobile/features/questions/presentation/pages/question_list_page.dart';
+import 'package:mobile/features/questions/presentation/pages/rep_dashboard_page.dart';
 
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
@@ -79,6 +80,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           return QuestionDetailPage(questionId: id);
         },
       ),
+      GoRoute(
+        path: '/rep-dashboard',
+        builder: (context, state) => const RepDashboardPage(),
+      ),
     ],
   );
 });
@@ -148,6 +153,15 @@ class _PlaceholderPage extends ConsumerWidget {
               icon: const Icon(Icons.question_answer_outlined),
               label: const Text('Sorularım'),
             ),
+            // Temsilci (r_student) ise ek buton
+            if (user?.userType == 'r_student') ...[
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: () => GoRouter.of(context).push('/rep-dashboard'),
+                icon: const Icon(Icons.how_to_vote),
+                label: const Text('Temsilci Paneli'),
+              ),
+            ],
           ],
         ),
       ),

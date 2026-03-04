@@ -7,6 +7,8 @@ import 'package:mobile/features/questions/domain/entities/question_status.dart';
 import 'package:mobile/features/questions/presentation/widgets/answer_list.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_header.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_info_panel.dart';
+import 'package:mobile/features/questions/presentation/widgets/rep_action_buttons.dart';
+import 'package:mobile/features/questions/presentation/widgets/student_resubmit_form.dart';
 import 'package:mobile/features/questions/presentation/widgets/teacher_answer_form.dart';
 import 'package:mobile/features/questions/presentation/widgets/teacher_forward_form.dart';
 import 'package:mobile/features/questions/presentation/widgets/transition_timeline.dart';
@@ -14,7 +16,10 @@ import 'package:mobile/features/questions/presentation/widgets/transition_timeli
 /// Soru detay sayfası — orkestratör.
 ///
 /// Web: QuestionDetail.jsx → rol bazlı delegasyon.
-/// Şu an read-only. Faz 3B-3b'de hoca action'ları, Faz 3B-3c'de rep action'ları eklenir.
+/// Rol-koşullu widget gösterimi:
+///   - Teacher: Cevap yaz + Yönlendirme
+///   - Rep (Student): Onay / Red
+///   - Student (owner + rejected): Resubmit
 class QuestionDetailPage extends ConsumerWidget {
   final int questionId;
 
@@ -23,8 +28,11 @@ class QuestionDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final questionAsync = ref.watch(questionDetailProvider(questionId));
-    final authState = ref.watch(authProvider);
-    final isTeacher = authState.value?.userType == 'teacher';
+    final user = ref.watch(authProvider).value;
+    final userType = user?.userType;
+    final isTeacher = userType == 'teacher';
+    final isStudent = userType == 'student' || userType == 'r_student';
+    final isRep = userType == 'r_student';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Soru Detay')),
@@ -78,7 +86,19 @@ class QuestionDetailPage extends ConsumerWidget {
                   TeacherForwardForm(questionId: question.id),
                 ],
 
-                // ------------------------------------
+                // --------- TEMSİLCİ AKSİYONLARI ---------
+                if (isRep && question.repStatus == RepStatus.pending) ...[
+                  const SizedBox(height: 24),
+                  RepActionButtons(questionId: question.id),
+                ],
+
+                // --------- ÖĞRENCİ RESUBMIT ---------
+                if (isStudent && question.canEdit) ...[
+                  const SizedBox(height: 24),
+                  StudentResubmitForm(question: question),
+                ],
+
+                // --------- GEÇİŞ TARİHÇESİ ---------
                 if (question.transitions.isNotEmpty) ...[
                   const SizedBox(height: 16),
                   TransitionTimeline(transitions: question.transitions),
