@@ -10,6 +10,7 @@ import 'package:mobile/features/questions/presentation/pages/ask_question_page.d
 import 'package:mobile/features/questions/presentation/pages/question_detail_page.dart';
 import 'package:mobile/features/questions/presentation/pages/question_list_page.dart';
 import 'package:mobile/features/questions/presentation/pages/rep_dashboard_page.dart';
+import 'package:mobile/features/dashboard/presentation/pages/student_dashboard_page.dart';
 
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
@@ -63,7 +64,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/verify', builder: (context, state) => const VerifyPage()),
       GoRoute(
         path: '/dashboard',
-        builder: (context, state) => const _PlaceholderPage(title: 'Dashboard'),
+        builder: (context, state) => const _RoleDashboardBuilder(),
       ),
       GoRoute(
         path: '/questions',
@@ -110,61 +111,58 @@ class AuthListenable extends ChangeNotifier {
   }
 }
 
-/// Geçici placeholder — Faz 5'te gerçek dashboard ile değiştirilecek.
-class _PlaceholderPage extends ConsumerWidget {
-  final String title;
-  const _PlaceholderPage({required this.title});
+/// Rol bazlı dashboard builder — kullanıcının rolüne göre doğru dashboard'u döner.
+class _RoleDashboardBuilder extends ConsumerWidget {
+  const _RoleDashboardBuilder();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider).value;
+    final role = user?.userType;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authProvider.notifier).logout(),
-          ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Hoşgeldin, ${user?.fullName ?? 'Kullanıcı'}',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Rol: ${user?.userType ?? 'Bilinmiyor'}',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 32),
-            Text(
-              'Dashboard Faz 5\'te oluşturulacak.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: () => GoRouter.of(context).push('/questions'),
-              icon: const Icon(Icons.question_answer_outlined),
-              label: const Text('Sorularım'),
-            ),
-            // Temsilci (r_student) ise ek buton
-            if (user?.userType == 'r_student') ...[
-              const SizedBox(height: 12),
-              OutlinedButton.icon(
-                onPressed: () => GoRouter.of(context).push('/rep-dashboard'),
-                icon: const Icon(Icons.how_to_vote),
-                label: const Text('Temsilci Paneli'),
+    switch (role) {
+      case 'student':
+      case 'r_student':
+        return const StudentDashboardPage();
+      // TODO: Faz 4-b → case 'teacher': return TeacherDashboardPage();
+      // TODO: Faz 4-c → case 'dean': return DeanDashboardPage();
+      // TODO: Faz 4-d → case 'rector': return RectorDashboardPage();
+      // TODO: Faz 4-e → case 'school_admin': return SchoolAdminDashboardPage();
+      default:
+        // Henüz oluşturulmamış roller için geçici placeholder
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Dashboard'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () => ref.read(authProvider.notifier).logout(),
               ),
             ],
-          ],
-        ),
-      ),
-    );
+          ),
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Hoşgeldin, ${user?.fullName ?? 'Kullanıcı'}',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Rol: ${user?.userType ?? 'Bilinmiyor'}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 24),
+                FilledButton.icon(
+                  onPressed: () => GoRouter.of(context).push('/questions'),
+                  icon: const Icon(Icons.question_answer_outlined),
+                  label: const Text('Sorularım'),
+                ),
+              ],
+            ),
+          ),
+        );
+    }
   }
 }
