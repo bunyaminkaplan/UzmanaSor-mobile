@@ -67,6 +67,7 @@ gen/
 .gemini/
 .agent/
 *.bak
+analyze.txt
 
 # ---------------------------------------
 # SECURITY & SECRETS (STRICT)

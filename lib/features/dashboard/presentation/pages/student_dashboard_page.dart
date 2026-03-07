@@ -7,6 +7,7 @@ import 'package:mobile/features/questions/presentation/providers/question_provid
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
 import 'package:mobile/shared/widgets/dashboard_question_list.dart';
 import 'package:mobile/shared/widgets/filter_bar.dart';
+import 'package:mobile/shared/widgets/dashboard_drawer.dart';
 
 /// Student Dashboard — öğrenci ana paneli.
 ///
@@ -77,6 +78,7 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
     return Scaffold(
+      drawer: const DashboardDrawer(),
       appBar: AppBar(
         title: const Text('Öğrenci Paneli'),
         actions: [
