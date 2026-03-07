@@ -13,6 +13,7 @@ class DashboardQuestionCard extends StatelessWidget {
   final bool isExpanded;
   final VoidCallback? onToggle;
   final VoidCallback? onDelete;
+  final VoidCallback? onRefresh;
 
   const DashboardQuestionCard({
     super.key,
@@ -20,6 +21,7 @@ class DashboardQuestionCard extends StatelessWidget {
     this.isExpanded = false,
     this.onToggle,
     this.onDelete,
+    this.onRefresh,
   });
 
   @override
@@ -141,9 +143,20 @@ class DashboardQuestionCard extends StatelessWidget {
                               ),
                             ),
                           OutlinedButton(
-                            onPressed: () => GoRouter.of(
-                              context,
-                            ).push('/questions/${question.id}'),
+                            onPressed: () async {
+                              final shouldRefresh = await GoRouter.of(
+                                context,
+                              ).push<bool?>('/questions/${question.id}');
+                              if (shouldRefresh == true) {
+                                // Ekranın bulunduğu contexte ait ref objesini
+                                // card yapısında direkt çağıramayız, onRefresh
+                                // için callback eklemek en doğrusu, fakat Riverpod
+                                // provider referansı olmadan basitçe state tetiklenemez.
+                                if (onRefresh != null) {
+                                  onRefresh!();
+                                }
+                              }
+                            },
                             child: const Text(
                               'Detayları Gör',
                               style: TextStyle(fontSize: 13),

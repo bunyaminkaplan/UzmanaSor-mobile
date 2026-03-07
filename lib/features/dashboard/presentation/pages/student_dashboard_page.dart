@@ -103,135 +103,126 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
       body: Column(
         children: [
           // Page Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: DashboardPageHeader(
-              title: 'Öğrenci Paneli',
-              description: 'Sorularını yönet, cevaplarını takip et.',
-              borderColor: Colors.cyan,
-              trailing: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    user?.username ?? '',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange,
-                    ),
-                  ),
-                  Text(
-                    'Öğrenci Hesabı',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Filter Bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: FilterBar(
-              activeFilterCount: _activeFilterCount,
-              onClearAll: _clearFilters,
+          DashboardPageHeader(
+            title: 'Öğrenci Paneli',
+            description: 'Sorularını yönet, cevaplarını takip et.',
+            borderColor: Colors.cyan,
+            trailing: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Arama
-                FilterItem(
-                  label: 'Ara',
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Başlık veya içerik...',
-                      prefixIcon: const Icon(Icons.search, size: 20),
-                      isDense: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                    ),
-                    onChanged: (v) => setState(() => _search = v),
-                    controller: TextEditingController(text: _search)
-                      ..selection = TextSelection.fromPosition(
-                        TextPosition(offset: _search.length),
-                      ),
+                Text(
+                  user?.username ?? '',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
                   ),
                 ),
-
-                // Durum Filtresi
-                FilterItem(
-                  label: 'Durum',
-                  child: Wrap(
-                    spacing: 6,
-                    children: [
-                      _StatusChip(
-                        label: 'Bekliyor',
-                        value: 'reviewing',
-                        selected: _statusFilter == 'reviewing',
-                        onTap: () => setState(
-                          () => _statusFilter = _statusFilter == 'reviewing'
-                              ? ''
-                              : 'reviewing',
-                        ),
-                      ),
-                      _StatusChip(
-                        label: 'Cevaplanmış',
-                        value: 'answered',
-                        selected: _statusFilter == 'answered',
-                        onTap: () => setState(
-                          () => _statusFilter = _statusFilter == 'answered'
-                              ? ''
-                              : 'answered',
-                        ),
-                      ),
-                      _StatusChip(
-                        label: 'Yönlendirildi',
-                        value: 'forwarded',
-                        selected: _statusFilter == 'forwarded',
-                        onTap: () => setState(
-                          () => _statusFilter = _statusFilter == 'forwarded'
-                              ? ''
-                              : 'forwarded',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Sıralama
-                FilterItem(
-                  label: 'Sıralama',
-                  child: DropdownButtonFormField<String>(
-                    initialValue: _sortBy,
-                    isDense: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                    ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'priority',
-                        child: Text('Öncelik'),
-                      ),
-                      DropdownMenuItem(value: 'newest', child: Text('En Yeni')),
-                      DropdownMenuItem(value: 'oldest', child: Text('En Eski')),
-                    ],
-                    onChanged: (v) {
-                      if (v != null) setState(() => _sortBy = v);
-                    },
+                Text(
+                  'Öğrenci Hesabı',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.outline,
                   ),
                 ),
               ],
             ),
+          ),
+
+          // Filter Bar
+          FilterBar(
+            activeFilterCount: _activeFilterCount,
+            onClearAll: _clearFilters,
+            children: [
+              // Arama
+              FilterItem(
+                label: 'Ara',
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Başlık veya içerik...',
+                    prefixIcon: const Icon(Icons.search, size: 20),
+                    isDense: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                  ),
+                  onChanged: (v) => setState(() => _search = v),
+                  controller: TextEditingController(text: _search)
+                    ..selection = TextSelection.fromPosition(
+                      TextPosition(offset: _search.length),
+                    ),
+                ),
+              ),
+
+              // Durum Filtresi
+              FilterItem(
+                label: 'Durum',
+                child: Wrap(
+                  spacing: 6,
+                  children: [
+                    _StatusChip(
+                      label: 'Bekliyor',
+                      value: 'reviewing',
+                      selected: _statusFilter == 'reviewing',
+                      onTap: () => setState(
+                        () => _statusFilter = _statusFilter == 'reviewing'
+                            ? ''
+                            : 'reviewing',
+                      ),
+                    ),
+                    _StatusChip(
+                      label: 'Cevaplanmış',
+                      value: 'answered',
+                      selected: _statusFilter == 'answered',
+                      onTap: () => setState(
+                        () => _statusFilter = _statusFilter == 'answered'
+                            ? ''
+                            : 'answered',
+                      ),
+                    ),
+                    _StatusChip(
+                      label: 'Yönlendirildi',
+                      value: 'forwarded',
+                      selected: _statusFilter == 'forwarded',
+                      onTap: () => setState(
+                        () => _statusFilter = _statusFilter == 'forwarded'
+                            ? ''
+                            : 'forwarded',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Sıralama
+              FilterItem(
+                label: 'Sıralama',
+                child: DropdownButtonFormField<String>(
+                  initialValue: _sortBy,
+                  isDense: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                  ),
+                  items: const [
+                    DropdownMenuItem(value: 'priority', child: Text('Öncelik')),
+                    DropdownMenuItem(value: 'newest', child: Text('En Yeni')),
+                    DropdownMenuItem(value: 'oldest', child: Text('En Eski')),
+                  ],
+                  onChanged: (v) {
+                    if (v != null) setState(() => _sortBy = v);
+                  },
+                ),
+              ),
+            ],
           ),
 
           // Soru Listesi (Scrollable)

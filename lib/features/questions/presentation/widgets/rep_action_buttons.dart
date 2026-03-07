@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mobile/features/questions/data/repositories/question_repository_impl.dart';
-import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 
 /// Temsilci Onay / Red Aksiyonları Widget'ı
 ///
@@ -46,7 +45,14 @@ class _RepActionButtonsState extends ConsumerState<RepActionButtons> {
               backgroundColor: Colors.green,
             ),
           );
-          ref.invalidate(questionDetailProvider(widget.questionId));
+          // Onaylandıktan sonra bu soruya erişim kesileceği için
+          // detail provider'ını GÜNCELLEMİYORUZ, direkt listeye dönüyoruz.
+          // Ve döndüğümüzde listenin yenilenmesi (invalidate) için parametre ekliyoruz.
+          if (context.canPop()) {
+            context.pop(true); // true = refresh et beni
+          } else {
+            context.go('/dashboard?refresh=true');
+          }
         },
       );
     } finally {
@@ -92,9 +98,9 @@ class _RepActionButtonsState extends ConsumerState<RepActionButtons> {
           );
           // Listeye dön
           if (context.canPop()) {
-            context.pop();
+            context.pop(true);
           } else {
-            context.go('/questions');
+            context.go('/dashboard?refresh=true');
           }
         },
       );

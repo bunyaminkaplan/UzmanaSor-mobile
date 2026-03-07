@@ -9,7 +9,7 @@ import 'package:mobile/features/auth/presentation/pages/verify_page.dart';
 import 'package:mobile/features/questions/presentation/pages/ask_question_page.dart';
 import 'package:mobile/features/questions/presentation/pages/question_detail_page.dart';
 import 'package:mobile/features/questions/presentation/pages/question_list_page.dart';
-import 'package:mobile/features/questions/presentation/pages/rep_dashboard_page.dart';
+import 'package:mobile/features/dashboard/presentation/pages/rep_dashboard_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/student_dashboard_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/teacher_dashboard_page.dart';
 

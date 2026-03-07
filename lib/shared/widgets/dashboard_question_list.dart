@@ -45,6 +45,7 @@ class _DashboardQuestionListState extends State<DashboardQuestionList> {
           onToggle: () => setState(() {
             _expandedId = isExpanded ? null : q.id;
           }),
+          onRefresh: widget.onRefresh,
         );
       },
     );
