@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
-import 'package:mobile/shared/widgets/dashboard_question_card.dart';
-import 'package:mobile/shared/widgets/empty_state_widget.dart';
+import 'package:mobile/shared/widgets/dashboard_question_list.dart';
 import 'package:mobile/shared/widgets/filter_bar.dart';
 
 /// Student Dashboard — öğrenci ana paneli.
@@ -27,7 +26,6 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
   String _search = '';
   String _statusFilter = '';
   String _sortBy = 'priority';
-  int? _expandedId;
 
   // Riverpod family parametresi referans karşılaştırması kullandığı için
   // her build'de yeni Map oluşturmak sonsuz rebuild döngüsüne yol açar.
@@ -235,77 +233,28 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
           ),
 
           // Soru Listesi (Scrollable)
-          Expanded(
-            child: questionsAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 48,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Sorular yüklenemedi',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: () =>
-                          ref.invalidate(questionsProvider(_cachedParams)),
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Tekrar Dene'),
-                    ),
-                  ],
+          questionsAsync.when(
+            loading: () => const Expanded(
+              child: Center(child: CircularProgressIndicator()),
+            ),
+            error: (err, stack) => Expanded(
+              child: Center(
+                child: Text(
+                  'Bir hata oluştu:\n$err',
+                  textAlign: TextAlign.center,
                 ),
               ),
-              data: (questions) {
-                if (questions.isEmpty) {
-                  return EmptyStateWidget(
-                    icon: _activeFilterCount > 0
-                        ? Icons.filter_list_off
-                        : Icons.inbox_outlined,
-                    title: _activeFilterCount > 0
-                        ? 'Sonuç Bulunamadı'
-                        : 'Henüz soru sormadınız',
-                    description: _activeFilterCount > 0
-                        ? 'Filtre kriterlerinize uygun soru yok.'
-                        : 'Sağ alttaki butonu kullanarak ilk sorunuzu oluşturun.',
-                    action: _activeFilterCount > 0
-                        ? TextButton(
-                            onPressed: _clearFilters,
-                            child: const Text('Filtreleri Temizle'),
-                          )
-                        : null,
-                  );
-                }
-
-                return RefreshIndicator(
+            ),
+            data: (questions) {
+              return Expanded(
+                child: DashboardQuestionList(
+                  questions: questions,
                   onRefresh: () async {
                     ref.invalidate(questionsProvider(_cachedParams));
                   },
-                  child: ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
-                    itemCount: questions.length,
-                    itemBuilder: (context, index) {
-                      final q = questions[index];
-                      final isExpanded = _expandedId == q.id;
-                      return DashboardQuestionCard(
-                        key: ValueKey(q.id),
-                        question: q,
-                        isExpanded: isExpanded,
-                        onToggle: () => setState(() {
-                          _expandedId = isExpanded ? null : q.id;
-                        }),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ],
       ),
