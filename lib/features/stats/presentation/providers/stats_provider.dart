@@ -30,3 +30,16 @@ final deanStatsProvider = FutureProvider.autoDispose<DashboardStatsEntity>((
     (stats) => stats,
   );
 });
+
+/// Rektör (Rector) Dashboard için istatistik çeken FutureProvider.
+/// Opsiyonel fakülte filtresi destekler (Family Provider).
+final rectorStatsProvider = FutureProvider.autoDispose
+    .family<DashboardStatsEntity, int?>((ref, facultyId) async {
+      final repository = ref.watch(statsRepositoryProvider);
+      final result = await repository.getRectorStats(facultyId: facultyId);
+
+      return result.fold(
+        (failure) => Future.error(failure.message),
+        (stats) => stats,
+      );
+    });
