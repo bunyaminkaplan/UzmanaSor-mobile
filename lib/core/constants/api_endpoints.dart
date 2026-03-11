@@ -62,6 +62,8 @@ class ApiEndpoints {
 
   // Academic Units
   static const String academicUnits = 'core/academic-units/';
+  static const String academicUnitsClassTerms =
+      'core/academic-units/class_terms/';
 
   // Courses
   static const String courses = 'core/courses/';

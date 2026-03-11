@@ -12,6 +12,7 @@ import 'package:mobile/features/questions/presentation/pages/question_list_page.
 import 'package:mobile/features/dashboard/presentation/pages/rep_dashboard_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/student_dashboard_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/teacher_dashboard_page.dart';
+import 'package:mobile/features/dashboard/presentation/pages/dean_dashboard_page.dart';
 
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
@@ -128,7 +129,8 @@ class _RoleDashboardBuilder extends ConsumerWidget {
       case 'teacher':
       case 'department_head':
         return const TeacherDashboardPage();
-      // TODO: Faz 4-c → case 'dean': return DeanDashboardPage();
+      case 'dean':
+        return const DeanDashboardPage();
       // TODO: Faz 4-d → case 'rector': return RectorDashboardPage();
       // TODO: Faz 4-e → case 'school_admin': return SchoolAdminDashboardPage();
       default:
