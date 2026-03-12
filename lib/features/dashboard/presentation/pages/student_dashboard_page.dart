@@ -6,8 +6,8 @@ import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
 import 'package:mobile/shared/widgets/dashboard_question_list.dart';
+import 'package:mobile/shared/widgets/dashboard_scaffold.dart';
 import 'package:mobile/shared/widgets/filter_bar.dart';
-import 'package:mobile/shared/widgets/dashboard_drawer.dart';
 
 /// Student Dashboard — öğrenci ana paneli.
 ///
@@ -77,24 +77,10 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
     final user = ref.watch(authProvider).value;
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
-    return Scaffold(
-      drawer: const DashboardDrawer(),
-      appBar: AppBar(
-        title: const Text('Öğrenci Paneli'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(questionsProvider(_cachedParams)),
-            tooltip: 'Yenile',
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authProvider.notifier).logout(),
-            tooltip: 'Çıkış',
-          ),
-        ],
-      ),
-      // Soru Sor FAB (web'deki sidebar yerine)
+    return DashboardScaffold(
+      title: 'Öğrenci Paneli',
+      onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
+      onLogout: () => ref.read(authProvider.notifier).logout(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => GoRouter.of(context).push('/ask'),
         icon: const Icon(Icons.add),
@@ -102,30 +88,13 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
       ),
       body: Column(
         children: [
-          // Page Header
           DashboardPageHeader(
             title: 'Öğrenci Paneli',
             description: 'Sorularını yönet, cevaplarını takip et.',
             borderColor: Colors.cyan,
-            trailing: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  user?.username ?? '',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
-                ),
-                Text(
-                  'Öğrenci Hesabı',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-              ],
-            ),
+            userName: user?.username ?? '',
+            userNameColor: Colors.orange,
+            roleName: 'Öğrenci Hesabı',
           ),
 
           // Filter Bar

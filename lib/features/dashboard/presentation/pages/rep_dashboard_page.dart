@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
 import 'package:mobile/shared/widgets/dashboard_question_list.dart';
+import 'package:mobile/shared/widgets/dashboard_scaffold.dart';
 import 'package:mobile/shared/widgets/filter_bar.dart';
-import 'package:mobile/shared/widgets/dashboard_drawer.dart';
 
 /// Temsilci Paneli — Onay Bekleyen Sorular
 ///
 /// Temsilciler (rep) sadece bekleyen soruları yönetir. Bu sayfada paylaşımlı
-/// UI bileşenleri (DashboardDrawer, FilterBar, DashboardQuestionList) kullanılır.
+/// UI bileşenleri (DashboardScaffold, FilterBar, DashboardQuestionList) kullanılır.
 class RepDashboardPage extends ConsumerStatefulWidget {
   const RepDashboardPage({super.key});
 
@@ -25,7 +26,6 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
   String _selectedStatus = 'pending';
 
   // Riverpod family provider'ları parametreleri referans bazlı karşılaştırır.
-  // Her build'de yeni Map oluşturulmasını engellemek için parametreleri cache'liyoruz.
   late Map<String, dynamic> _cachedParams = _buildParams();
 
   Map<String, dynamic> _buildParams() {
@@ -46,7 +46,6 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
     super.dispose();
   }
 
-  /// Filtrelerin değişmesi durumunda listeyi güncelleyen genel metot.
   void _updateFilter(VoidCallback updateAction) {
     setState(() {
       updateAction();
@@ -57,29 +56,24 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
   @override
   Widget build(BuildContext context) {
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
-    return Scaffold(
-      drawer: const DashboardDrawer(),
-      appBar: AppBar(
-        title: const Text('Temsilci Paneli'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(questionsProvider(_cachedParams)),
-            tooltip: 'Yenile',
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              setState(() {
-                _isSearchExpanded = !_isSearchExpanded;
-                if (!_isSearchExpanded) {
-                  _searchController.clear();
-                }
-              });
-            },
-          ),
-        ],
-      ),
+
+    return DashboardScaffold(
+      title: 'Temsilci Paneli',
+      onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
+      onLogout: () => ref.read(authProvider.notifier).logout(),
+      extraActions: [
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {
+            setState(() {
+              _isSearchExpanded = !_isSearchExpanded;
+              if (!_isSearchExpanded) {
+                _searchController.clear();
+              }
+            });
+          },
+        ),
+      ],
       body: Column(
         children: [
           // 1. Dashboard Başlığı

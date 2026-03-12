@@ -5,8 +5,8 @@ import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
 import 'package:mobile/shared/widgets/dashboard_question_list.dart';
+import 'package:mobile/shared/widgets/dashboard_scaffold.dart';
 import 'package:mobile/shared/widgets/filter_bar.dart';
-import 'package:mobile/shared/widgets/dashboard_drawer.dart';
 
 /// Teacher Dashboard — öğretmen ana paneli.
 ///
@@ -26,12 +26,8 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
   String _statusFilter = '';
   String _sortBy = 'priority';
 
-  // Riverpod family parametresi referans karşılaştırması kullandığı için
-  // her build'de yeni Map oluşturmak sonsuz rebuild döngüsüne yol açar.
-  // Bu yüzden Map'i cache'liyoruz ve sadece filtre değişimlerinde güncelliyoruz.
   Map<String, dynamic> _cachedParams = const {'ordering': '-question_priority'};
 
-  /// Filtre değişikliklerinde cache'i güncelle.
   void _rebuildParams() {
     final params = <String, dynamic>{};
     if (_search.isNotEmpty) params['search'] = _search;
@@ -72,49 +68,19 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
     final user = ref.watch(authProvider).value;
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
-    return Scaffold(
-      drawer: const DashboardDrawer(),
-      appBar: AppBar(
-        title: const Text('Öğretmen Paneli'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(questionsProvider(_cachedParams)),
-            tooltip: 'Yenile',
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authProvider.notifier).logout(),
-            tooltip: 'Çıkış',
-          ),
-        ],
-      ),
+    return DashboardScaffold(
+      title: 'Öğretmen Paneli',
+      onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
+      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: Column(
         children: [
-          // Page Header
           DashboardPageHeader(
             title: 'Öğretmen Paneli',
             description: 'Öğrencilerden gelen soruları cevapla ve yönet.',
             borderColor: Theme.of(context).colorScheme.primary,
-            trailing: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  user?.username ?? '',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                Text(
-                  'Öğretmen Hesabı',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-              ],
-            ),
+            userName: user?.username ?? '',
+            userNameColor: Theme.of(context).colorScheme.primary,
+            roleName: 'Öğretmen Hesabı',
           ),
 
           // Filter Bar
@@ -209,7 +175,7 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
             error: (err, stack) => Expanded(
               child: Center(
                 child: Text(
-                  'Bir hata oluştu:\\n$err',
+                  'Bir hata oluştu:\n$err',
                   textAlign: TextAlign.center,
                 ),
               ),
