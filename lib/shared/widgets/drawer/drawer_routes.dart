@@ -83,6 +83,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
           title: 'Ders Yönetimi',
           path: '/manage-courses',
           icon: Icons.menu_book_outlined,
+          isAlwaysAllowed: true,
         ),
       );
       links.add(
@@ -90,6 +91,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
           title: 'Danışman Yönetimi',
           path: '/manage-advisors',
           icon: Icons.school_outlined,
+          isAlwaysAllowed: true,
         ),
       );
       links.add(
@@ -97,6 +99,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
           title: 'Onay İşlemleri',
           path: '/manage-approvals',
           icon: Icons.checklist_rtl_outlined,
+          isAlwaysAllowed: true,
         ),
       );
     }
