@@ -16,6 +16,8 @@ import 'package:mobile/features/dashboard/presentation/pages/dean_dashboard_page
 import 'package:mobile/features/dashboard/presentation/pages/rector_dashboard_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/school_admin_dashboard_page.dart';
 
+import 'package:mobile/features/manage_approvals/presentation/pages/manage_approvals_page.dart';
+
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
 //
@@ -88,6 +90,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/rep-dashboard',
         builder: (context, state) => const RepDashboardPage(),
+      ),
+      GoRoute(
+        path: '/manage-approvals',
+        builder: (context, state) => const ManageApprovalsPage(),
       ),
     ],
   );

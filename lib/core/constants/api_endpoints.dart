@@ -57,6 +57,7 @@ class ApiEndpoints {
   static const String authLogout = 'auth/logout/';
   static const String authRegister = 'auth/register/';
   static const String authPendingApprovals = 'auth/pending-approvals/';
+  static const String authApproveUser = 'auth/approve-user/';
 
   // --- CORE MODULE ---
 

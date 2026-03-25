@@ -72,30 +72,22 @@ class ManageListTile extends StatelessWidget {
               // --- Leading (Avatar / İkon) ---
               if (leading != null) ...[leading!, const SizedBox(width: 14)],
 
-              // --- Orta Alan (Başlık + Alt Başlık + Badge) ---
+              // --- Orta Alan (Başlık → Badge → Alt Başlık) ---
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Başlık + Badge
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            title,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (badge != null) ...[
-                          const SizedBox(width: 8),
-                          badge!,
-                        ],
-                      ],
+                    // Başlık
+                    Text(
+                      title,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    // Badge (kendi satırında)
+                    if (badge != null) ...[const SizedBox(height: 4), badge!],
                     // Alt başlık
                     if (subtitle != null) ...[
                       const SizedBox(height: 4),
