@@ -18,6 +18,7 @@ import 'package:mobile/features/dashboard/presentation/pages/school_admin_dashbo
 
 import 'package:mobile/features/manage_approvals/presentation/pages/manage_approvals_page.dart';
 import 'package:mobile/features/manage_terms/presentation/pages/manage_terms_page.dart';
+import 'package:mobile/features/manage_heads/presentation/pages/manage_heads_page.dart';
 
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
@@ -99,6 +100,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/manage-terms',
         builder: (context, state) => const ManageTermsPage(),
+      ),
+      GoRoute(
+        path: '/manage-heads',
+        builder: (context, state) => const ManageHeadsPage(),
       ),
     ],
   );
