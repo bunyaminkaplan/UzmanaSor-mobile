@@ -43,7 +43,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
+        child: Align(
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Form(
@@ -51,22 +52,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Logo / Başlık
-                  Icon(
-                    Icons.school_rounded,
-                    size: 72,
-                    color: AppColors.accentNavy,
-                  ),
                   const SizedBox(height: 16),
-                  Text('UzmanaSor', style: theme.textTheme.headlineMedium),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Hesabınıza giriş yapın',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textMuted,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
 
                   // Kullanıcı adı
                   TextFormField(

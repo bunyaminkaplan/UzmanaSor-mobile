@@ -20,27 +20,42 @@ import 'package:mobile/features/manage_approvals/presentation/pages/manage_appro
 import 'package:mobile/features/manage_terms/presentation/pages/manage_terms_page.dart';
 import 'package:mobile/features/manage_heads/presentation/pages/manage_heads_page.dart';
 import 'package:mobile/features/manage_advisors/presentation/pages/manage_advisors_page.dart';
+import 'package:mobile/features/splash/presentation/pages/splash_page.dart';
 
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
 //
 // Route yapısı:
+//   /splash      → SplashPage (Native splash bitimi, 2sn bekler)
 //   /login       → AuthPage (Login + Register tab)
 //   /verify      → VerifyPage (E-posta doğrulama)
-//   /dashboard   → Placeholder (Faz 5'te gerçek dashboard)
+//   /dashboard   → Rol bazlı dashboard
 //
 // redirect mantığı:
 //   1. Loading → null (bekle)
-//   2. Unauthenticated → /login
-//   3. Authenticated + login sayfasında → /dashboard
+//   2. /splash → null (splash'ten otomatik login yönlendirmesi engellenir, manuel yapılır)
+//   3. Unauthenticated → /login
+//   4. Authenticated + login sayfasında → /dashboard
 // ---------------------------------------------------------------------------
 
 final goRouterProvider = Provider<GoRouter>((ref) {
+  // [YUKARIDAKI ICERIK AYNI]
+  // Asagiya inip routes listesini duzenliyoruz (LINTER HATASINI ENGELLEMEK ICIN ORAYA AYRI REPLACE YAPTIRIYORUM ALTA)
+
   return GoRouter(
-    initialLocation: '/dashboard',
+    initialLocation: '/splash',
     debugLogDiagnostics: false,
     refreshListenable: AuthListenable(ref),
     redirect: (context, state) {
+      final currentPath = state.matchedLocation;
+
+      // SADECE /splash rotasındaysak redirect yapma!
+      // Çünkü SplashPage kendi animasyonunu bitirince (2 saniye bekleme süresinden sonra)
+      // manuel olarak context.go('/dashboard' veya '/login') tetikleyecektir.
+      if (currentPath == '/splash') {
+        return null;
+      }
+
       final authState = ref.read(authProvider);
 
       // Loading iken yönlendirme yapma
@@ -48,7 +63,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       final user = authState.value;
       final isLoggedIn = user != null;
-      final currentPath = state.matchedLocation;
 
       // Giriş yapmamışsa → login'e
       if (!isLoggedIn) {
@@ -69,6 +83,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(path: '/splash', builder: (context, state) => const SplashPage()),
       GoRoute(path: '/login', builder: (context, state) => const AuthPage()),
       GoRoute(path: '/verify', builder: (context, state) => const VerifyPage()),
       GoRoute(

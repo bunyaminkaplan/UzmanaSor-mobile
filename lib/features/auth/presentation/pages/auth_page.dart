@@ -34,6 +34,31 @@ class _AuthPageState extends State<AuthPage>
       body: SafeArea(
         child: Column(
           children: [
+            const SizedBox(height: 24),
+            const SizedBox(height: 16),
+            // Logo & Title
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: Image.asset(
+                'assets/images/logo.png',
+                height: 80,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'UzmanaSor',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 1.2,
+              ),
+            ),
             const SizedBox(height: 16),
             // Tab Bar
             Padding(
