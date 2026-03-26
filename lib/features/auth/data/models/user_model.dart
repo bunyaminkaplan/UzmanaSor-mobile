@@ -2,6 +2,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
+import 'package:mobile/features/auth/domain/entities/simple_user_entity.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -104,6 +105,7 @@ extension UserModelMapper on UserModel {
       dateJoined: dateJoined,
       profileImage: profileImage,
       isEmailVerified: isEmailVerified,
+      advisor: advisor != null ? SimpleUserEntity.fromMap(advisor!) : null,
     );
   }
 }

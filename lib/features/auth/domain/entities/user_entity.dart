@@ -1,3 +1,5 @@
+import 'package:mobile/features/auth/domain/entities/simple_user_entity.dart';
+
 /// [UserEntity] — Domain katmanının kullanıcı temsili.
 ///
 /// Bu sınıf %100 saf Dart'tır. Hiçbir framework (Flutter, freezed,
@@ -25,6 +27,7 @@ class UserEntity {
   final DateTime? dateJoined;
   final String? profileImage;
   final bool isEmailVerified;
+  final SimpleUserEntity? advisor;
 
   const UserEntity({
     required this.id,
@@ -43,6 +46,7 @@ class UserEntity {
     this.dateJoined,
     this.profileImage,
     this.isEmailVerified = false,
+    this.advisor,
   });
 
   // --------------- Derived Getters (İş Mantığı) ---------------
