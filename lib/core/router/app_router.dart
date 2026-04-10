@@ -20,6 +20,8 @@ import 'package:mobile/features/manage_approvals/presentation/pages/manage_appro
 import 'package:mobile/features/manage_terms/presentation/pages/manage_terms_page.dart';
 import 'package:mobile/features/manage_heads/presentation/pages/manage_heads_page.dart';
 import 'package:mobile/features/manage_advisors/presentation/pages/manage_advisors_page.dart';
+import 'package:mobile/features/manage_courses/presentation/pages/manage_courses_page.dart';
+import 'package:mobile/features/manage_courses/presentation/pages/admin_manage_courses_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/splash/presentation/pages/splash_page.dart';
 
@@ -130,6 +132,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/manage-advisors',
         builder: (context, state) => const ManageAdvisorsPage(),
+      ),
+      GoRoute(
+        path: '/manage-courses',
+        builder: (context, state) => const ManageCoursesPage(),
+      ),
+      GoRoute(
+        path: '/admin-courses',
+        builder: (context, state) => const AdminManageCoursesPage(),
       ),
     ],
   );

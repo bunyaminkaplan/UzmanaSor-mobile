@@ -114,3 +114,4 @@ known_hosts
 # Commit'e dahil edilir ama istenirse ignore edilebilir:
 # *.freezed.dart
 # *.g.dart
+/project_info

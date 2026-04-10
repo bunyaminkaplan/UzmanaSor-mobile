@@ -35,6 +35,69 @@ class CourseRepositoryImpl implements CourseRepository {
       return Left(ServerFailure('Beklenmeyen hata: $e'));
     }
   }
+
+  @override
+  Future<Either<Failure, CourseEntity>> createCourse({
+    required String title,
+    String? description,
+    String? courseCode,
+    List<int> teacherIds = const [],
+  }) async {
+    try {
+      final data = <String, dynamic>{
+        'title': title,
+        'description': description ?? '',
+        'teacher_ids': teacherIds,
+      };
+      if (courseCode != null && courseCode.trim().isNotEmpty) {
+        data['course_code'] = courseCode.trim();
+      }
+      final model = await _dataSource.createCourse(data);
+      return Right(model.toEntity());
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CourseEntity>> updateCourse({
+    required int id,
+    required String title,
+    String? description,
+    String? courseCode,
+    List<int> teacherIds = const [],
+  }) async {
+    try {
+      final data = <String, dynamic>{
+        'title': title,
+        'description': description ?? '',
+        'teacher_ids': teacherIds,
+      };
+      if (courseCode != null && courseCode.trim().isNotEmpty) {
+        data['course_code'] = courseCode.trim();
+      }
+      final model = await _dataSource.updateCourse(id, data);
+      return Right(model.toEntity());
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteCourse(int id) async {
+    try {
+      await _dataSource.deleteCourse(id);
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
 }
 
 /// Riverpod provider
