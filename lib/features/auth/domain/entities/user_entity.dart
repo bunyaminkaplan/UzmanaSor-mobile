@@ -19,6 +19,7 @@ class UserEntity {
   final String userType;
   final bool isApproved;
   final bool isDepartmentHead;
+  final bool isAdvisor;
   final Map<String, dynamic>? departmentDetails;
   final Map<String, dynamic>? facultyDetails;
   final String? phone;
@@ -38,6 +39,7 @@ class UserEntity {
     required this.userType,
     this.isApproved = false,
     this.isDepartmentHead = false,
+    this.isAdvisor = false,
     this.departmentDetails,
     this.facultyDetails,
     this.phone,

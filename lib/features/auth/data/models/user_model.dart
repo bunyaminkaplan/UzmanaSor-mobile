@@ -97,6 +97,7 @@ extension UserModelMapper on UserModel {
       userType: userType ?? primaryRole ?? 'unknown',
       isApproved: isApproved,
       isDepartmentHead: isDepartmentHead,
+      isAdvisor: isAdvisor,
       departmentDetails: departmentDetails,
       facultyDetails: facultyDetails,
       phone: phone,

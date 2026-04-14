@@ -103,7 +103,16 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
         ),
       );
     }
-    // TODO: if (user.isAdvisor) eklendiği zaman burada kontrol edilmeli.
+    // Danışman hocalar için Temsilci Seçimi rotası
+    if (user.isAdvisor) {
+      links.add(
+        const DrawerRouteItem(
+          title: 'Temsilci Seçimi',
+          path: '/manage-class-rep',
+          icon: Icons.workspace_premium_outlined,
+        ),
+      );
+    }
   }
   // DEAN
   else if (role == 'dean') {
