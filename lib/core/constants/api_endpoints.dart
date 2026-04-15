@@ -105,4 +105,9 @@ class ApiEndpoints {
   // Teacher Busy Mode
   static const String teacherBusyTerms = 'core/teacher-busy-terms/';
   static String teacherBusyTermDetail(int id) => 'core/teacher-busy-terms/$id/';
+
+  // Content Moderation (Reports)
+  static const String reports = 'core/reports/';
+  static String reportAction(int id, String action) =>
+      'core/reports/$id/$action/';
 }

@@ -188,6 +188,13 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
         icon: Icons.checklist_rtl_outlined,
       ),
     );
+    links.add(
+      const DrawerRouteItem(
+        title: 'İçerik Denetimi',
+        path: '/content-moderation',
+        icon: Icons.shield_outlined,
+      ),
+    );
   }
 
   return links;

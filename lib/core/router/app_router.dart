@@ -23,6 +23,7 @@ import 'package:mobile/features/manage_advisors/presentation/pages/manage_adviso
 import 'package:mobile/features/manage_courses/presentation/pages/manage_courses_page.dart';
 import 'package:mobile/features/manage_courses/presentation/pages/admin_manage_courses_page.dart';
 import 'package:mobile/features/manage_class_rep/presentation/pages/manage_class_rep_page.dart';
+import 'package:mobile/features/content_moderation/presentation/pages/content_moderation_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/splash/presentation/pages/splash_page.dart';
 
@@ -145,6 +146,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/manage-class-rep',
         builder: (context, state) => const ManageClassRepPage(),
+      ),
+      GoRoute(
+        path: '/content-moderation',
+        builder: (context, state) => const ContentModerationPage(),
       ),
     ],
   );
