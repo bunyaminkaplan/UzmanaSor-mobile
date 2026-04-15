@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/courses/presentation/providers/course_provider.dart';
+import 'package:mobile/features/profile/data/busy_term_data_source.dart';
 import 'package:mobile/features/profile/presentation/widgets/academic_info_card.dart';
 import 'package:mobile/features/profile/presentation/widgets/advisor_card.dart';
+import 'package:mobile/features/profile/presentation/widgets/busy_mode_section.dart';
 import 'package:mobile/features/profile/presentation/widgets/courses_section.dart';
 import 'package:mobile/features/profile/presentation/widgets/personal_info_card.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
@@ -29,6 +31,8 @@ class ProfilePage extends ConsumerWidget {
       title: 'Profilim',
       onRefresh: () async {
         ref.invalidate(myCoursesProvider);
+        ref.invalidate(busyTermsProvider);
+        ref.invalidate(classTermsProvider);
       },
       onLogout: () {
         ref.read(authProvider.notifier).logout();
@@ -60,8 +64,11 @@ class ProfilePage extends ConsumerWidget {
               const CoursesSection(),
               const SizedBox(height: 24),
             ],
-
-            // TODOFaz6-b: BusyModeSection eklenecek
+            // Akademisyen ise Meşgul Mod
+            if (isTeacher) ...[
+              const BusyModeSection(),
+              const SizedBox(height: 24),
+            ],
           ],
         ),
       ),

@@ -101,4 +101,8 @@ class ApiEndpoints {
   static const String advisorStudents = 'core/advisor/students/';
   static const String setRepresentative =
       'core/advisor/students/set-representative/';
+
+  // Teacher Busy Mode
+  static const String teacherBusyTerms = 'core/teacher-busy-terms/';
+  static String teacherBusyTermDetail(int id) => 'core/teacher-busy-terms/$id/';
 }
