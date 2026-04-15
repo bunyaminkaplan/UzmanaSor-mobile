@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
+import 'package:mobile/features/courses/presentation/providers/course_provider.dart';
 import 'package:mobile/features/profile/presentation/widgets/academic_info_card.dart';
 import 'package:mobile/features/profile/presentation/widgets/advisor_card.dart';
+import 'package:mobile/features/profile/presentation/widgets/courses_section.dart';
 import 'package:mobile/features/profile/presentation/widgets/personal_info_card.dart';
 import 'package:mobile/features/profile/presentation/widgets/profile_header.dart';
 import 'package:mobile/shared/widgets/dashboard_scaffold.dart';
@@ -21,13 +23,12 @@ class ProfilePage extends ConsumerWidget {
 
     final isStudent =
         user.userType == 'student' || user.userType == 'r_student';
-    // final isTeacher = user.userType == 'teacher';
+    final isTeacher = user.userType == 'teacher';
 
     return DashboardScaffold(
       title: 'Profilim',
       onRefresh: () async {
-        // Dışarıdan zorunlu refresh (şimdilik boş tetikleme)
-        // İleride myCoursesProvider ve busyModeProvider için invalidation eklenecek
+        ref.invalidate(myCoursesProvider);
       },
       onLogout: () {
         ref.read(authProvider.notifier).logout();
@@ -54,7 +55,13 @@ class ProfilePage extends ConsumerWidget {
               const SizedBox(height: 24),
             ],
 
-            // TODOFaz6: Akademisyenler için CoursesSection ve BusyModeSection eklenecek
+            // Akademisyen ise Derslerim
+            if (isTeacher) ...[
+              const CoursesSection(),
+              const SizedBox(height: 24),
+            ],
+
+            // TODOFaz6-b: BusyModeSection eklenecek
           ],
         ),
       ),

@@ -27,6 +27,8 @@ class ProfileHeader extends StatelessWidget {
         return 'Dekan';
       case 'rector':
         return 'Rektör';
+      case 'school_admin':
+        return 'Okul Yöneticisi';
       default:
         return user.userType;
     }
@@ -174,6 +176,27 @@ class ProfileHeader extends StatelessWidget {
                         ),
                         child: const Text(
                           'Bölüm Başkanı',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+                    // Danışman Etiketi
+                    if (user.isAdvisor)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.accentCyan,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'Danışman',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 11,
