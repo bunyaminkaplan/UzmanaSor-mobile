@@ -8,7 +8,6 @@ import 'package:mobile/features/auth/presentation/pages/auth_page.dart';
 import 'package:mobile/features/auth/presentation/pages/verify_page.dart';
 import 'package:mobile/features/questions/presentation/pages/ask_question_page.dart';
 import 'package:mobile/features/questions/presentation/pages/question_detail_page.dart';
-import 'package:mobile/features/questions/presentation/pages/question_list_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/rep_dashboard_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/student_dashboard_page.dart';
 import 'package:mobile/features/dashboard/presentation/pages/teacher_dashboard_page.dart';
@@ -24,6 +23,7 @@ import 'package:mobile/features/manage_courses/presentation/pages/manage_courses
 import 'package:mobile/features/manage_courses/presentation/pages/admin_manage_courses_page.dart';
 import 'package:mobile/features/manage_class_rep/presentation/pages/manage_class_rep_page.dart';
 import 'package:mobile/features/content_moderation/presentation/pages/content_moderation_page.dart';
+import 'package:mobile/features/public_feed/presentation/pages/public_feed_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/splash/presentation/pages/splash_page.dart';
 
@@ -101,10 +101,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const _RoleDashboardBuilder(),
       ),
       GoRoute(
-        path: '/questions',
-        builder: (context, state) => const QuestionListPage(),
-      ),
-      GoRoute(
         path: '/ask',
         builder: (context, state) => const AskQuestionPage(),
       ),
@@ -150,6 +146,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/content-moderation',
         builder: (context, state) => const ContentModerationPage(),
+      ),
+      GoRoute(
+        path: '/active-feed',
+        builder: (context, state) => const PublicFeedPage(),
       ),
     ],
   );
