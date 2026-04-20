@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_status_chip.dart';
 
@@ -8,7 +9,7 @@ import 'package:mobile/features/questions/presentation/widgets/question_status_c
 ///
 /// Web: DashboardQuestionCard.jsx karşılığı.
 /// Expand state'i parent tarafından yönetilir.
-class DashboardQuestionCard extends StatelessWidget {
+class DashboardQuestionCard extends StatefulWidget {
   final QuestionEntity question;
   final bool isExpanded;
   final VoidCallback? onToggle;
@@ -25,8 +26,26 @@ class DashboardQuestionCard extends StatelessWidget {
   });
 
   @override
+  State<DashboardQuestionCard> createState() => _DashboardQuestionCardState();
+}
+
+class _DashboardQuestionCardState extends State<DashboardQuestionCard> {
+  bool _isTextExpanded = false;
+
+  @override
+  void didUpdateWidget(DashboardQuestionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Kart kapandığında metin genişlemesini de sıfırla
+    if (oldWidget.isExpanded && !widget.isExpanded) {
+      _isTextExpanded = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final question = widget.question;
+    final isExpanded = widget.isExpanded;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -44,7 +63,7 @@ class DashboardQuestionCard extends StatelessWidget {
             children: [
               // ── HEADER ──
               InkWell(
-                onTap: onToggle,
+                onTap: widget.onToggle,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -115,15 +134,8 @@ class DashboardQuestionCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
 
-                      // İçerik snippet
-                      Text(
-                        question.content.length > 150
-                            ? '${question.content.substring(0, 150)}...'
-                            : question.content,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.outline,
-                        ),
-                      ),
+                      // İçerik snippet (Truncation)
+                      _buildTruncatedContent(theme, question),
                       const SizedBox(height: 16),
 
                       // Aksiyonlar
@@ -131,7 +143,7 @@ class DashboardQuestionCard extends StatelessWidget {
                         alignment: WrapAlignment.end,
                         spacing: 8,
                         children: [
-                          if (onDelete != null)
+                          if (widget.onDelete != null)
                             TextButton(
                               onPressed: () => _confirmDelete(context),
                               child: Text(
@@ -148,12 +160,8 @@ class DashboardQuestionCard extends StatelessWidget {
                                 context,
                               ).push<bool?>('/questions/${question.id}');
                               if (shouldRefresh == true) {
-                                // Ekranın bulunduğu contexte ait ref objesini
-                                // card yapısında direkt çağıramayız, onRefresh
-                                // için callback eklemek en doğrusu, fakat Riverpod
-                                // provider referansı olmadan basitçe state tetiklenemez.
-                                if (onRefresh != null) {
-                                  onRefresh!();
+                                if (widget.onRefresh != null) {
+                                  widget.onRefresh!();
                                 }
                               }
                             },
@@ -175,6 +183,68 @@ class DashboardQuestionCard extends StatelessWidget {
     );
   }
 
+  Widget _buildTruncatedContent(ThemeData theme, QuestionEntity question) {
+    const int wordLimit = 15;
+    final words = question.content.split(' ');
+
+    if (words.length <= wordLimit) {
+      return Text(
+        question.content,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.outline,
+          height: 1.5,
+        ),
+      );
+    }
+
+    if (_isTextExpanded) {
+      return GestureDetector(
+        onTap: () => setState(() => _isTextExpanded = false),
+        child: RichText(
+          text: TextSpan(
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.outline,
+              height: 1.5,
+            ),
+            children: [
+              TextSpan(text: '${question.content}\n'),
+              TextSpan(
+                text: 'daha az göster',
+                style: TextStyle(
+                  color: AppColors.textMutedDark,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final truncatedText = words.take(wordLimit).join(' ');
+    return GestureDetector(
+      onTap: () => setState(() => _isTextExpanded = true),
+      child: RichText(
+        text: TextSpan(
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.outline,
+            height: 1.5,
+          ),
+          children: [
+            TextSpan(text: '$truncatedText... '),
+            TextSpan(
+              text: 'devamını göster',
+              style: TextStyle(
+                color: AppColors.textMutedDark,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _confirmDelete(BuildContext context) {
     showDialog(
       context: context,
@@ -191,7 +261,7 @@ class DashboardQuestionCard extends StatelessWidget {
           FilledButton(
             onPressed: () {
               Navigator.pop(ctx);
-              onDelete?.call();
+              widget.onDelete?.call();
             },
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
