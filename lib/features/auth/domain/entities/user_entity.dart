@@ -17,6 +17,8 @@ class UserEntity {
   final String? firstName;
   final String? lastName;
   final String userType;
+  final String activeDashboard;
+  final List<String> roles;
   final bool isApproved;
   final bool isDepartmentHead;
   final bool isAdvisor;
@@ -37,6 +39,8 @@ class UserEntity {
     this.firstName,
     this.lastName,
     required this.userType,
+    required this.activeDashboard,
+    required this.roles,
     this.isApproved = false,
     this.isDepartmentHead = false,
     this.isAdvisor = false,

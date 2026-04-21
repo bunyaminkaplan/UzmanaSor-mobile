@@ -64,7 +64,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           password: _passwordCtrl.text,
           firstName: _firstNameCtrl.text.trim(),
           lastName: _lastNameCtrl.text.trim(),
-          primaryRole: _selectedRole,
+          activeDashboard: _selectedRole,
           phone: _phoneCtrl.text.trim(),
           studentNumber: _needsStudentFields
               ? _studentNumberCtrl.text.trim()

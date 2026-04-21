@@ -84,7 +84,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String firstName,
     required String lastName,
-    required String primaryRole,
+    required String activeDashboard,
     String? phone,
     String? studentNumber,
     String? studentTerm,
@@ -97,7 +97,7 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
         firstName: firstName,
         lastName: lastName,
-        primaryRole: primaryRole,
+        activeDashboard: activeDashboard,
         phone: phone,
         studentNumber: studentNumber,
         studentTerm: studentTerm,
@@ -129,6 +129,18 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final result = await _dataSource.resendCode();
       return Right(result);
+    } on DioException catch (e) {
+      return Left(_mapDioException(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> switchDashboard(String targetRole) async {
+    try {
+      final userModel = await _dataSource.switchDashboard(targetRole);
+      return Right(userModel.toEntity());
     } on DioException catch (e) {
       return Left(_mapDioException(e));
     } catch (e) {

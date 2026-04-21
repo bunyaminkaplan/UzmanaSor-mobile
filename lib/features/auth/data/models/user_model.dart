@@ -27,10 +27,10 @@ abstract class UserModel with _$UserModel {
     String? firstName,
     String? lastName,
 
-    // Django: "primary_role" alanı (student, teacher, dean, rector, guest)
-    String? primaryRole,
+    // Django: "active_dashboard" alanı (student, teacher, vb.)
+    String? activeDashboard,
 
-    // Django: SerializerMethodField "user_type" — primary_role'dan türetilir
+    // Django: SerializerMethodField "user_type" — active_dashboard'dan türetilir
     @JsonKey(name: 'user_type') String? userType,
 
     // Django: ManyToManyField "roles" — PrimaryKeyRelatedField ile [6, 3] gibi
@@ -93,8 +93,9 @@ extension UserModelMapper on UserModel {
       email: email,
       firstName: firstName,
       lastName: lastName,
-      // userType öncelikli, yoksa primaryRole, yoksa 'unknown'
-      userType: userType ?? primaryRole ?? 'unknown',
+      userType: userType ?? activeDashboard ?? 'unknown',
+      activeDashboard: activeDashboard ?? 'unknown',
+      roles: roles?.map((e) => e.toString()).toList() ?? [],
       isApproved: isApproved,
       isDepartmentHead: isDepartmentHead,
       isAdvisor: isAdvisor,

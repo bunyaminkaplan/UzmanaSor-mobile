@@ -92,7 +92,7 @@ class AuthNotifier extends AsyncNotifier<UserEntity?> {
     required String password,
     required String firstName,
     required String lastName,
-    required String primaryRole,
+    required String activeDashboard,
     String? phone,
     String? studentNumber,
     String? studentTerm,
@@ -107,7 +107,7 @@ class AuthNotifier extends AsyncNotifier<UserEntity?> {
         password: password,
         firstName: firstName,
         lastName: lastName,
-        primaryRole: primaryRole,
+        activeDashboard: activeDashboard,
         phone: phone,
         studentNumber: studentNumber,
         studentTerm: studentTerm,
@@ -152,6 +152,22 @@ class AuthNotifier extends AsyncNotifier<UserEntity?> {
       return result.fold(
         (failure) => {'success': false, 'error': failure.message},
         (data) => data,
+      );
+    } catch (e) {
+      return {'success': false, 'error': e.toString()};
+    }
+  }
+
+  /// Dashboard değiştirir ve state'e yansıtır.
+  Future<Map<String, dynamic>> switchDashboard(String targetRole) async {
+    try {
+      final result = await _repository.switchDashboard(targetRole);
+      return result.fold(
+        (failure) => {'success': false, 'error': failure.message},
+        (user) {
+          state = AsyncValue.data(user);
+          return {'success': true};
+        },
       );
     } catch (e) {
       return {'success': false, 'error': e.toString()};

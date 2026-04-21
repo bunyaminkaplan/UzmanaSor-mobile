@@ -33,7 +33,7 @@ abstract class AuthRemoteDataSource {
     required String password,
     required String firstName,
     required String lastName,
-    required String primaryRole,
+    required String activeDashboard,
     String? phone,
     String? studentNumber,
     String? studentTerm,
@@ -49,6 +49,9 @@ abstract class AuthRemoteDataSource {
 
   /// POST auth/logout/ — Session'ı invalidate eder ve cookie'leri temizler.
   Future<void> logoutUser();
+
+  /// POST auth/switch-dashboard/ — Aktif paneli günceller
+  Future<UserModel> switchDashboard(String targetRole);
 }
 
 /// Gerçek implementasyon.
@@ -83,7 +86,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
     required String firstName,
     required String lastName,
-    required String primaryRole,
+    required String activeDashboard,
     String? phone,
     String? studentNumber,
     String? studentTerm,
@@ -95,7 +98,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       'password': password,
       'first_name': firstName,
       'last_name': lastName,
-      'primary_role': primaryRole,
+      'active_dashboard': activeDashboard,
     };
     if (phone != null && phone.isNotEmpty) body['phone'] = phone;
     if (studentNumber != null) body['student_number'] = studentNumber;
@@ -143,5 +146,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     // da temizliyoruz. Bu sayede aynı cihazdan tekrar auth/me çağrıldığında
     // eski (geçersiz) session cookie gönderilmez.
     await _apiClient.clearCookies();
+  }
+
+  @override
+  Future<UserModel> switchDashboard(String targetRole) async {
+    final response = await _apiClient.post(
+      'auth/switch-dashboard/',
+      data: {'target_role': targetRole},
+    );
+    return _parseUserFromResponse(response.data);
   }
 }

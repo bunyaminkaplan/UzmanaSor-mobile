@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
+import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends ConsumerWidget {
   final UserEntity user;
 
   const ProfileHeader({super.key, required this.user});
@@ -16,10 +18,14 @@ class ProfileHeader extends StatelessWidget {
   }
 
   String get _userTypeLabel {
-    switch (user.userType) {
+    return _roleToLabel(user.activeDashboard);
+  }
+
+  String _roleToLabel(String r) {
+    switch (r) {
       case 'student':
         return 'Öğrenci';
-      case 'r_student':
+      case 'student_rep':
         return 'Öğrenci Temsilcisi';
       case 'teacher':
         return 'Akademisyen';
@@ -30,7 +36,7 @@ class ProfileHeader extends StatelessWidget {
       case 'school_admin':
         return 'Okul Yöneticisi';
       default:
-        return user.userType;
+        return r;
     }
   }
 
@@ -53,10 +59,11 @@ class ProfileHeader extends StatelessWidget {
   }
 
   bool get _isStudent =>
-      user.userType == 'student' || user.userType == 'r_student';
+      user.activeDashboard == 'student' ||
+      user.activeDashboard == 'student_rep';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -143,25 +150,97 @@ class ProfileHeader extends StatelessWidget {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    // Rol Etiketi
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.accentCyan,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        _userTypeLabel,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
+                    // Rol Etiketi / Değiştirici
+                    if (user.roles.length > 1) ...[
+                      PopupMenuButton<String>(
+                        initialValue: user.activeDashboard,
+                        onSelected: (String role) async {
+                          if (role == user.activeDashboard) return;
+
+                          // Show loading inside UI somehow wait for the operation
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Dashboard değiştiriliyor...'),
+                            ),
+                          );
+
+                          final res = await ref
+                              .read(authProvider.notifier)
+                              .switchDashboard(role);
+                          if (!context.mounted) return;
+
+                          if (res['success'] == true) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Dashboard başarıyla değiştirildi.',
+                                ),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Hata: ${res['error']}')),
+                            );
+                          }
+                        },
+                        itemBuilder: (context) => user.roles
+                            .map(
+                              (r) => PopupMenuItem(
+                                value: r,
+                                child: Text(_roleToLabel(r)),
+                              ),
+                            )
+                            .toList(),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.accentCyan,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                _userTypeLabel,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              const Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ] else ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.accentCyan,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          _userTypeLabel,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
 
                     // Bölüm Başkanı Etiketi
                     if (user.isDepartmentHead)

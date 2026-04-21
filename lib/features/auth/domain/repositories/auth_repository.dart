@@ -20,7 +20,7 @@ abstract class AuthRepository {
     required String password,
     required String firstName,
     required String lastName,
-    required String primaryRole,
+    required String activeDashboard,
     String? phone,
     String? studentNumber,
     String? studentTerm,
@@ -33,4 +33,6 @@ abstract class AuthRepository {
   Future<Either<Failure, Map<String, dynamic>>> resendCode();
 
   Future<Either<Failure, void>> logout();
+
+  Future<Either<Failure, UserEntity>> switchDashboard(String targetRole);
 }

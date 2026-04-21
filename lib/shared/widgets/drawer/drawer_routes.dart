@@ -22,7 +22,8 @@ class DrawerRouteItem {
 ///
 /// Bu sayede UI katmanı sadece "Çizim" yaparken, Karar/İş Mantığı buradadır.
 List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
-  final role = user.userType;
+  // Navigation rotalarını kullanıcının o an aktif olan dashboard paneline göre çiz.
+  final role = user.activeDashboard;
   final List<DrawerRouteItem> links = [];
 
   // 1. Ortak Rotalar (Herkes görebilir ve her zaman Always Allowed - Kilitlenmez)
@@ -45,8 +46,8 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
 
   // --- Rol Bazlı Özel Rotalar ---
 
-  // STUDENT & R_STUDENT
-  if (role == 'student' || role == 'r_student') {
+  // STUDENT & STUDENT_REP
+  if (role == 'student' || role == 'student_rep') {
     links.add(
       const DrawerRouteItem(
         title: 'Öğrenci Paneli',
@@ -56,7 +57,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
       ),
     );
 
-    if (role == 'r_student') {
+    if (role == 'student_rep') {
       links.add(
         const DrawerRouteItem(
           title: 'Temsilci Paneli',
