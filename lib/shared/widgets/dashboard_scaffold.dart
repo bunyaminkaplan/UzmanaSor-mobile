@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../features/auth/presentation/providers/auth_provider.dart';
 import 'dashboard_drawer.dart';
 
 /// Tüm dashboard sayfalarında ortak olan Scaffold iskeleti.
@@ -15,7 +17,7 @@ import 'dashboard_drawer.dart';
 ///   body: ...,
 /// )
 /// ```
-class DashboardScaffold extends StatelessWidget {
+class DashboardScaffold extends ConsumerWidget {
   final String title;
   final VoidCallback onRefresh;
   final VoidCallback onLogout;
@@ -36,7 +38,69 @@ class DashboardScaffold extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authProvider).value;
+
+    if (user != null) {
+      final role = user.activeDashboard;
+      final reqDept = ['teacher', 'student', 'student_rep'];
+      final reqFac = ['teacher', 'student', 'student_rep', 'dean'];
+
+      List<String> missing = [];
+      if (reqFac.contains(role) && user.facultyDetails == null) {
+        missing.add('Fakülte');
+      }
+      if (reqDept.contains(role) && user.departmentDetails == null) {
+        missing.add('Bölüm');
+      }
+
+      if (missing.isNotEmpty) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: AppBar(
+            title: Text(title),
+            actions: [
+              IconButton(icon: const Icon(Icons.logout), onPressed: onLogout),
+            ],
+          ),
+          drawer: const DashboardDrawer(),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.security_update_warning,
+                    size: 80,
+                    color: Colors.orangeAccent,
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Eksik Profil Bilgisi',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Bu panele erişebilmeniz için profilinize ${missing.join(' ve ')} atamasının yapılmış olması gerekmektedir.\n\nLütfen sistem yöneticisi ile iletişime geçin veya soldaki menü üzerinden profilinize tıklayarak aktif role geçiş yapın.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
