@@ -26,6 +26,7 @@ import 'package:mobile/features/content_moderation/presentation/pages/content_mo
 import 'package:mobile/features/public_feed/presentation/pages/public_feed_page.dart';
 import 'package:mobile/features/profile/presentation/pages/profile_page.dart';
 import 'package:mobile/features/splash/presentation/pages/splash_page.dart';
+import 'package:mobile/features/manage_user_roles/presentation/pages/manage_user_roles_page.dart';
 
 // ---------------------------------------------------------------------------
 // GoRouter — Uygulama navigasyonu.
@@ -150,6 +151,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/active-feed',
         builder: (context, state) => const PublicFeedPage(),
+      ),
+      GoRoute(
+        path: '/manage-user-roles',
+        builder: (context, state) => const ManageUserRolesPage(),
       ),
     ],
   );

@@ -157,6 +157,13 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
         icon: Icons.checklist_rtl_outlined,
       ),
     );
+    links.add(
+      const DrawerRouteItem(
+        title: 'Kullanıcı Yönetimi',
+        path: '/manage-user-roles',
+        icon: Icons.manage_accounts_outlined,
+      ),
+    );
   }
   // SCHOOL ADMIN
   else if (role == 'school_admin') {
@@ -194,6 +201,13 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
         title: 'İçerik Denetimi',
         path: '/content-moderation',
         icon: Icons.shield_outlined,
+      ),
+    );
+    links.add(
+      const DrawerRouteItem(
+        title: 'Kullanıcı Yönetimi',
+        path: '/manage-user-roles',
+        icon: Icons.manage_accounts_outlined,
       ),
     );
   }

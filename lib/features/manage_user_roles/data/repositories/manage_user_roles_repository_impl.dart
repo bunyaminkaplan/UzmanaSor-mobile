@@ -35,6 +35,7 @@ class ManageUserRolesRepositoryImpl implements ManageUserRolesRepository {
   Future<void> assignRole(
     int userId,
     String role, {
+    int? facultyId,
     int? deptId,
     int? termId,
   }) async {
@@ -42,6 +43,7 @@ class ManageUserRolesRepositoryImpl implements ManageUserRolesRepository {
       await remoteDataSource.assignRole(
         userId,
         role,
+        facultyId: facultyId,
         deptId: deptId,
         termId: termId,
       );
@@ -50,6 +52,21 @@ class ManageUserRolesRepositoryImpl implements ManageUserRolesRepository {
           e.response?.data?['detail'] ??
           e.response?.data?['error'] ??
           'Rol atanırken hata oluştu';
+      throw Exception(errorMessage.toString());
+    } catch (e) {
+      throw Exception('Bilinmeyen bir hata oluştu: $e');
+    }
+  }
+
+  @override
+  Future<void> removeRole(int userId, String role) async {
+    try {
+      await remoteDataSource.removeRole(userId, role);
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data?['detail'] ??
+          e.response?.data?['error'] ??
+          'Rol silinirken hata oluştu';
       throw Exception(errorMessage.toString());
     } catch (e) {
       throw Exception('Bilinmeyen bir hata oluştu: $e');

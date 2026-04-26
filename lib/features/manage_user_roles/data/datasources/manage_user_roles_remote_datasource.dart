@@ -3,7 +3,14 @@ import 'package:mobile/features/auth/data/models/user_model.dart';
 
 abstract class ManageUserRolesRemoteDataSource {
   Future<List<UserModel>> getUsers({int page = 1, String? search});
-  Future<void> assignRole(int userId, String role, {int? deptId, int? termId});
+  Future<void> assignRole(
+    int userId,
+    String role, {
+    int? facultyId,
+    int? deptId,
+    int? termId,
+  });
+  Future<void> removeRole(int userId, String role);
 }
 
 class ManageUserRolesRemoteDataSourceImpl
@@ -48,13 +55,22 @@ class ManageUserRolesRemoteDataSourceImpl
   Future<void> assignRole(
     int userId,
     String role, {
+    int? facultyId,
     int? deptId,
     int? termId,
   }) async {
     final body = <String, dynamic>{'user_id': userId, 'role': role};
+
+    if (facultyId != null) body['faculty_id'] = facultyId;
     if (deptId != null) body['department_id'] = deptId;
     if (termId != null) body['class_term_id'] = termId;
 
     await dio.post('/auth/assign-role/', data: body);
+  }
+
+  @override
+  Future<void> removeRole(int userId, String role) async {
+    final body = <String, dynamic>{'user_id': userId, 'role': role};
+    await dio.post('/auth/remove-role/', data: body);
   }
 }

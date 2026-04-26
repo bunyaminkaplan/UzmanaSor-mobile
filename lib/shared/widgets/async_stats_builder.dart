@@ -27,6 +27,8 @@ class AsyncStatsBuilder<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return asyncValue.when(
+      skipLoadingOnReload: true,
+      skipLoadingOnRefresh: true,
       loading: () => const Center(
         child: Padding(
           padding: EdgeInsets.all(32),
