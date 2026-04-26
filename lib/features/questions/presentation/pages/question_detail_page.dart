@@ -12,6 +12,7 @@ import 'package:mobile/features/questions/presentation/widgets/student_resubmit_
 import 'package:mobile/features/questions/presentation/widgets/teacher_answer_form.dart';
 import 'package:mobile/features/questions/presentation/widgets/teacher_forward_form.dart';
 import 'package:mobile/features/questions/presentation/widgets/transition_timeline.dart';
+import 'package:mobile/shared/widgets/async_error_widget.dart';
 
 /// Soru detay sayfası — orkestratör.
 ///
@@ -38,30 +39,9 @@ class QuestionDetailPage extends ConsumerWidget {
       appBar: AppBar(title: const Text('Soru Detay')),
       body: questionAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(
-                'Soru yüklenemedi',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                error.toString(),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: () =>
-                    ref.invalidate(questionDetailProvider(questionId)),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Tekrar Dene'),
-              ),
-            ],
-          ),
+        error: (error, _) => AsyncErrorWidget(
+          message: 'Soru yüklenemedi',
+          onRetry: () => ref.invalidate(questionDetailProvider(questionId)),
         ),
         data: (question) => RefreshIndicator(
           onRefresh: () async =>

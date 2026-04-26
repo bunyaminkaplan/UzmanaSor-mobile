@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
+import 'package:mobile/shared/widgets/empty_state_widget.dart';
 
 /// Cevap listesi widget'ı — soru detay sayfasında kullanılır.
 ///
@@ -37,28 +38,9 @@ class AnswerListWidget extends StatelessWidget {
         const SizedBox(height: 12),
 
         if (answers.isEmpty)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Center(
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.chat_bubble_outline,
-                      size: 48,
-                      color: theme.colorScheme.outline,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Henüz bu soruya bir cevap verilmemiş.',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.outline,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          const EmptyStateWidget(
+            icon: Icons.chat_bubble_outline,
+            title: 'Henüz bu soruya bir cevap verilmemiş',
           )
         else
           ...answers.map((answer) => _AnswerCard(answer: answer)),

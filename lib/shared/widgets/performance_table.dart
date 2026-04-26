@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/shared/widgets/empty_state_widget.dart';
 
 /// PerformanceTable — bölüm performans tablosu.
 ///
@@ -47,17 +48,7 @@ class PerformanceTable extends StatelessWidget {
 
           // Tablo
           if (departments.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(32),
-              child: Center(
-                child: Text(
-                  'Henüz veri yok.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.outline,
-                  ),
-                ),
-              ),
-            )
+            const EmptyStateWidget(title: 'Henüz veri yok')
           else
             ListView.separated(
               shrinkWrap: true,

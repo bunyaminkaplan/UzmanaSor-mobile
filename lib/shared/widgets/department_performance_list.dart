@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../features/stats/domain/entities/dashboard_stats_entity.dart';
+import 'package:mobile/shared/widgets/empty_state_widget.dart';
 
 /// İstatistik Dashboard'larında (Dean, Rector) ortak kullanılan
 /// bölüm performans listesi widget'ı.
@@ -32,11 +33,9 @@ class DepartmentPerformanceList extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         if (departments.isEmpty)
-          const Center(
-            child: Padding(
-              padding: EdgeInsets.all(32),
-              child: Text('Henüz bölüm istatistiği bulunmuyor.'),
-            ),
+          const EmptyStateWidget(
+            icon: Icons.bar_chart_outlined,
+            title: 'Henüz bölüm istatistiği bulunmuyor',
           )
         else
           ListView.separated(

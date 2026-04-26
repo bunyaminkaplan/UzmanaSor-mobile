@@ -5,7 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/content_moderation/data/report_data_source.dart';
+import 'package:mobile/shared/widgets/async_error_widget.dart';
+import 'package:mobile/shared/widgets/confirm_dialog.dart';
 import 'package:mobile/shared/widgets/dashboard_scaffold.dart';
+import 'package:mobile/shared/widgets/empty_state_widget.dart';
 
 class ContentModerationPage extends ConsumerStatefulWidget {
   const ContentModerationPage({super.key});
@@ -21,35 +24,14 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
   Future<void> _handleAction(int reportId, String action) async {
     // İçerik silme için onay dialogu
     if (action == 'delete_content') {
-      final confirmed = await showDialog<bool>(
+      final confirmed = await ConfirmDialog.show(
         context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: AppColors.cardBgDark,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Text(
-            'İçeriği Sil',
-            style: TextStyle(color: AppColors.textHeadingDark),
-          ),
-          content: const Text(
-            'Bu içeriği kalıcı olarak silmek istediğinize emin misiniz?',
-            style: TextStyle(color: AppColors.textBodyDark),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('İptal'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('Sil', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
+        title: 'İçeriği Sil',
+        message: 'Bu içeriği kalıcı olarak silmek istediğinize emin misiniz?',
+        confirmLabel: 'Sil',
+        confirmColor: Colors.red,
       );
-      if (confirmed != true) return;
+      if (!confirmed) return;
     }
 
     setState(() => _processingId = reportId);
@@ -97,38 +79,12 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
       },
       body: reportsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              'Raporlar yüklenemedi: $e',
-              style: const TextStyle(color: AppColors.textMutedDark),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
+        error: (e, _) => const AsyncErrorWidget(message: 'Raporlar yüklenemedi'),
         data: (reports) {
           if (reports.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.verified_user_rounded,
-                    size: 64,
-                    color: AppColors.accentCyan.withValues(alpha: 0.4),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'İncelenecek rapor bulunmuyor',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textMutedDark,
-                    ),
-                  ),
-                ],
-              ),
+            return const EmptyStateWidget(
+              icon: Icons.verified_user_rounded,
+              title: 'İncelenecek rapor bulunmuyor',
             );
           }
 

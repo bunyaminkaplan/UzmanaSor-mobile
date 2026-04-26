@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/shared/widgets/async_error_widget.dart';
 
 /// İstatistik tabanlı dashboard'larda (Dean, Rector, SchoolAdmin)
 /// loading / error / data durumlarını standart şekilde gösteren builder.
@@ -35,19 +36,8 @@ class AsyncStatsBuilder<T> extends StatelessWidget {
           child: CircularProgressIndicator(),
         ),
       ),
-      error: (error, stack) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('Veriler yüklenemedi:\n$error', textAlign: TextAlign.center),
-            ],
-          ),
-        ),
-      ),
+      error: (error, stack) =>
+          const AsyncErrorWidget(message: 'Veriler yüklenemedi'),
       data: builder,
     );
   }

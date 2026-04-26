@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 import 'package:mobile/shared/widgets/dashboard_question_card.dart';
+import 'package:mobile/shared/widgets/empty_state_widget.dart';
 
 /// Tüm dashboard'lar (Student, Teacher, Rep vb.) için ortak,
 /// kendi içinde expand/collapse state'ini yöneten soru listesi widget'ı.
@@ -26,9 +27,7 @@ class _DashboardQuestionListState extends State<DashboardQuestionList> {
   @override
   Widget build(BuildContext context) {
     if (widget.questions.isEmpty) {
-      // Custom EmptyState widget'ı varsa o da kullanılabilir.
-      // Şimdilik basit bir text ile bırakıyoruz.
-      return const Center(child: Text('Gösterilecek soru bulunamadı.'));
+      return const EmptyStateWidget(title: 'Gösterilecek soru bulunamadı');
     }
 
     Widget list = ListView.builder(

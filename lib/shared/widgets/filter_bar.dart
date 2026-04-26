@@ -95,6 +95,14 @@ class _FilterBarState extends State<FilterBar> {
                   if (widget.activeFilterCount > 0 && widget.onClearAll != null)
                     TextButton(
                       onPressed: widget.onClearAll,
+                      style: TextButton.styleFrom(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minimumSize: Size.zero,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                      ),
                       child: const Text(
                         'Temizle',
                         style: TextStyle(fontSize: 12),

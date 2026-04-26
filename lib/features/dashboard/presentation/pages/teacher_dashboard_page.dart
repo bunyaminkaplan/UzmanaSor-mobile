@@ -5,6 +5,7 @@ import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
 import 'package:mobile/shared/widgets/dashboard_question_list.dart';
+import 'package:mobile/shared/widgets/async_error_widget.dart';
 import 'package:mobile/shared/widgets/dashboard_scaffold.dart';
 import 'package:mobile/shared/widgets/filter_bar.dart';
 
@@ -172,13 +173,8 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
             loading: () => const Expanded(
               child: Center(child: CircularProgressIndicator()),
             ),
-            error: (err, stack) => Expanded(
-              child: Center(
-                child: Text(
-                  'Bir hata oluştu:\n$err',
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            error: (err, stack) => const Expanded(
+              child: AsyncErrorWidget(message: 'Bir hata oluştu'),
             ),
             data: (questions) {
               return Expanded(

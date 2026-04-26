@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_status_chip.dart';
+import 'package:mobile/shared/widgets/confirm_dialog.dart';
 
 /// DashboardQuestionCard — expandable soru kartı (animasyonlu).
 ///
@@ -245,32 +246,15 @@ class _DashboardQuestionCardState extends State<DashboardQuestionCard> {
     );
   }
 
-  void _confirmDelete(BuildContext context) {
-    showDialog(
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await ConfirmDialog.show(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Soruyu Sil'),
-        content: const Text(
-          'Bu soruyu silmek istediğinize emin misiniz?\nBu işlem geri alınamaz.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('İptal'),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(ctx);
-              widget.onDelete?.call();
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: const Text('Sil'),
-          ),
-        ],
-      ),
+      title: 'Soruyu Sil',
+      message: 'Bu soruyu silmek istediğinize emin misiniz?\nBu işlem geri alınamaz.',
+      confirmLabel: 'Sil',
+      confirmColor: Theme.of(context).colorScheme.error,
     );
+    if (confirmed) widget.onDelete?.call();
   }
 
   static String _formatDate(DateTime date) {
