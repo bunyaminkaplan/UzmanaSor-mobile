@@ -70,9 +70,7 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
     return DashboardScaffold(
-      title: 'Öğretmen Paneli',
       onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: Column(
         children: [
           DashboardPageHeader(

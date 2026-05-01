@@ -8,7 +8,6 @@ import '../../../../shared/widgets/dashboard_page_header.dart';
 import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
 import '../../../../shared/widgets/manage_list_tile.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/datasources/advisor_student_remote_data_source.dart';
 import '../../domain/entities/advisor_student_entity.dart';
 import '../providers/advisor_student_provider.dart';
@@ -82,9 +81,7 @@ class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
     final studentsAsync = ref.watch(advisorStudentsProvider);
 
     return DashboardScaffold(
-      title: 'Temsilci Seçimi',
       onRefresh: () => ref.invalidate(advisorStudentsProvider),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

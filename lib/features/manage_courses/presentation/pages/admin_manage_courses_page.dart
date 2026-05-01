@@ -8,7 +8,6 @@ import '../../../../shared/widgets/dashboard_page_header.dart';
 import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
 import '../../../../shared/widgets/manage_list_tile.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../courses/domain/entities/course_entity.dart';
 import '../../../courses/presentation/providers/course_provider.dart';
 import 'manage_courses_page.dart' show CourseFormSheet;
@@ -47,9 +46,7 @@ class _AdminManageCoursesPageState
     final coursesAsync = ref.watch(coursesProvider);
 
     return DashboardScaffold(
-      title: 'Ders Yönetimi',
       onRefresh: () => ref.invalidate(coursesProvider),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(context, ref),
         icon: const Icon(Icons.add),

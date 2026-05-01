@@ -20,9 +20,7 @@ class DeanDashboardPage extends ConsumerWidget {
     final statsAsync = ref.watch(deanStatsProvider);
 
     return DashboardScaffold(
-      title: 'Dekan Paneli',
       onRefresh: () => ref.invalidate(deanStatsProvider),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

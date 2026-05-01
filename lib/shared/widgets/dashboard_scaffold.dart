@@ -6,37 +6,48 @@ import 'dashboard_drawer.dart';
 
 /// Tüm dashboard sayfalarında ortak olan Scaffold iskeleti.
 ///
-/// AppBar (başlık + yenile/çıkış butonları), DashboardDrawer ve
-/// opsiyonel RefreshIndicator içerir. Sayfalar sadece [body] verir.
+/// Sabit "Uzmana Sor" başlığı ve üniversite logosu içeren AppBar,
+/// DashboardDrawer ve opsiyonel RefreshIndicator içerir.
+/// Logout işlemi Drawer footer'dan sağlanır.
 ///
 /// Kullanım:
 /// ```dart
 /// DashboardScaffold(
-///   title: 'Dekan Paneli',
 ///   onRefresh: () => ref.invalidate(deanStatsProvider),
-///   onLogout: () => ref.read(authProvider.notifier).logout(),
 ///   body: ...,
 /// )
 /// ```
 class DashboardScaffold extends ConsumerWidget {
-  final String title;
   final VoidCallback onRefresh;
-  final VoidCallback onLogout;
   final Widget body;
   final Widget? floatingActionButton;
 
-  /// Ek AppBar action'ları (refresh/logout'un önüne eklenir).
-  final List<Widget>? extraActions;
-
   const DashboardScaffold({
     super.key,
-    required this.title,
     required this.onRefresh,
-    required this.onLogout,
     required this.body,
     this.floatingActionButton,
-    this.extraActions,
   });
+
+  /// Sabit AppBar — tüm sayfalar için ortak.
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: const Text('Uzmana Sor'),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 12.0),
+          child: Container(
+            padding: const EdgeInsets.all(1),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: Image.asset('assets/images/logo.png', height: 40),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,12 +69,7 @@ class DashboardScaffold extends ConsumerWidget {
       if (missing.isNotEmpty) {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: AppBar(
-            title: Text(title),
-            actions: [
-              IconButton(icon: const Icon(Icons.logout), onPressed: onLogout),
-            ],
-          ),
+          appBar: _buildAppBar(),
           drawer: const DashboardDrawer(),
           body: Center(
             child: Padding(
@@ -104,22 +110,7 @@ class DashboardScaffold extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          if (extraActions != null) ...extraActions!,
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: onRefresh,
-            tooltip: 'Yenile',
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: onLogout,
-            tooltip: 'Çıkış',
-          ),
-        ],
-      ),
+      appBar: _buildAppBar(),
       drawer: const DashboardDrawer(),
       floatingActionButton: floatingActionButton,
       body: RefreshIndicator(onRefresh: () async => onRefresh(), child: body),

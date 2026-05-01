@@ -8,7 +8,6 @@ import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
 import '../../../../shared/widgets/manage_list_tile.dart';
 import '../../../auth/domain/entities/user_entity.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/manage_user_roles_provider.dart';
 import '../utils/role_labels.dart';
 import '../widgets/role_editor_accordion.dart';
@@ -33,9 +32,7 @@ class _ManageUserRolesPageState extends ConsumerState<ManageUserRolesPage> {
     final usersAsync = ref.watch(usersListProvider);
 
     return DashboardScaffold(
-      title: 'Kullanıcı Yönetimi',
       onRefresh: () => ref.invalidate(usersListProvider),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

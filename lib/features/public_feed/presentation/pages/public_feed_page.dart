@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mobile/core/theme/app_colors_ext.dart';
-import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/features/public_feed/presentation/widgets/feed_question_card.dart';
 import 'package:mobile/shared/widgets/async_error_widget.dart';
@@ -59,12 +58,8 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
     final questionsAsync = ref.watch(questionsProvider(_currentQueryParams));
 
     return DashboardScaffold(
-      title: 'Genel Akış',
       onRefresh: () async {
         ref.invalidate(questionsProvider(_currentQueryParams));
-      },
-      onLogout: () {
-        ref.read(authProvider.notifier).logout();
       },
       body: Column(
         children: [

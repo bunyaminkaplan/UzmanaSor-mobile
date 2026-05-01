@@ -23,12 +23,10 @@ class ManageAdvisorsPage extends ConsumerWidget {
     final teachersAsync = ref.watch(deptHeadTeachersProvider);
 
     return DashboardScaffold(
-      title: 'Danışman Yönetimi',
       onRefresh: () async {
         ref.invalidate(deptHeadClassTermsProvider);
         ref.invalidate(deptHeadTeachersProvider);
       },
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

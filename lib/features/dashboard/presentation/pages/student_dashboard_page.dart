@@ -80,9 +80,7 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
     return DashboardScaffold(
-      title: 'Öğrenci Paneli',
       onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => GoRouter.of(context).push('/ask'),
         icon: const Icon(Icons.add),

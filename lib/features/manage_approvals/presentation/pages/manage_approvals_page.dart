@@ -7,7 +7,6 @@ import '../../../../shared/widgets/dashboard_page_header.dart';
 import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
 import '../../../../shared/widgets/manage_list_tile.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../domain/entities/pending_user_entity.dart';
 import '../providers/approval_provider.dart';
 
@@ -22,9 +21,7 @@ class ManageApprovalsPage extends ConsumerWidget {
     final pendingAsync = ref.watch(pendingUsersProvider);
 
     return DashboardScaffold(
-      title: 'Kullanıcı Onayları',
       onRefresh: () => ref.invalidate(pendingUsersProvider),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

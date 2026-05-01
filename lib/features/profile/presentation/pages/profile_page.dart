@@ -28,14 +28,10 @@ class ProfilePage extends ConsumerWidget {
     final isTeacher = user.userType == 'teacher';
 
     return DashboardScaffold(
-      title: 'Profilim',
       onRefresh: () async {
         ref.invalidate(myCoursesProvider);
         ref.invalidate(busyTermsProvider);
         ref.invalidate(classTermsProvider);
-      },
-      onLogout: () {
-        ref.read(authProvider.notifier).logout();
       },
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),

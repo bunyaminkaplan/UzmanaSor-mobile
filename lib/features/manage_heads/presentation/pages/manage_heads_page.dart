@@ -24,9 +24,7 @@ class ManageHeadsPage extends ConsumerWidget {
     final departments = _extractDepartments(user);
 
     return DashboardScaffold(
-      title: 'Bölüm Yönetimi',
       onRefresh: () => ref.invalidate(facultiesProvider),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

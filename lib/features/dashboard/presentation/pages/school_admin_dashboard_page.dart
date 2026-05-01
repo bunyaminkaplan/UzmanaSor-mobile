@@ -7,7 +7,6 @@ import '../../../../shared/widgets/dashboard_page_header.dart';
 import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/department_performance_list.dart';
 import '../../../../shared/widgets/stats_summary_grid.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../stats/domain/entities/dashboard_stats_entity.dart';
 import '../../../stats/presentation/providers/stats_provider.dart';
 
@@ -20,9 +19,7 @@ class SchoolAdminDashboardPage extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return DashboardScaffold(
-      title: 'Okul Yönetim Paneli',
       onRefresh: () => ref.invalidate(rectorStatsProvider(null)),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

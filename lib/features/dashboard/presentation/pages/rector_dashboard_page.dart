@@ -8,7 +8,6 @@ import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/department_performance_list.dart';
 import '../../../../shared/widgets/stats_summary_grid.dart';
 import '../../../academic_units/presentation/providers/academic_units_provider.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../stats/domain/entities/dashboard_stats_entity.dart';
 import '../../../stats/presentation/providers/stats_provider.dart';
 
@@ -30,9 +29,7 @@ class _RectorDashboardPageState extends ConsumerState<RectorDashboardPage> {
     final theme = Theme.of(context);
 
     return DashboardScaffold(
-      title: 'Rektör Paneli',
       onRefresh: () => ref.invalidate(rectorStatsProvider(_selectedFacultyId)),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

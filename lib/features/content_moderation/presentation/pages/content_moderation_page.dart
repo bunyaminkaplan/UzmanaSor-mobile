@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/core/theme/app_colors_ext.dart';
-import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/content_moderation/data/report_data_source.dart';
 import 'package:mobile/shared/widgets/async_error_widget.dart';
 import 'package:mobile/shared/widgets/confirm_dialog.dart';
@@ -71,12 +70,8 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
     final reportsAsync = ref.watch(reportsProvider);
 
     return DashboardScaffold(
-      title: 'İçerik Denetimi',
       onRefresh: () async {
         ref.invalidate(reportsProvider);
-      },
-      onLogout: () {
-        ref.read(authProvider.notifier).logout();
       },
       body: reportsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),

@@ -9,7 +9,6 @@ import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
 import '../../../../shared/widgets/manage_form_sheet.dart';
 import '../../../../shared/widgets/manage_list_tile.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../domain/entities/class_term_entity.dart';
 import '../providers/class_term_provider.dart';
 
@@ -24,9 +23,7 @@ class ManageTermsPage extends ConsumerWidget {
     final termsAsync = ref.watch(classTermsProvider);
 
     return DashboardScaffold(
-      title: 'Dönem Yönetimi',
       onRefresh: () => ref.invalidate(classTermsProvider),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(context, ref),
         icon: const Icon(Icons.add),

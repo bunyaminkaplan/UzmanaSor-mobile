@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/core/theme/app_colors.dart';
-import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
+
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
 import 'package:mobile/shared/widgets/dashboard_question_list.dart';
@@ -21,7 +21,6 @@ class RepDashboardPage extends ConsumerStatefulWidget {
 }
 
 class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
-  bool _isSearchExpanded = false;
   final TextEditingController _searchController = TextEditingController();
 
   // Temsilci panelinde "durum" varsayılan olarak bekleyenlerdir.
@@ -60,22 +59,7 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
     return DashboardScaffold(
-      title: 'Temsilci Paneli',
       onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
-      onLogout: () => ref.read(authProvider.notifier).logout(),
-      extraActions: [
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {
-            setState(() {
-              _isSearchExpanded = !_isSearchExpanded;
-              if (!_isSearchExpanded) {
-                _searchController.clear();
-              }
-            });
-          },
-        ),
-      ],
       body: Column(
         children: [
           // 1. Dashboard Başlığı
@@ -95,7 +79,6 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
               _updateFilter(() {
                 _selectedStatus = 'pending';
                 _searchController.clear();
-                _isSearchExpanded = false;
               });
             },
             children: [
