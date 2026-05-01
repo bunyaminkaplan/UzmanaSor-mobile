@@ -10,29 +10,82 @@ import 'dashboard_drawer.dart';
 /// DashboardDrawer ve opsiyonel RefreshIndicator içerir.
 /// Logout işlemi Drawer footer'dan sağlanır.
 ///
+/// [header] verildiğinde NestedScrollView ile scroll edilebilir header
+/// oluşturulur. Header ekrandan çıktığında AppBar başlığı [pageTitle]
+/// değerine slide-up animasyonuyla dönüşür.
+///
 /// Kullanım:
 /// ```dart
 /// DashboardScaffold(
+///   pageTitle: 'Öğretmen Paneli',
+///   header: DashboardPageHeader(title: 'Öğretmen Paneli', ...),
 ///   onRefresh: () => ref.invalidate(deanStatsProvider),
 ///   body: ...,
 /// )
 /// ```
-class DashboardScaffold extends ConsumerWidget {
+class DashboardScaffold extends ConsumerStatefulWidget {
   final VoidCallback onRefresh;
   final Widget body;
   final Widget? floatingActionButton;
+
+  /// Scroll edilebilir sayfa başlığı widget'ı (genellikle DashboardPageHeader).
+  /// Verildiğinde NestedScrollView ile body'nin üstüne yerleştirilir.
+  final Widget? header;
+
+  /// AppBar'da gösterilecek sayfa başlığı.
+  /// Header ekrandan çıktığında "Uzmana Sor" yerine bu metin görünür.
+  final String? pageTitle;
 
   const DashboardScaffold({
     super.key,
     required this.onRefresh,
     required this.body,
     this.floatingActionButton,
+    this.header,
+    this.pageTitle,
   });
 
+  /// Header scroll threshold — bu piksel değerinden sonra title takeover
+  /// tetiklenir. Header'ın margin + padding + text yüksekliğine denk gelir.
+  static const double _kHeaderThreshold = 120.0;
+
+  @override
+  ConsumerState<DashboardScaffold> createState() => _DashboardScaffoldState();
+}
+
+class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
+  /// true olduğunda AppBar'da pageTitle gösterilir (header ekrandan çıkmış).
+  bool _showPageTitle = false;
+
   /// Sabit AppBar — tüm sayfalar için ortak.
+  /// [pageTitle] ve [header] verilmişse, scroll durumuna göre başlık animasyonu
+  /// uygular.
   AppBar _buildAppBar() {
+    final hasTitle = widget.pageTitle != null && widget.header != null;
+
     return AppBar(
-      title: const Text('Uzmana Sor'),
+      title: hasTitle
+          ? AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                final offset = Tween<Offset>(
+                  begin: const Offset(0, 0.5),
+                  end: Offset.zero,
+                ).animate(CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeOut,
+                ));
+                return SlideTransition(
+                  position: offset,
+                  child: FadeTransition(opacity: animation, child: child),
+                );
+              },
+              child: Text(
+                _showPageTitle ? widget.pageTitle! : 'Uzmana Sor',
+                key: ValueKey<bool>(_showPageTitle),
+              ),
+            )
+          : const Text('Uzmana Sor'),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 12.0),
@@ -49,8 +102,44 @@ class DashboardScaffold extends ConsumerWidget {
     );
   }
 
+  /// Scroll bildirimlerini dinler ve header'ın ekrandan çıkıp çıkmadığını
+  /// belirler.
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (widget.pageTitle == null || widget.header == null) return false;
+
+    final shouldShow =
+        notification.metrics.pixels > DashboardScaffold._kHeaderThreshold;
+    if (shouldShow != _showPageTitle) {
+      setState(() => _showPageTitle = shouldShow);
+    }
+    return false;
+  }
+
+  /// Header varsa NestedScrollView, yoksa mevcut RefreshIndicator yapısı.
+  Widget _buildBody() {
+    if (widget.header != null) {
+      return NotificationListener<ScrollNotification>(
+        onNotification: _onScrollNotification,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverToBoxAdapter(child: widget.header!),
+          ],
+          body: RefreshIndicator(
+            onRefresh: () async => widget.onRefresh(),
+            child: widget.body,
+          ),
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () async => widget.onRefresh(),
+      child: widget.body,
+    );
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final user = ref.watch(authProvider).value;
 
     if (user != null) {
@@ -112,8 +201,8 @@ class DashboardScaffold extends ConsumerWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: _buildAppBar(),
       drawer: const DashboardDrawer(),
-      floatingActionButton: floatingActionButton,
-      body: RefreshIndicator(onRefresh: () async => onRefresh(), child: body),
+      floatingActionButton: widget.floatingActionButton,
+      body: _buildBody(),
     );
   }
 }
