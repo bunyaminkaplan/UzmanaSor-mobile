@@ -57,6 +57,33 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
   /// true olduğunda AppBar'da pageTitle gösterilir (header ekrandan çıkmış).
   bool _showPageTitle = false;
 
+  /// NestedScrollView'ın outer (header slivers) scroll'unu izler.
+  /// Inner scroll (body) bu controller'ı etkilemez.
+  late final ScrollController _outerScrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _outerScrollController = ScrollController()..addListener(_onOuterScroll);
+  }
+
+  @override
+  void dispose() {
+    _outerScrollController.dispose();
+    super.dispose();
+  }
+
+  /// Outer scroll offset'i threshold'u geçtiğinde title takeover tetiklenir.
+  void _onOuterScroll() {
+    if (widget.pageTitle == null || widget.header == null) return;
+
+    final shouldShow =
+        _outerScrollController.offset > DashboardScaffold._kHeaderThreshold;
+    if (shouldShow != _showPageTitle) {
+      setState(() => _showPageTitle = shouldShow);
+    }
+  }
+
   /// Sabit AppBar — tüm sayfalar için ortak.
   /// [pageTitle] ve [header] verilmişse, scroll durumuna göre başlık animasyonu
   /// uygular.
@@ -102,32 +129,17 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
     );
   }
 
-  /// Scroll bildirimlerini dinler ve header'ın ekrandan çıkıp çıkmadığını
-  /// belirler.
-  bool _onScrollNotification(ScrollNotification notification) {
-    if (widget.pageTitle == null || widget.header == null) return false;
-
-    final shouldShow =
-        notification.metrics.pixels > DashboardScaffold._kHeaderThreshold;
-    if (shouldShow != _showPageTitle) {
-      setState(() => _showPageTitle = shouldShow);
-    }
-    return false;
-  }
-
   /// Header varsa NestedScrollView, yoksa mevcut RefreshIndicator yapısı.
   Widget _buildBody() {
     if (widget.header != null) {
-      return NotificationListener<ScrollNotification>(
-        onNotification: _onScrollNotification,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverToBoxAdapter(child: widget.header!),
-          ],
-          body: RefreshIndicator(
-            onRefresh: () async => widget.onRefresh(),
-            child: widget.body,
-          ),
+      return NestedScrollView(
+        controller: _outerScrollController,
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverToBoxAdapter(child: widget.header!),
+        ],
+        body: RefreshIndicator(
+          onRefresh: () async => widget.onRefresh(),
+          child: widget.body,
         ),
       );
     }

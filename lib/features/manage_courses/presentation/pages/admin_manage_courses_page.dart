@@ -47,6 +47,13 @@ class _AdminManageCoursesPageState
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(coursesProvider),
+      pageTitle: 'Ders Yönetimi',
+      header: const DashboardPageHeader(
+        title: 'Ders Yönetimi',
+        description:
+            'Sistemdeki tüm dersleri görüntüleyin, ekleyin, düzenleyin veya silin.',
+        borderColor: AppColors.accentOrange,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(context, ref),
         icon: const Icon(Icons.add),
@@ -59,12 +66,6 @@ class _AdminManageCoursesPageState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const DashboardPageHeader(
-              title: 'Ders Yönetimi',
-              description:
-                  'Sistemdeki tüm dersleri görüntüleyin, ekleyin, düzenleyin veya silin.',
-              borderColor: AppColors.accentOrange,
-            ),
 
             // --- Arama Çubuğu ---
             Padding(

@@ -21,19 +21,20 @@ class DeanDashboardPage extends ConsumerWidget {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(deanStatsProvider),
+      pageTitle: 'Fakülte Genel Bakış',
+      header: DashboardPageHeader(
+        title: 'Fakülte Genel Bakış',
+        description: 'Bölümlerin soru ve cevaplanma performansı',
+        borderColor: AppColors.accentNavy,
+        userName: user?.facultyDetails?['name'] ?? 'Fakülte Bilgisi Yok',
+        userNameColor: AppColors.accentOrange,
+        roleName: 'Dekan Hesabı',
+      ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DashboardPageHeader(
-              title: 'Fakülte Genel Bakış',
-              description: 'Bölümlerin soru ve cevaplanma performansı',
-              borderColor: AppColors.accentNavy,
-              userName: user?.facultyDetails?['name'] ?? 'Fakülte Bilgisi Yok',
-              userNameColor: AppColors.accentOrange,
-              roleName: 'Dekan Hesabı',
-            ),
             AsyncStatsBuilder<DashboardStatsEntity>(
               asyncValue: statsAsync,
               builder: (stats) => Padding(

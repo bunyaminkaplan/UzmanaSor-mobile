@@ -26,6 +26,12 @@ class ManageCoursesPage extends ConsumerWidget {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(coursesProvider),
+      pageTitle: 'Ders Yönetimi',
+      header: const DashboardPageHeader(
+        title: 'Ders Yönetimi',
+        description: 'Bölümünüze ait dersleri yönetin ve hoca atayın.',
+        borderColor: AppColors.accentOrange,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(context, ref),
         icon: const Icon(Icons.add),
@@ -38,11 +44,6 @@ class ManageCoursesPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const DashboardPageHeader(
-              title: 'Ders Yönetimi',
-              description: 'Bölümünüze ait dersleri yönetin ve hoca atayın.',
-              borderColor: AppColors.accentOrange,
-            ),
             AsyncStatsBuilder<List<CourseEntity>>(
               asyncValue: coursesAsync,
               builder: (courses) {

@@ -81,6 +81,15 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
+      pageTitle: 'Öğrenci Paneli',
+      header: DashboardPageHeader(
+        title: 'Öğrenci Paneli',
+        description: 'Sorularını yönet, cevaplarını takip et.',
+        borderColor: AppColors.accentCyan,
+        userName: user?.username ?? '',
+        userNameColor: AppColors.accentOrange,
+        roleName: 'Öğrenci Hesabı',
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => GoRouter.of(context).push('/ask'),
         icon: const Icon(Icons.add),
@@ -88,14 +97,6 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
       ),
       body: Column(
         children: [
-          DashboardPageHeader(
-            title: 'Öğrenci Paneli',
-            description: 'Sorularını yönet, cevaplarını takip et.',
-            borderColor: AppColors.accentCyan,
-            userName: user?.username ?? '',
-            userNameColor: AppColors.accentOrange,
-            roleName: 'Öğrenci Hesabı',
-          ),
 
           // Filter Bar
           FilterBar(

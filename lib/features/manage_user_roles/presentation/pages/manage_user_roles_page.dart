@@ -33,17 +33,18 @@ class _ManageUserRolesPageState extends ConsumerState<ManageUserRolesPage> {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(usersListProvider),
+      pageTitle: 'Kullanıcı ve Rol Yönetimi',
+      header: DashboardPageHeader(
+        title: 'Kullanıcı ve Rol Yönetimi',
+        description:
+            'Sistemdeki tüm kullanıcıları sorgulayabilir ve yetki düzeylerini değiştirebilirsiniz.',
+        borderColor: theme.colorScheme.primary,
+      ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DashboardPageHeader(
-              title: 'Kullanıcı ve Rol Yönetimi',
-              description:
-                  'Sistemdeki tüm kullanıcıları sorgulayabilir ve yetki düzeylerini değiştirebilirsiniz.',
-              borderColor: theme.colorScheme.primary,
-            ),
 
             // --- Arama Çubuğu ---
             Padding(

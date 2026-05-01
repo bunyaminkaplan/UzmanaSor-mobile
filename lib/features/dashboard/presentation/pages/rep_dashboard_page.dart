@@ -60,15 +60,15 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
+      pageTitle: 'Sınıfına Gelen Sorular',
+      header: const DashboardPageHeader(
+        title: 'Sınıfına Gelen Sorular',
+        description:
+            'Onaylaman veya reddetmen gereken soruları buradan yönetebilirsin.',
+        borderColor: AppColors.accentNavy,
+      ),
       body: Column(
         children: [
-          // 1. Dashboard Başlığı
-          const DashboardPageHeader(
-            title: 'Sınıfına Gelen Sorular',
-            description:
-                'Onaylaman veya reddetmen gereken soruları buradan yönetebilirsin.',
-            borderColor: AppColors.accentNavy,
-          ),
 
           // 2. Filtre Çubuğu
           FilterBar(

@@ -82,17 +82,18 @@ class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(advisorStudentsProvider),
+      pageTitle: 'Sınıf Temsilcisi Seçimi',
+      header: const DashboardPageHeader(
+        title: 'Sınıf Temsilcisi Seçimi',
+        description:
+            'Danışmanı olduğunuz sınıfın temsilcisini buradan belirleyebilirsiniz.',
+        borderColor: AppColors.accentCyan,
+      ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const DashboardPageHeader(
-              title: 'Sınıf Temsilcisi Seçimi',
-              description:
-                  'Danışmanı olduğunuz sınıfın temsilcisini buradan belirleyebilirsiniz.',
-              borderColor: AppColors.accentCyan,
-            ),
 
             // --- Arama Çubuğu ---
             Padding(

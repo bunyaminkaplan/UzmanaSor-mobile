@@ -25,20 +25,21 @@ class ManageHeadsPage extends ConsumerWidget {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(facultiesProvider),
+      pageTitle: 'Bölüm Yönetimi',
+      header: DashboardPageHeader(
+        title: 'Bölüm Yönetimi',
+        description:
+            'Fakültenizdeki bölümleri seçip Bölüm Başkanlarını atayın.',
+        borderColor: AppColors.accentCyan,
+        userName: facultyName,
+        roleName: 'FAKÜLTE',
+        userNameColor: AppColors.accentOrange,
+      ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DashboardPageHeader(
-              title: 'Bölüm Yönetimi',
-              description:
-                  'Fakültenizdeki bölümleri seçip Bölüm Başkanlarını atayın.',
-              borderColor: AppColors.accentCyan,
-              userName: facultyName,
-              roleName: 'FAKÜLTE',
-              userNameColor: AppColors.accentOrange,
-            ),
 
             if (departments.isEmpty)
               const EmptyStateWidget(

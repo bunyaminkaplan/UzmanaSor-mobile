@@ -24,6 +24,13 @@ class ManageTermsPage extends ConsumerWidget {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(classTermsProvider),
+      pageTitle: 'Dönem ve Sınıf Yönetimi',
+      header: const DashboardPageHeader(
+        title: 'Dönem ve Sınıf Yönetimi',
+        description:
+            'Bölümlerin aktif dönemlerini ve sınıf danışmanlarını yönetin.',
+        borderColor: AppColors.accentOrange,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openForm(context, ref),
         icon: const Icon(Icons.add),
@@ -36,12 +43,6 @@ class ManageTermsPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const DashboardPageHeader(
-              title: 'Dönem ve Sınıf Yönetimi',
-              description:
-                  'Bölümlerin aktif dönemlerini ve sınıf danışmanlarını yönetin.',
-              borderColor: AppColors.accentOrange,
-            ),
             AsyncStatsBuilder<List<ClassTermEntity>>(
               asyncValue: termsAsync,
               builder: (terms) {

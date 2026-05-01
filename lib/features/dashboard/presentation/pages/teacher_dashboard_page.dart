@@ -71,16 +71,17 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
+      pageTitle: 'Öğretmen Paneli',
+      header: DashboardPageHeader(
+        title: 'Öğretmen Paneli',
+        description: 'Öğrencilerden gelen soruları cevapla ve yönet.',
+        borderColor: Theme.of(context).colorScheme.primary,
+        userName: user?.username ?? '',
+        userNameColor: Theme.of(context).colorScheme.primary,
+        roleName: 'Öğretmen Hesabı',
+      ),
       body: Column(
         children: [
-          DashboardPageHeader(
-            title: 'Öğretmen Paneli',
-            description: 'Öğrencilerden gelen soruları cevapla ve yönet.',
-            borderColor: Theme.of(context).colorScheme.primary,
-            userName: user?.username ?? '',
-            userNameColor: Theme.of(context).colorScheme.primary,
-            roleName: 'Öğretmen Hesabı',
-          ),
 
           // Filter Bar
           FilterBar(

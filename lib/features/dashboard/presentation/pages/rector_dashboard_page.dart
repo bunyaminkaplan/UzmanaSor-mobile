@@ -30,17 +30,18 @@ class _RectorDashboardPageState extends ConsumerState<RectorDashboardPage> {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(rectorStatsProvider(_selectedFacultyId)),
+      pageTitle: 'Rektörlük Genel Bakış',
+      header: DashboardPageHeader(
+        title: 'Rektörlük Genel Bakış',
+        description: 'Üniversite geneli soru ve cevaplanma performansı',
+        borderColor: AppColors.accentNavy,
+        roleName: 'Rektör Hesabı',
+      ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DashboardPageHeader(
-              title: 'Rektörlük Genel Bakış',
-              description: 'Üniversite geneli soru ve cevaplanma performansı',
-              borderColor: AppColors.accentNavy,
-              roleName: 'Rektör Hesabı',
-            ),
 
             // --- Fakülte Filtresi ---
             Padding(

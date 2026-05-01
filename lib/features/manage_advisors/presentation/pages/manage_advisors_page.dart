@@ -27,20 +27,21 @@ class ManageAdvisorsPage extends ConsumerWidget {
         ref.invalidate(deptHeadClassTermsProvider);
         ref.invalidate(deptHeadTeachersProvider);
       },
+      pageTitle: 'Sınıf Danışmanlığı Yönetimi',
+      header: DashboardPageHeader(
+        title: 'Sınıf Danışmanlığı Yönetimi',
+        description:
+            'Bölümünüze ait sınıflara (dönemlere) danışman hoca atayın.',
+        borderColor: AppColors.accentCyan,
+        userName: user?.username ?? 'Kullanıcı',
+        roleName: 'BÖLÜM BAŞKANI',
+        userNameColor: AppColors.accentCyan,
+      ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DashboardPageHeader(
-              title: 'Sınıf Danışmanlığı Yönetimi',
-              description:
-                  'Bölümünüze ait sınıflara (dönemlere) danışman hoca atayın.',
-              borderColor: AppColors.accentCyan,
-              userName: user?.username ?? 'Kullanıcı',
-              roleName: 'BÖLÜM BAŞKANI',
-              userNameColor: AppColors.accentCyan,
-            ),
             termsAsync.when(
               loading: () => const Padding(
                 padding: EdgeInsets.all(32),

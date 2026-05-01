@@ -22,16 +22,17 @@ class ManageApprovalsPage extends ConsumerWidget {
 
     return DashboardScaffold(
       onRefresh: () => ref.invalidate(pendingUsersProvider),
+      pageTitle: 'Onay İşlemleri',
+      header: const DashboardPageHeader(
+        title: 'Onay İşlemleri',
+        description: 'Bölümünüze kayıt olan akademisyenleri onaylayın.',
+        borderColor: AppColors.accentOrange,
+      ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const DashboardPageHeader(
-              title: 'Onay İşlemleri',
-              description: 'Bölümünüze kayıt olan akademisyenleri onaylayın.',
-              borderColor: AppColors.accentOrange,
-            ),
             AsyncStatsBuilder<List<PendingUserEntity>>(
               asyncValue: pendingAsync,
               builder: (users) {
