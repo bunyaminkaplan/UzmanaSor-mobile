@@ -95,16 +95,50 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
           ? AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               transitionBuilder: (child, animation) {
-                final offset = Tween<Offset>(
-                  begin: const Offset(0, 0.5),
+                // Giren/çıkan widget'ı belirleme: key eşleşiyorsa giriyor
+                final isEntering =
+                    child.key == ValueKey<bool>(_showPageTitle);
+
+                // Scroll yönüne göre slide:
+                // _showPageTitle=true (aşağı scroll): her şey YUKARI kayar
+                //   → giren alttan (0.5), çıkan yukarıya (-0.5)
+                // _showPageTitle=false (yukarı scroll): her şey AŞAĞI kayar
+                //   → giren üstten (-0.5), çıkan aşağıya (0.5)
+                final double dy = _showPageTitle
+                    ? (isEntering ? 0.5 : -0.5)
+                    : (isEntering ? -0.5 : 0.5);
+
+                final slideOffset = Tween<Offset>(
+                  begin: Offset(0, dy),
                   end: Offset.zero,
                 ).animate(CurvedAnimation(
                   parent: animation,
                   curve: Curves.easeOut,
                 ));
+
+                // Geçiş sırasında renkli, yerine oturduğunda saydam.
                 return SlideTransition(
-                  position: offset,
-                  child: FadeTransition(opacity: animation, child: child),
+                  position: slideOffset,
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, wrappedChild) => Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.accentCyan.withValues(
+                            alpha: 0.2 * (1.0 - animation.value),
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: wrappedChild,
+                      ),
+                      child: child,
+                    ),
+                  ),
                 );
               },
               child: Text(
