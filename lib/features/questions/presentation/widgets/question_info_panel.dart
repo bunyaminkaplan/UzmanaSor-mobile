@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 import 'package:mobile/features/questions/domain/entities/question_status.dart';
 
@@ -105,8 +106,8 @@ class QuestionInfoPanel extends StatelessWidget {
   Color _repStatusColor(BuildContext context, RepStatus status) {
     final cs = Theme.of(context).colorScheme;
     return switch (status) {
-      RepStatus.pending => Colors.orange,
-      RepStatus.approved => Colors.green,
+      RepStatus.pending => AppColors.accentOrange,
+      RepStatus.approved => AppColors.success,
       RepStatus.rejected => cs.error,
       RepStatus.notRequired => cs.outline,
     };

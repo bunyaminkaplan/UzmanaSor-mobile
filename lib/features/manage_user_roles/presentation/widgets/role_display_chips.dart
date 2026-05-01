@@ -1,3 +1,4 @@
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/role_labels.dart';
@@ -53,7 +54,7 @@ class RoleDisplayChips extends StatelessWidget {
         ...displayRoles.map((role) {
           final isConfirming = confirmingRemoveRole == role;
           final color = isConfirming
-              ? Colors.redAccent
+              ? AppColors.error
               : theme.colorScheme.primary;
 
           final mainChip = ActionChip(

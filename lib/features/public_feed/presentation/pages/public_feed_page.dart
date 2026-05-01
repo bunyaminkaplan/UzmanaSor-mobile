@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/features/public_feed/presentation/widgets/feed_question_card.dart';
@@ -142,17 +142,17 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.inputBgDark,
+          color: context.inputBg,
           borderRadius: BorderRadius.circular(12),
         ),
         child: TextField(
           controller: _searchController,
           onSubmitted: (_) => _applyFilters(),
-          style: const TextStyle(color: AppColors.textBodyDark, fontSize: 14),
+          style: TextStyle(color: context.textBody, fontSize: 14),
           decoration: InputDecoration(
             hintText: 'Soru veya içerik ara...',
-            hintStyle: TextStyle(color: AppColors.textMutedDark, fontSize: 14),
-            prefixIcon: Icon(Icons.search, color: AppColors.textMutedDark, size: 20),
+            hintStyle: TextStyle(color: context.textMuted, fontSize: 14),
+            prefixIcon: Icon(Icons.search, color: context.textMuted, size: 20),
             suffixIcon: _searchController.text.isNotEmpty
                 ? IconButton(
                     icon: const Icon(Icons.clear, size: 18),

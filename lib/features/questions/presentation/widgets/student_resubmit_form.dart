@@ -1,3 +1,4 @@
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -63,7 +64,7 @@ class _StudentResubmitFormState extends ConsumerState<StudentResubmitForm> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Başlık ve içerik boş olamaz.'),
-          backgroundColor: Colors.orange,
+          backgroundColor: AppColors.accentOrange,
         ),
       );
       return;
@@ -93,7 +94,7 @@ class _StudentResubmitFormState extends ConsumerState<StudentResubmitForm> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Soru düzenlendi ve tekrar gönderildi.'),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
             ),
           );
           // Listeye dön

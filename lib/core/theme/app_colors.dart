@@ -56,6 +56,13 @@ abstract final class AppColors {
   // CSS: --accent-navy-dark
   static const accentNavyDark = Color(0xFF1A1F3A);
 
+  // Gradient bitiş renkleri (accent'lerin koyu tonu)
+  static const accentOrangeDark = Color(0xFFD66A0F);
+  static const accentCyanDark   = Color(0xFF0D8AAB);
+
+  // Native splash arka planıyla uyum
+  static const splashBg = Color(0xFF12141C);
+
   // --------------- Kenarlık (Border) ---------------
   // CSS: --border-color
   static const borderColor = Color(0xFFE0E0E0);

@@ -136,7 +136,7 @@ class _AdvisorAssignmentCardState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
           ),
@@ -151,7 +151,7 @@ class _AdvisorAssignmentCardState
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Atama başarısız: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -193,10 +193,10 @@ class _AdvisorAssignmentCardState
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
+                    color: AppColors.success.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Colors.green.withValues(alpha: 0.3),
+                      color: AppColors.success.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(
@@ -205,13 +205,13 @@ class _AdvisorAssignmentCardState
                       const Icon(
                         Icons.check_circle,
                         size: 14,
-                        color: Colors.green,
+                        color: AppColors.success,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         'AKTİF',
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: Colors.green,
+                          color: AppColors.success,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

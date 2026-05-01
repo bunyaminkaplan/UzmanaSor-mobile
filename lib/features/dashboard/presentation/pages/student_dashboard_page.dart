@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
@@ -92,9 +93,9 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
           DashboardPageHeader(
             title: 'Öğrenci Paneli',
             description: 'Sorularını yönet, cevaplarını takip et.',
-            borderColor: Colors.cyan,
+            borderColor: AppColors.accentCyan,
             userName: user?.username ?? '',
-            userNameColor: Colors.orange,
+            userNameColor: AppColors.accentOrange,
             roleName: 'Öğrenci Hesabı',
           ),
 
@@ -240,12 +241,12 @@ class _StatusChip extends StatelessWidget {
       label: Text(label),
       selected: selected,
       onSelected: (_) => onTap(),
-      selectedColor: Colors.cyan.withValues(alpha: 0.2),
-      checkmarkColor: Colors.cyan,
+      selectedColor: AppColors.accentCyan.withValues(alpha: 0.2),
+      checkmarkColor: AppColors.accentCyan,
       labelStyle: TextStyle(
         fontSize: 12,
         fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-        color: selected ? Colors.cyan : null,
+        color: selected ? AppColors.accentCyan : null,
       ),
     );
   }

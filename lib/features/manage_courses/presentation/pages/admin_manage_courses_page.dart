@@ -124,7 +124,7 @@ class _AdminManageCoursesPageState
                           _StatChip(
                             label: 'Atanmamış',
                             value: '$unassignedCount',
-                            color: Colors.red.shade400,
+                            color: AppColors.error,
                           ),
                         ],
                       ),
@@ -296,7 +296,7 @@ class _AdminCourseTile extends ConsumerWidget {
             icon: const Icon(Icons.delete_outline, size: 20),
             tooltip: 'Sil',
             onPressed: () => _delete(context, ref),
-            color: Colors.red.shade400,
+            color: AppColors.error,
           ),
         ],
       ),
@@ -323,7 +323,7 @@ class _AdminCourseTile extends ConsumerWidget {
       message:
           '"${course.displayName}" silinecek.\nBu derse bağlı sorular etkilenebilir.',
       confirmLabel: 'Sil',
-      confirmColor: Colors.red,
+      confirmColor: AppColors.error,
     );
     if (!confirmed) return;
 
@@ -336,7 +336,7 @@ class _AdminCourseTile extends ConsumerWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Silinemedi: ${failure.message}'),
-                backgroundColor: Colors.red,
+                backgroundColor: AppColors.error,
               ),
             );
           }
@@ -347,7 +347,7 @@ class _AdminCourseTile extends ConsumerWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Ders silindi.'),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.success,
               ),
             );
           }
@@ -358,7 +358,7 @@ class _AdminCourseTile extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Silinemedi: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }

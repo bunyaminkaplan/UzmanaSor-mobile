@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/theme/app_colors.dart';
 
 /// Yönetim listelerindeki standart satır kartı.
 ///
@@ -128,13 +129,13 @@ class ManageListTile extends StatelessWidget {
 
     return CircleAvatar(
       radius: 22,
-      backgroundColor: backgroundColor ?? Colors.blueGrey.shade100,
+      backgroundColor: backgroundColor ?? AppColors.accentNavy.withValues(alpha: 0.12),
       child: Text(
         initials,
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 14,
-          color: textColor ?? Colors.blueGrey.shade800,
+          color: textColor ?? AppColors.accentNavy,
         ),
       ),
     );

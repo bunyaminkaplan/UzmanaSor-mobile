@@ -128,7 +128,7 @@ class _UserApprovalTileState extends ConsumerState<_UserApprovalTile> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('İşlem başarısız: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -179,22 +179,22 @@ class _UserApprovalTileState extends ConsumerState<_UserApprovalTile> {
                 // Reddet
                 IconButton(
                   icon: const Icon(Icons.close_rounded),
-                  color: Colors.red.shade400,
+                  color: AppColors.error,
                   tooltip: 'Reddet',
                   onPressed: () => _handleAction('rejected'),
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.red.withValues(alpha: 0.08),
+                    backgroundColor: AppColors.error.withValues(alpha: 0.08),
                   ),
                 ),
                 const SizedBox(width: 6),
                 // Onayla
                 IconButton(
                   icon: const Icon(Icons.check_rounded),
-                  color: Colors.green.shade600,
+                  color: AppColors.success,
                   tooltip: 'Onayla',
                   onPressed: () => _handleAction('approved'),
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.green.withValues(alpha: 0.1),
+                    backgroundColor: AppColors.success.withValues(alpha: 0.1),
                   ),
                 ),
               ],

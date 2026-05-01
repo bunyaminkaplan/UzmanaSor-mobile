@@ -150,7 +150,7 @@ class AdvisorCard extends StatelessWidget {
                   height: 56,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [AppColors.accentCyan, Color(0xFF0D8AAB)],
+                      colors: [AppColors.accentCyan, AppColors.accentCyanDark],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),

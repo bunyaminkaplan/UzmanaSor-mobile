@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 
 /// İçerisindeki cevapların standart bir şekilde çizilmesini sağlayan paylaşılan bileşen (DRY).
@@ -67,7 +68,7 @@ class FeedAnswerCard extends StatelessWidget {
                 Text(
                   _formatAnsDate(answer.createdAt!),
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: AppColors.textMutedDark,
+                    color: context.textMuted,
                   ),
                 ),
             ],

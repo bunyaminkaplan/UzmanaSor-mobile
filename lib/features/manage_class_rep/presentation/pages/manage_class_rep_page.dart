@@ -59,7 +59,7 @@ class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${student.fullName} artık Sınıf Temsilcisi.'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -68,7 +68,7 @@ class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('İşlem başarısız: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }

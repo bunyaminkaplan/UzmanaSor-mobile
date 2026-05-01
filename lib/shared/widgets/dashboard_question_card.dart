@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_status_chip.dart';
 import 'package:mobile/shared/widgets/confirm_dialog.dart';
@@ -212,7 +212,7 @@ class _DashboardQuestionCardState extends State<DashboardQuestionCard> {
               TextSpan(
                 text: 'daha az göster',
                 style: TextStyle(
-                  color: AppColors.textMutedDark,
+                  color: context.textMuted,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -236,7 +236,7 @@ class _DashboardQuestionCardState extends State<DashboardQuestionCard> {
             TextSpan(
               text: 'devamını göster',
               style: TextStyle(
-                color: AppColors.textMutedDark,
+                color: context.textMuted,
                 fontWeight: FontWeight.w600,
               ),
             ),

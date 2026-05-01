@@ -1,3 +1,4 @@
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -53,7 +54,7 @@ class _TeacherAnswerFormState extends ConsumerState<TeacherAnswerForm> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Cevap başarıyla gönderildi.'),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
             ),
           );
           // Sayfa verisini yenile

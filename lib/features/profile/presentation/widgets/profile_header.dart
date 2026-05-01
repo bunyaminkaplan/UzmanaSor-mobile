@@ -90,7 +90,7 @@ class ProfileHeader extends ConsumerWidget {
             height: 80,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [AppColors.accentOrange, Color(0xFFD66A0F)],
+                colors: [AppColors.accentOrange, AppColors.accentOrangeDark],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

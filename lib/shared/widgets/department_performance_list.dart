@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/theme/app_colors.dart';
 import '../../../features/stats/domain/entities/dashboard_stats_entity.dart';
 import 'package:mobile/shared/widgets/empty_state_widget.dart';
 
@@ -46,8 +47,8 @@ class DepartmentPerformanceList extends StatelessWidget {
             itemBuilder: (context, index) {
               final dept = departments[index];
               final progressColor = dept.rate >= 80
-                  ? Colors.green
-                  : (dept.rate >= 50 ? Colors.orange : Colors.red);
+                  ? AppColors.success
+                  : (dept.rate >= 50 ? AppColors.accentOrange : AppColors.error);
 
               return Container(
                 padding: const EdgeInsets.all(16),

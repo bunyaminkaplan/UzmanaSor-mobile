@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/theme/app_colors.dart';
 
 /// Dashboard Page Header — tüm dashboard'larda ortak başlık bileşeni.
 ///
@@ -28,7 +29,7 @@ class DashboardPageHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.description,
-    this.borderColor = Colors.indigo,
+    this.borderColor = AppColors.accentNavy,
     this.trailing,
     this.userName,
     this.roleName,
@@ -100,7 +101,7 @@ class DashboardPageHeader extends StatelessWidget {
             userName!,
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color: userNameColor ?? Colors.orange,
+              color: userNameColor ?? AppColors.accentOrange,
             ),
           ),
         if (roleName != null)

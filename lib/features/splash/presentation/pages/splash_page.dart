@@ -94,7 +94,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF12141C), // Native splash rengiyle uyumlu
+      backgroundColor: AppColors.splashBg,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,

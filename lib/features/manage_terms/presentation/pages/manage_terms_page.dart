@@ -155,7 +155,7 @@ class _TermTile extends ConsumerWidget {
             icon: const Icon(Icons.delete_outline, size: 20),
             tooltip: 'Sil',
             onPressed: () => _delete(context, ref),
-            color: Colors.red.shade400,
+            color: AppColors.error,
           ),
         ],
       ),
@@ -181,7 +181,7 @@ class _TermTile extends ConsumerWidget {
       message:
           '${term.departmentName} — ${term.termDisplay} silinecek. Bu işlem geri alınamaz.',
       confirmLabel: 'Sil',
-      confirmColor: Colors.red,
+      confirmColor: AppColors.error,
     );
     if (!confirmed) return;
 
@@ -193,7 +193,7 @@ class _TermTile extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Dönem silindi.'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -202,7 +202,7 @@ class _TermTile extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Silinemedi: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -272,7 +272,7 @@ class _TermFormSheetState extends ConsumerState<_TermFormSheet> {
             content: Text(
               isEditing ? 'Dönem güncellendi.' : 'Yeni dönem oluşturuldu.',
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -281,7 +281,7 @@ class _TermFormSheetState extends ConsumerState<_TermFormSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('İşlem başarısız: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }

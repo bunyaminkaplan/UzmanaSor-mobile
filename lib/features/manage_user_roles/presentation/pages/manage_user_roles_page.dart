@@ -1,3 +1,4 @@
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -139,7 +140,7 @@ class _UserAccordionTileState extends State<_UserAccordionTile> {
       case 'student_rep':
         return theme.colorScheme.primary;
       default:
-        return Colors.grey;
+        return AppColors.textMuted;
     }
   }
 

@@ -44,7 +44,7 @@ class StatsSummaryGrid extends StatelessWidget {
           title: 'Yönlendirilen',
           value: stats.forwardedQuestions.toString(),
           icon: Icons.share_rounded,
-          color: Colors.blueGrey,
+          color: AppColors.textMuted,
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 
 /// Soru geçiş tarihçesi timeline widget'ı.
@@ -164,18 +165,18 @@ class TransitionTimeline extends StatelessWidget {
     return switch (action) {
       'created' => _TimelineConfig(
         icon: Icons.add,
-        iconColor: Colors.teal,
-        bgColor: Colors.teal.withValues(alpha: 0.1),
+        iconColor: AppColors.accentCyan,
+        bgColor: AppColors.accentCyan.withValues(alpha: 0.1),
       ),
       'forwarded' => _TimelineConfig(
         icon: Icons.double_arrow,
-        iconColor: Colors.blue,
-        bgColor: Colors.blue.withValues(alpha: 0.1),
+        iconColor: AppColors.info,
+        bgColor: AppColors.info.withValues(alpha: 0.1),
       ),
       'rep_approved' => _TimelineConfig(
         icon: Icons.check,
-        iconColor: Colors.green,
-        bgColor: Colors.green.withValues(alpha: 0.1),
+        iconColor: AppColors.success,
+        bgColor: AppColors.success.withValues(alpha: 0.1),
       ),
       'rep_rejected' => _TimelineConfig(
         icon: Icons.close,
@@ -184,13 +185,13 @@ class TransitionTimeline extends StatelessWidget {
       ),
       'resubmitted' => _TimelineConfig(
         icon: Icons.refresh,
-        iconColor: Colors.orange,
-        bgColor: Colors.orange.withValues(alpha: 0.1),
+        iconColor: AppColors.accentOrange,
+        bgColor: AppColors.accentOrange.withValues(alpha: 0.1),
       ),
       'answered' => _TimelineConfig(
         icon: Icons.forum,
-        iconColor: Colors.purple,
-        bgColor: Colors.purple.withValues(alpha: 0.1),
+        iconColor: AppColors.accentNavy,
+        bgColor: AppColors.accentNavy.withValues(alpha: 0.1),
       ),
       _ => _TimelineConfig(
         icon: Icons.info_outline,

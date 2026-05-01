@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
@@ -82,7 +83,7 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
             title: 'Sınıfına Gelen Sorular',
             description:
                 'Onaylaman veya reddetmen gereken soruları buradan yönetebilirsin.',
-            borderColor: Colors.purple,
+            borderColor: AppColors.accentNavy,
           ),
 
           // 2. Filtre Çubuğu
@@ -126,7 +127,7 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade400),
+                    border: Border.all(color: AppColors.textMuted),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: DropdownButtonHideUnderline(

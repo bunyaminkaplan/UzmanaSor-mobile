@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/theme/app_colors.dart';
 
 /// PendingApprovalGuard — kullanıcı henüz onaylanmamışsa engelleme widget'ı.
 ///
@@ -23,13 +24,13 @@ class PendingApprovalGuard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withValues(alpha: 0.1),
+                  color: AppColors.accentOrange.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.hourglass_top_rounded,
                   size: 64,
-                  color: Colors.orange,
+                  color: AppColors.accentOrange,
                 ),
               ),
               const SizedBox(height: 24),

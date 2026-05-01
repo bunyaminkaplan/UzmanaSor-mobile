@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/content_moderation/data/report_data_source.dart';
 import 'package:mobile/shared/widgets/async_error_widget.dart';
@@ -29,7 +30,7 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
         title: 'İçeriği Sil',
         message: 'Bu içeriği kalıcı olarak silmek istediğinize emin misiniz?',
         confirmLabel: 'Sil',
-        confirmColor: Colors.red,
+        confirmColor: AppColors.error,
       );
       if (!confirmed) return;
     }
@@ -47,7 +48,7 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('İşlem başarılı'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -56,7 +57,7 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('İşlem başarısız: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -118,7 +119,7 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBgDark,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(16),
         border: report.isPending
             ? Border.all(color: AppColors.warning.withValues(alpha: 0.3))
@@ -139,10 +140,10 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
               Expanded(
                 child: Text(
                   report.reporterUsername,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textHeadingDark,
+                    color: context.textHeading,
                   ),
                 ),
               ),
@@ -156,21 +157,21 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.06),
+              color: AppColors.error.withValues(alpha: 0.06),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.red.withValues(alpha: 0.15)),
+              border: Border.all(color: AppColors.error.withValues(alpha: 0.15)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.flag_rounded, size: 16, color: Colors.red),
+                const Icon(Icons.flag_rounded, size: 16, color: AppColors.error),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     report.reason,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Colors.red,
+                      color: AppColors.error,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -185,7 +186,7 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.inputBgDark,
+              color: context.inputBg,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
@@ -193,7 +194,7 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
               style: TextStyle(
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
-                color: AppColors.textMutedDark,
+                color: context.textMuted,
               ),
             ),
           ),
@@ -202,13 +203,13 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
           // Alt satır: tarih + aksiyon butonları
           Row(
             children: [
-              Icon(Icons.access_time, size: 14, color: AppColors.textMutedDark),
+              Icon(Icons.access_time, size: 14, color: context.textMuted),
               const SizedBox(width: 4),
               Text(
                 formattedDate,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
-                  color: AppColors.textMutedDark,
+                  color: context.textMuted,
                 ),
               ),
               const Spacer(),
@@ -240,7 +241,7 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
                   'İşlem yapıldı',
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.textMutedDark,
+                    color: context.textMuted,
                   ),
                 ),
             ],
@@ -255,8 +256,8 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
       'pending' => ('Beklemede', AppColors.warning),
       'reviewed' => ('İncelendi', AppColors.accentCyan),
       'resolved' => ('Çözüldü', AppColors.success),
-      'dismissed' => ('Reddedildi', Colors.grey),
-      _ => (status, Colors.grey),
+      'dismissed' => ('Reddedildi', AppColors.textMuted),
+      _ => (status, AppColors.textMuted),
     };
 
     return Container(

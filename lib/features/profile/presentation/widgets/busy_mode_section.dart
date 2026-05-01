@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/profile/data/busy_term_data_source.dart';
 
 /// Akademisyen Meşgul Mod Tercihleri widget'ı.
@@ -28,7 +29,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Meşgul mod kapatıldı'),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
             ),
           );
         }
@@ -51,7 +52,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('İşlem başarısız: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -67,7 +68,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBgDark,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -91,7 +92,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
                   'Meşgul Mod Tercihleri',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textHeadingDark,
+                    color: context.textHeading,
                   ),
                 ),
               ),
@@ -127,7 +128,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
             'Meşgul mod açıldığında, o sınıftan gelen sorular önce sınıf temsilcisine yönlendirilir.',
             style: Theme.of(
               context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.textMutedDark),
+            ).textTheme.bodySmall?.copyWith(color: context.textMuted),
           ),
           const SizedBox(height: 16),
 
@@ -142,7 +143,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
             error: (e, _) => Center(
               child: Text(
                 'Veriler yüklenemedi',
-                style: TextStyle(fontSize: 13, color: AppColors.textMutedDark),
+                style: TextStyle(fontSize: 13, color: context.textMuted),
               ),
             ),
             data: (classTerms) {
@@ -154,7 +155,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
                       'Henüz sınıf/dönem tanımı yok.',
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.textMutedDark,
+                        color: context.textMuted,
                       ),
                     ),
                   ),
@@ -178,7 +179,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
                       decoration: BoxDecoration(
                         color: isBusy
                             ? AppColors.accentOrange.withValues(alpha: 0.06)
-                            : AppColors.inputBgDark,
+                            : context.inputBg,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: isBusy
@@ -208,7 +209,7 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
                               size: 18,
                               color: isBusy
                                   ? AppColors.accentOrange
-                                  : Colors.white70,
+                                  : context.textMuted,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -219,18 +220,18 @@ class _BusyModeSectionState extends ConsumerState<BusyModeSection> {
                               children: [
                                 Text(
                                   ct.departmentName,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color: AppColors.textHeadingDark,
+                                    color: context.textHeading,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   ct.termDisplay,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 12,
-                                    color: AppColors.textMutedDark,
+                                    color: context.textMuted,
                                   ),
                                 ),
                               ],

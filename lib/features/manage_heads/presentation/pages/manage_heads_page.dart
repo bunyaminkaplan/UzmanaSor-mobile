@@ -186,7 +186,7 @@ class _TeachersBottomSheetState extends ConsumerState<_TeachersBottomSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('İşlem başarısız: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -304,17 +304,17 @@ class _TeachersBottomSheetState extends ConsumerState<_TeachersBottomSheet> {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.green.withValues(alpha: 0.1),
+                                color: AppColors.success.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: Colors.green.withValues(alpha: 0.3),
+                                  color: AppColors.success.withValues(alpha: 0.3),
                                 ),
                               ),
                               child: Text(
                                 'Bölüm Başkanı',
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.green,
+                                  color: AppColors.success,
                                 ),
                               ),
                             )

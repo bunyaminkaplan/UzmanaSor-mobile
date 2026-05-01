@@ -158,7 +158,7 @@ class _CourseTile extends ConsumerWidget {
             icon: const Icon(Icons.delete_outline, size: 20),
             tooltip: 'Sil',
             onPressed: () => _delete(context, ref),
-            color: Colors.red.shade400,
+            color: AppColors.error,
           ),
         ],
       ),
@@ -184,7 +184,7 @@ class _CourseTile extends ConsumerWidget {
       message:
           '"${course.displayName}" silinecek.\nBu derse bağlı sorular etkilenebilir.',
       confirmLabel: 'Sil',
-      confirmColor: Colors.red,
+      confirmColor: AppColors.error,
     );
     if (!confirmed) return;
 
@@ -197,7 +197,7 @@ class _CourseTile extends ConsumerWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Silinemedi: ${failure.message}'),
-                backgroundColor: Colors.red,
+                backgroundColor: AppColors.error,
               ),
             );
           }
@@ -208,7 +208,7 @@ class _CourseTile extends ConsumerWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Ders silindi.'),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.success,
               ),
             );
           }
@@ -219,7 +219,7 @@ class _CourseTile extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Silinemedi: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -319,7 +319,7 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
             content: Text(
               isEditing ? 'Ders güncellendi.' : 'Yeni ders oluşturuldu.',
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
       }
@@ -328,7 +328,7 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('İşlem başarısız: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }

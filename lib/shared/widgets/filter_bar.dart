@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/theme/app_colors.dart';
 
 /// FilterBar — collapsible filtre çubuğu.
 ///
@@ -54,13 +55,13 @@ class _FilterBarState extends State<FilterBar> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withValues(alpha: 0.1),
+                      color: AppColors.accentOrange.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.filter_list,
                       size: 18,
-                      color: Colors.orange,
+                      color: AppColors.accentOrange,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -78,7 +79,7 @@ class _FilterBarState extends State<FilterBar> {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: AppColors.accentOrange,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(

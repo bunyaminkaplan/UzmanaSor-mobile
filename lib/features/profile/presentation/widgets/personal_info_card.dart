@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 
 class PersonalInfoCard extends StatelessWidget {
@@ -14,7 +15,7 @@ class PersonalInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.cardBgDark,
+        color: context.cardBg,
         borderRadius: BorderRadius.circular(20),
         boxShadow: const [
           BoxShadow(
@@ -36,13 +37,14 @@ class PersonalInfoCard extends StatelessWidget {
                 'Kişisel Bilgiler',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textHeadingDark,
+                  color: context.textHeading,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
           _buildInfoRow(
+            context,
             icon: Icons.email_rounded,
             label: 'E-posta',
             value: (user.email?.isNotEmpty ?? false) ? user.email! : '-',
@@ -50,6 +52,7 @@ class PersonalInfoCard extends StatelessWidget {
           if (user.phone?.isNotEmpty ?? false) ...[
             const SizedBox(height: 12),
             _buildInfoRow(
+              context,
               icon: Icons.phone_rounded,
               label: 'Telefon',
               value: user.phone!,
@@ -58,6 +61,7 @@ class PersonalInfoCard extends StatelessWidget {
           if (_isStudent) ...[
             const SizedBox(height: 12),
             _buildInfoRow(
+              context,
               icon: Icons.numbers_rounded,
               label: 'Öğrenci Numarası',
               value: user.studentNumber ?? '-',
@@ -68,7 +72,8 @@ class PersonalInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow({
+  Widget _buildInfoRow(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
@@ -76,7 +81,7 @@ class PersonalInfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.inputBgDark,
+        color: context.inputBg,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -89,18 +94,15 @@ class PersonalInfoCard extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textMutedDark,
-                  ),
+                  style: TextStyle(fontSize: 12, color: context.textMuted),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textHeadingDark,
+                    color: context.textHeading,
                   ),
                 ),
               ],

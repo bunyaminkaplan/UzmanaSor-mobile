@@ -1,3 +1,4 @@
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -46,7 +47,7 @@ class _TeacherForwardFormState extends ConsumerState<TeacherForwardForm> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Soru başarıyla yönlendirildi.'),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
             ),
           );
           // Yönlendirme sonrası hocanın üzerinden düşer, listeye dön.

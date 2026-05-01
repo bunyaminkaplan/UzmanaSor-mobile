@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile/core/theme/app_colors.dart';
+import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_status_chip.dart';
 import 'package:mobile/features/public_feed/presentation/widgets/answers_bottom_sheet.dart';
@@ -198,7 +199,7 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
               TextSpan(
                 text: 'daha az göster',
                 style: TextStyle(
-                  color: AppColors.textMutedDark,
+                  color: context.textMuted,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -223,7 +224,7 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
             TextSpan(
               text: 'devamını göster',
               style: TextStyle(
-                color: AppColors.textMutedDark,
+                color: context.textMuted,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -237,11 +238,11 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: AppColors.textMutedDark),
+        Icon(icon, size: 14, color: context.textMuted),
         const SizedBox(width: 4),
         Text(
           text,
-          style: TextStyle(fontSize: 12, color: AppColors.textMutedDark),
+          style: TextStyle(fontSize: 12, color: context.textMuted),
         ),
       ],
     );

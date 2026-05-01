@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/shared/widgets/empty_state_widget.dart';
 
 /// PerformanceTable — bölüm performans tablosu.
@@ -72,9 +73,9 @@ class _DepartmentRow extends StatelessWidget {
   const _DepartmentRow({required this.dept});
 
   Color _getProgressColor(int rate) {
-    if (rate >= 80) return Colors.green;
-    if (rate >= 50) return Colors.amber;
-    return Colors.red;
+    if (rate >= 80) return AppColors.success;
+    if (rate >= 50) return AppColors.warning;
+    return AppColors.error;
   }
 
   @override

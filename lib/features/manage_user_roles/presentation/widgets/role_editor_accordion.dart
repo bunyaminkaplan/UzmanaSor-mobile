@@ -1,3 +1,4 @@
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,7 +56,7 @@ class _RoleEditorAccordionState extends ConsumerState<RoleEditorAccordion> {
   void _showError(Object error) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(error.toString()), backgroundColor: Colors.red),
+      SnackBar(content: Text(error.toString()), backgroundColor: AppColors.error),
     );
   }
 

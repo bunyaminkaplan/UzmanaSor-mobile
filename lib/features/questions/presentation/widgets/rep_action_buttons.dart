@@ -1,3 +1,4 @@
+import 'package:mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -42,7 +43,7 @@ class _RepActionButtonsState extends ConsumerState<RepActionButtons> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Soru onaylandı ve akademisyene iletildi.'),
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
             ),
           );
           // Onaylandıktan sonra bu soruya erişim kesileceği için
@@ -93,7 +94,7 @@ class _RepActionButtonsState extends ConsumerState<RepActionButtons> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Soru reddedildi. Öğrenci bilgilendirilecek.'),
-              backgroundColor: Colors.orange,
+              backgroundColor: AppColors.accentOrange,
             ),
           );
           // Listeye dön
