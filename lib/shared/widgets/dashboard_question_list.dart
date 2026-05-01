@@ -49,10 +49,6 @@ class _DashboardQuestionListState extends State<DashboardQuestionList> {
       },
     );
 
-    if (widget.onRefresh != null) {
-      return RefreshIndicator(onRefresh: widget.onRefresh!, child: list);
-    }
-
     return list;
   }
 }
