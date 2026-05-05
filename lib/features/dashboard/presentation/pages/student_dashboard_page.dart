@@ -91,11 +91,13 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
         userNameColor: AppColors.accentOrange,
         roleName: 'Öğrenci Hesabı',
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => GoRouter.of(context).push('/ask'),
-        icon: const Icon(Icons.add),
-        label: const Text('Soru Sor'),
-      ),
+      fabs: [
+        FloatingActionButton.extended(
+          onPressed: () => GoRouter.of(context).push('/ask'),
+          icon: const Icon(Icons.add),
+          label: const Text('Soru Sor'),
+        ),
+      ],
       body: Column(
         children: [
 

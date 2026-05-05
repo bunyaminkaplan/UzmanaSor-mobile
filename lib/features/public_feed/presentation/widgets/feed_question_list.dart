@@ -10,14 +10,14 @@ import 'package:mobile/shared/widgets/empty_state_widget.dart';
 /// Empty state, scroll controller ve opsiyonel footer (infinite scroll) dışarıdan gelir.
 class FeedQuestionList extends StatefulWidget {
   final List<QuestionEntity> items;
-  final ScrollController scrollController;
   final Widget? footer;
+  final VoidCallback? onNearEnd;
 
   const FeedQuestionList({
     super.key,
     required this.items,
-    required this.scrollController,
     this.footer,
+    this.onNearEnd,
   });
 
   @override
@@ -39,10 +39,17 @@ class _FeedQuestionListState extends State<FeedQuestionList> {
 
     final hasFooter = widget.footer != null;
 
-    return ListView.builder(
-      controller: widget.scrollController,
-      padding: const EdgeInsets.only(top: 8, bottom: 24),
-      itemCount: widget.items.length + (hasFooter ? 1 : 0),
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (widget.onNearEnd != null &&
+            notification.metrics.pixels >= notification.metrics.maxScrollExtent - 200) {
+          widget.onNearEnd!();
+        }
+        return false;
+      },
+      child: ListView.builder(
+        padding: const EdgeInsets.only(top: 8, bottom: 24),
+        itemCount: widget.items.length + (hasFooter ? 1 : 0),
       itemBuilder: (context, index) {
         if (index >= widget.items.length) {
           return widget.footer!;
@@ -58,6 +65,7 @@ class _FeedQuestionListState extends State<FeedQuestionList> {
           }),
         );
       },
+      ),
     );
   }
 }

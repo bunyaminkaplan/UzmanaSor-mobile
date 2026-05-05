@@ -21,7 +21,6 @@ class PublicFeedPage extends ConsumerStatefulWidget {
 
 class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
   final _searchController = TextEditingController();
-  final _scrollController = ScrollController();
   String _sortOrder = 'newest'; // newest | oldest
 
   late Map<String, dynamic> _currentQueryParams;
@@ -30,15 +29,6 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
   void initState() {
     super.initState();
     _currentQueryParams = _buildQueryParams();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-    final pos = _scrollController.position;
-    if (pos.pixels >= pos.maxScrollExtent - 200) {
-      ref.read(questionsProvider(_currentQueryParams).notifier).loadMore();
-    }
   }
 
   Map<String, dynamic> _buildQueryParams() {
@@ -58,8 +48,6 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -124,8 +112,10 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
                 final showFooter = s.hasMore || s.loadMoreError != null;
                 return FeedQuestionList(
                   items: s.items,
-                  scrollController: _scrollController,
                   footer: showFooter ? _buildFooter(s) : null,
+                  onNearEnd: () => ref
+                      .read(questionsProvider(_currentQueryParams).notifier)
+                      .loadMore(),
                 );
               },
             ),

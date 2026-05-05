@@ -31,13 +31,15 @@ class ManageTermsPage extends ConsumerWidget {
             'Bölümlerin aktif dönemlerini ve sınıf danışmanlarını yönetin.',
         borderColor: AppColors.accentOrange,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('Yeni Dönem'),
-        backgroundColor: AppColors.accentOrange,
-        foregroundColor: Colors.white,
-      ),
+      fabs: [
+        FloatingActionButton.extended(
+          onPressed: () => _openForm(context, ref),
+          icon: const Icon(Icons.add),
+          label: const Text('Yeni Dönem'),
+          backgroundColor: AppColors.accentOrange,
+          foregroundColor: Colors.white,
+        ),
+      ],
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

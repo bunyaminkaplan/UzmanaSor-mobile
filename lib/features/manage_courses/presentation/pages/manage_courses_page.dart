@@ -32,13 +32,15 @@ class ManageCoursesPage extends ConsumerWidget {
         description: 'Bölümünüze ait dersleri yönetin ve hoca atayın.',
         borderColor: AppColors.accentOrange,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openForm(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('Yeni Ders'),
-        backgroundColor: AppColors.accentOrange,
-        foregroundColor: Colors.white,
-      ),
+      fabs: [
+        FloatingActionButton.extended(
+          onPressed: () => _openForm(context, ref),
+          icon: const Icon(Icons.add),
+          label: const Text('Yeni Ders'),
+          backgroundColor: AppColors.accentOrange,
+          foregroundColor: Colors.white,
+        ),
+      ],
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/shared/widgets/return_to_top_fab.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
 import 'dashboard_drawer.dart';
@@ -26,7 +27,7 @@ import 'dashboard_drawer.dart';
 class DashboardScaffold extends ConsumerStatefulWidget {
   final VoidCallback onRefresh;
   final Widget body;
-  final Widget? floatingActionButton;
+  final List<Widget>? fabs;
 
   /// Scroll edilebilir sayfa başlığı widget'ı (genellikle DashboardPageHeader).
   /// Verildiğinde NestedScrollView ile body'nin üstüne yerleştirilir.
@@ -40,7 +41,7 @@ class DashboardScaffold extends ConsumerStatefulWidget {
     super.key,
     required this.onRefresh,
     required this.body,
-    this.floatingActionButton,
+    this.fabs,
     this.header,
     this.pageTitle,
   });
@@ -56,10 +57,12 @@ class DashboardScaffold extends ConsumerStatefulWidget {
 class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
   /// true olduğunda AppBar'da pageTitle gösterilir (header ekrandan çıkmış).
   bool _showPageTitle = false;
+  bool _showReturnToTop = false;
 
   /// NestedScrollView'ın outer (header slivers) scroll'unu izler.
   /// Inner scroll (body) bu controller'ı etkilemez.
   late final ScrollController _outerScrollController;
+  final ValueNotifier<int> _returnToTopSignal = ValueNotifier(0);
 
   @override
   void initState() {
@@ -69,6 +72,7 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
 
   @override
   void dispose() {
+    _returnToTopSignal.dispose();
     _outerScrollController.dispose();
     super.dispose();
   }
@@ -81,6 +85,17 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
     if (shouldShow != _showPageTitle) {
       setState(() => _showPageTitle = shouldShow);
     }
+  }
+
+  void _returnToTop() {
+    if (widget.header != null && _outerScrollController.hasClients) {
+      _outerScrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
+      );
+    }
+    _returnToTopSignal.value++;
   }
 
   /// Sabit AppBar — tüm sayfalar için ortak.
@@ -157,22 +172,74 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
 
   /// Header varsa NestedScrollView, yoksa mevcut RefreshIndicator yapısı.
   Widget _buildBody() {
+    Widget content;
+
     if (widget.header != null) {
-      return NestedScrollView(
+      content = NestedScrollView(
         controller: _outerScrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverToBoxAdapter(child: widget.header!),
         ],
         body: RefreshIndicator(
           onRefresh: () async => widget.onRefresh(),
+          child: _ReturnToTopListener(
+            signal: _returnToTopSignal,
+            child: widget.body,
+          ),
+        ),
+      );
+    } else {
+      content = RefreshIndicator(
+        onRefresh: () async => widget.onRefresh(),
+        child: _ReturnToTopListener(
+          signal: _returnToTopSignal,
           child: widget.body,
         ),
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: () async => widget.onRefresh(),
-      child: widget.body,
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (notification.metrics.axis != Axis.vertical) return false;
+        final shouldShow = notification.metrics.pixels > ReturnToTopFab.kReturnToTopThreshold;
+        if (shouldShow != _showReturnToTop) {
+          setState(() => _showReturnToTop = shouldShow);
+        }
+        return false;
+      },
+      child: content,
+    );
+  }
+
+  Widget? _buildFabColumn() {
+    final allFabs = <Widget>[];
+
+    // Return-to-top her zaman listeye ekleniyor (kendi içinde AnimatedSlide ile çıkıyor)
+    allFabs.add(
+      ReturnToTopFab(
+        visible: _showReturnToTop,
+        onPressed: _returnToTop,
+      ),
+    );
+
+    if (widget.fabs != null) {
+      allFabs.addAll(widget.fabs!);
+    }
+
+    if (allFabs.length == 1 && !_showReturnToTop) {
+      return widget.fabs?.isNotEmpty == true ? widget.fabs!.first : null;
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        for (final fab in allFabs)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: fab,
+          ),
+      ],
     );
   }
 
@@ -239,8 +306,51 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: _buildAppBar(),
       drawer: const DashboardDrawer(),
-      floatingActionButton: widget.floatingActionButton,
+      floatingActionButton: _buildFabColumn(),
       body: _buildBody(),
     );
   }
+}
+
+/// DashboardScaffold'dan gelen "başa dön" sinyalini yakalar
+/// ve body subtree'deki PrimaryScrollController'ı sıfırlar.
+class _ReturnToTopListener extends StatefulWidget {
+  final ValueNotifier<int> signal;
+  final Widget child;
+
+  const _ReturnToTopListener({
+    required this.signal,
+    required this.child,
+  });
+
+  @override
+  State<_ReturnToTopListener> createState() => _ReturnToTopListenerState();
+}
+
+class _ReturnToTopListenerState extends State<_ReturnToTopListener> {
+  @override
+  void initState() {
+    super.initState();
+    widget.signal.addListener(_onSignal);
+  }
+
+  @override
+  void dispose() {
+    widget.signal.removeListener(_onSignal);
+    super.dispose();
+  }
+
+  void _onSignal() {
+    final controller = PrimaryScrollController.of(context);
+    if (controller.hasClients) {
+      controller.animateTo(
+        0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOutCubic,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
