@@ -3,6 +3,74 @@ import 'package:mobile/core/domain/entities/simple_user_entity.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 import 'package:mobile/features/questions/domain/entities/question_status.dart';
 
+/// Sayfalanmış soru cevabı JSON → Entity mapper.
+///
+/// Backend `{count, next, previous, results}` formatı; düz liste cevabını
+/// (eski/test endpointleri) da tek elemanlı/tam liste olarak ele alır.
+class PaginatedQuestionsModel {
+  final List<QuestionModel> results;
+  final String? nextPath;
+  final int totalCount;
+
+  const PaginatedQuestionsModel({
+    required this.results,
+    required this.nextPath,
+    required this.totalCount,
+  });
+
+  factory PaginatedQuestionsModel.fromResponse(dynamic data) {
+    if (data is List) {
+      final items = data
+          .map((j) => QuestionModel(j as Map<String, dynamic>))
+          .toList();
+      return PaginatedQuestionsModel(
+        results: items,
+        nextPath: null,
+        totalCount: items.length,
+      );
+    }
+    if (data is Map && data.containsKey('results')) {
+      final list = (data['results'] as List)
+          .map((j) => QuestionModel(j as Map<String, dynamic>))
+          .toList();
+      return PaginatedQuestionsModel(
+        results: list,
+        nextPath: _toPath(data['next'] as String?),
+        totalCount: data['count'] as int? ?? list.length,
+      );
+    }
+    return const PaginatedQuestionsModel(
+      results: [],
+      nextPath: null,
+      totalCount: 0,
+    );
+  }
+
+  PaginatedQuestions toEntity() => PaginatedQuestions(
+    items: results.map((m) => m.toEntity()).toList(),
+    nextPath: nextPath,
+    totalCount: totalCount,
+  );
+}
+
+/// Backend'in `next` alanı tam URL döner; ApiClient yalnız path kabul eder.
+/// Path + query string'i çıkarıp (`/api/v1/...` gibi) baseUrl prefix'ini de
+/// kırparız.
+String? _toPath(String? fullUrl) {
+  if (fullUrl == null || fullUrl.isEmpty) return null;
+  final uri = Uri.tryParse(fullUrl);
+  if (uri == null) return null;
+  var path = uri.path;
+  const apiPrefix = '/api/v1/';
+  final idx = path.indexOf(apiPrefix);
+  if (idx >= 0) {
+    path = path.substring(idx + apiPrefix.length);
+  } else if (path.startsWith('/')) {
+    path = path.substring(1);
+  }
+  return uri.hasQuery ? '$path?${uri.query}' : path;
+}
+
 /// Question JSON → Entity mapper.
 class QuestionModel {
   final Map<String, dynamic> _json;

@@ -76,9 +76,8 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
   /// Outer scroll offset'i threshold'u geçtiğinde title takeover tetiklenir.
   void _onOuterScroll() {
     if (widget.pageTitle == null || widget.header == null) return;
-
-    final shouldShow =
-        _outerScrollController.offset > DashboardScaffold._kHeaderThreshold;
+    final offset = _outerScrollController.offset;
+    final shouldShow = offset > DashboardScaffold._kHeaderThreshold;
     if (shouldShow != _showPageTitle) {
       setState(() => _showPageTitle = shouldShow);
     }
@@ -95,15 +94,9 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
           ? AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               transitionBuilder: (child, animation) {
-                // Giren/çıkan widget'ı belirleme: key eşleşiyorsa giriyor
                 final isEntering =
                     child.key == ValueKey<bool>(_showPageTitle);
 
-                // Scroll yönüne göre slide:
-                // _showPageTitle=true (aşağı scroll): her şey YUKARI kayar
-                //   → giren alttan (0.5), çıkan yukarıya (-0.5)
-                // _showPageTitle=false (yukarı scroll): her şey AŞAĞI kayar
-                //   → giren üstten (-0.5), çıkan aşağıya (0.5)
                 final double dy = _showPageTitle
                     ? (isEntering ? 0.5 : -0.5)
                     : (isEntering ? -0.5 : 0.5);
@@ -116,7 +109,6 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
                   curve: Curves.easeOut,
                 ));
 
-                // Geçiş sırasında renkli, yerine oturduğunda saydam.
                 return SlideTransition(
                   position: slideOffset,
                   child: FadeTransition(

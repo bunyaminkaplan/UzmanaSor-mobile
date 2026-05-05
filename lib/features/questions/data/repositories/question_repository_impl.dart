@@ -13,12 +13,26 @@ class QuestionRepositoryImpl implements QuestionRepository {
   QuestionRepositoryImpl(this._dataSource);
 
   @override
-  Future<Either<Failure, List<QuestionEntity>>> getQuestions({
+  Future<Either<Failure, PaginatedQuestions>> getQuestions({
     Map<String, dynamic>? queryParams,
   }) async {
     try {
-      final models = await _dataSource.getQuestions(queryParams: queryParams);
-      return Right(models.map((m) => m.toEntity()).toList());
+      final model = await _dataSource.getQuestions(queryParams: queryParams);
+      return Right(model.toEntity());
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedQuestions>> getQuestionsNextPage(
+    String path,
+  ) async {
+    try {
+      final model = await _dataSource.getQuestionsByPath(path);
+      return Right(model.toEntity());
     } on DioException catch (e) {
       return Left(ServerFailure.fromDioError(e));
     } catch (e) {

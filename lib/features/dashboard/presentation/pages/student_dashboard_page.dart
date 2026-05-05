@@ -80,7 +80,8 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
     return DashboardScaffold(
-      onRefresh: () => ref.invalidate(questionsProvider(_cachedParams)),
+      onRefresh: () =>
+          ref.read(questionsProvider(_cachedParams).notifier).refresh(),
       pageTitle: 'Öğrenci Paneli',
       header: DashboardPageHeader(
         title: 'Öğrenci Paneli',
@@ -203,12 +204,14 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
             error: (err, stack) => const Expanded(
               child: AsyncErrorWidget(message: 'Bir hata oluştu'),
             ),
-            data: (questions) {
+            data: (s) {
               return Expanded(
                 child: DashboardQuestionList(
-                  questions: questions,
+                  questions: s.items,
                   onRefresh: () async {
-                    ref.invalidate(questionsProvider(_cachedParams));
+                    await ref
+                        .read(questionsProvider(_cachedParams).notifier)
+                        .refresh();
                   },
                 ),
               );

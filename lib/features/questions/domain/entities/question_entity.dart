@@ -1,6 +1,22 @@
 import 'package:mobile/core/domain/entities/simple_user_entity.dart';
 import 'package:mobile/features/questions/domain/entities/question_status.dart';
 
+/// Sayfalanmış soru listesi sonucu.
+///
+/// Backend `{count, next, previous, results}` cevabını taşır.
+/// `nextPath` doluysa daha çekilecek sayfa var demektir.
+class PaginatedQuestions {
+  final List<QuestionEntity> items;
+  final String? nextPath;
+  final int totalCount;
+
+  const PaginatedQuestions({
+    required this.items,
+    required this.nextPath,
+    required this.totalCount,
+  });
+}
+
 /// Soru domain entity'si.
 ///
 /// Backend: `core.models.QuestionBinderModel`

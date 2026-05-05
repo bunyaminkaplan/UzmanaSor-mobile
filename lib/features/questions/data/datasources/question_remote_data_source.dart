@@ -6,7 +6,10 @@ import 'package:mobile/features/questions/data/models/question_model.dart';
 
 /// Questions & Answers remote data source.
 abstract class QuestionRemoteDataSource {
-  Future<List<QuestionModel>> getQuestions({Map<String, dynamic>? queryParams});
+  Future<PaginatedQuestionsModel> getQuestions({
+    Map<String, dynamic>? queryParams,
+  });
+  Future<PaginatedQuestionsModel> getQuestionsByPath(String path);
   Future<QuestionModel> getQuestionDetail(int id);
   Future<QuestionModel> createQuestion(Map<String, dynamic> data);
   Future<void> forwardQuestion(int questionId, int recipientId);
@@ -22,10 +25,9 @@ class QuestionRemoteDataSourceImpl implements QuestionRemoteDataSource {
   QuestionRemoteDataSourceImpl(this._apiClient);
 
   @override
-  Future<List<QuestionModel>> getQuestions({
+  Future<PaginatedQuestionsModel> getQuestions({
     Map<String, dynamic>? queryParams,
   }) async {
-    // Query string oluştur
     String url = ApiEndpoints.questions;
     if (queryParams != null && queryParams.isNotEmpty) {
       final qs = queryParams.entries
@@ -33,23 +35,14 @@ class QuestionRemoteDataSourceImpl implements QuestionRemoteDataSource {
           .join('&');
       url = '$url?$qs';
     }
-
     final response = await _apiClient.get(url);
+    return PaginatedQuestionsModel.fromResponse(response.data);
+  }
 
-    // Paginated veya düz liste
-    final List<dynamic> list;
-    if (response.data is List) {
-      list = response.data as List;
-    } else if (response.data is Map &&
-        (response.data as Map).containsKey('results')) {
-      list = response.data['results'] as List;
-    } else {
-      list = [];
-    }
-
-    return list
-        .map((json) => QuestionModel(json as Map<String, dynamic>))
-        .toList();
+  @override
+  Future<PaginatedQuestionsModel> getQuestionsByPath(String path) async {
+    final response = await _apiClient.get(path);
+    return PaginatedQuestionsModel.fromResponse(response.data);
   }
 
   @override

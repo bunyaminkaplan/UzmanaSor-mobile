@@ -22,6 +22,7 @@ class PublicFeedPage extends ConsumerStatefulWidget {
 
 class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
   final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
   String _sortOrder = 'newest'; // newest | oldest
 
   late Map<String, dynamic> _currentQueryParams;
@@ -30,6 +31,15 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
   void initState() {
     super.initState();
     _currentQueryParams = _buildQueryParams();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final pos = _scrollController.position;
+    if (pos.pixels >= pos.maxScrollExtent - 200) {
+      ref.read(questionsProvider(_currentQueryParams).notifier).loadMore();
+    }
   }
 
   Map<String, dynamic> _buildQueryParams() {
@@ -49,6 +59,8 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -59,7 +71,9 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
 
     return DashboardScaffold(
       onRefresh: () async {
-        ref.invalidate(questionsProvider(_currentQueryParams));
+        await ref
+            .read(questionsProvider(_currentQueryParams).notifier)
+            .refresh();
       },
       body: Column(
         children: [
@@ -107,8 +121,8 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) =>
                   const AsyncErrorWidget(message: 'Sorular yüklenemedi'),
-              data: (questions) {
-                if (questions.isEmpty) {
+              data: (s) {
+                if (s.items.isEmpty) {
                   return const EmptyStateWidget(
                     icon: Icons.public_off_rounded,
                     title: 'Henüz herkese açık soru bulunmuyor',
@@ -116,18 +130,49 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
                         'Sorular herkese açık yapıldığında burada görünecek',
                   );
                 }
+                final showFooter = s.hasMore || s.loadMoreError != null;
                 return ListView.builder(
+                  controller: _scrollController,
                   padding: const EdgeInsets.only(top: 8, bottom: 24),
-                  itemCount: questions.length,
+                  itemCount: s.items.length + (showFooter ? 1 : 0),
                   itemBuilder: (context, index) {
-                    final q = questions[index];
-                    return FeedQuestionCard(question: q);
+                    if (index >= s.items.length) {
+                      return _buildFooter(s);
+                    }
+                    return FeedQuestionCard(question: s.items[index]);
                   },
                 );
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildFooter(QuestionsState s) {
+    if (s.loadMoreError != null) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: Center(
+          child: TextButton.icon(
+            onPressed: () => ref
+                .read(questionsProvider(_currentQueryParams).notifier)
+                .loadMore(),
+            icon: const Icon(Icons.refresh, size: 18),
+            label: const Text('Daha fazla yüklenemedi — tekrar dene'),
+          ),
+        ),
+      );
+    }
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
       ),
     );
   }

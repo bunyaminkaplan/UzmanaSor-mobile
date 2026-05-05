@@ -5,11 +5,15 @@ import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 
 /// Questions repository kontratı.
 abstract class QuestionRepository {
-  /// Soru listesini getirir.
+  /// Soru listesinin ilk sayfasını getirir.
   /// Backend: GET core/questions/
-  Future<Either<Failure, List<QuestionEntity>>> getQuestions({
+  Future<Either<Failure, PaginatedQuestions>> getQuestions({
     Map<String, dynamic>? queryParams,
   });
+
+  /// Sayfalanmış sonuçların `next` alanından gelen yolu çağırır.
+  /// `path` örn: `core/questions/?page=2&mode=public_feed`
+  Future<Either<Failure, PaginatedQuestions>> getQuestionsNextPage(String path);
 
   /// Tekil soru detayı.
   /// Backend: GET core/questions/{id}/
