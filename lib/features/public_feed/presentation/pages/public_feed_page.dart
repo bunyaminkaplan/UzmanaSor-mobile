@@ -3,10 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
-import 'package:mobile/features/public_feed/presentation/widgets/feed_question_card.dart';
+import 'package:mobile/features/public_feed/presentation/widgets/feed_question_list.dart';
 import 'package:mobile/shared/widgets/async_error_widget.dart';
 import 'package:mobile/shared/widgets/dashboard_scaffold.dart';
-import 'package:mobile/shared/widgets/empty_state_widget.dart';
 import 'package:mobile/shared/widgets/filter_bar.dart';
 
 /// Genel Akış — Herkese açık soruları listeler.
@@ -122,25 +121,11 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
               error: (e, _) =>
                   const AsyncErrorWidget(message: 'Sorular yüklenemedi'),
               data: (s) {
-                if (s.items.isEmpty) {
-                  return const EmptyStateWidget(
-                    icon: Icons.public_off_rounded,
-                    title: 'Henüz herkese açık soru bulunmuyor',
-                    description:
-                        'Sorular herkese açık yapıldığında burada görünecek',
-                  );
-                }
                 final showFooter = s.hasMore || s.loadMoreError != null;
-                return ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.only(top: 8, bottom: 24),
-                  itemCount: s.items.length + (showFooter ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= s.items.length) {
-                      return _buildFooter(s);
-                    }
-                    return FeedQuestionCard(question: s.items[index]);
-                  },
+                return FeedQuestionList(
+                  items: s.items,
+                  scrollController: _scrollController,
+                  footer: showFooter ? _buildFooter(s) : null,
                 );
               },
             ),

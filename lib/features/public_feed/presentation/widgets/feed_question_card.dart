@@ -10,27 +10,34 @@ import 'package:mobile/features/public_feed/presentation/widgets/feed_answer_car
 /// FeedQuestionCard — Public Feed (Genel Akış) için özel tasarlanmış accordion soru kartı.
 /// Sosyal medya feed'lerinde olduğu gibi metin kısaltması (devamını göster)
 /// ve cevapların detaylı okunabilmesi için BottomSheet mekanizması barındırır.
+///
+/// Expand/collapse state dışarıdan yönetilir; [FeedQuestionList] koordine eder.
 class FeedQuestionCard extends StatefulWidget {
   final QuestionEntity question;
+  final bool isExpanded;
+  final VoidCallback onToggle;
 
-  const FeedQuestionCard({super.key, required this.question});
+  const FeedQuestionCard({
+    super.key,
+    required this.question,
+    required this.isExpanded,
+    required this.onToggle,
+  });
 
   @override
   State<FeedQuestionCard> createState() => _FeedQuestionCardState();
 }
 
 class _FeedQuestionCardState extends State<FeedQuestionCard> {
-  bool _isCardExpanded = false;
   bool _isTextExpanded = false;
 
-  void _toggleCard() {
-    setState(() {
-      _isCardExpanded = !_isCardExpanded;
-      // Kart kapandığında metin genişlemesini de sıfırla
-      if (!_isCardExpanded) {
-        _isTextExpanded = false;
-      }
-    });
+  @override
+  void didUpdateWidget(covariant FeedQuestionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Kart kapandığında metin genişlemesini sıfırla
+    if (oldWidget.isExpanded && !widget.isExpanded) {
+      _isTextExpanded = false;
+    }
   }
 
   void _showAnswersSheet(BuildContext context) {
@@ -52,7 +59,7 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
       margin: const EdgeInsets.only(bottom: 8, left: 16, right: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
-      elevation: _isCardExpanded ? 2 : 0.5,
+      elevation: widget.isExpanded ? 2 : 0.5,
       child: AnimatedSize(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
@@ -64,7 +71,7 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
             children: [
               // ── HEADER (KAPALI DURUM) ──
               InkWell(
-                onTap: _toggleCard,
+                onTap: widget.onToggle,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -75,7 +82,7 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
                       Icon(
                         Icons.help_outline,
                         size: 20,
-                        color: _isCardExpanded
+                        color: widget.isExpanded
                             ? AppColors.accentCyan
                             : theme.colorScheme.primary,
                       ),
@@ -87,7 +94,7 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: _isCardExpanded
+                            color: widget.isExpanded
                                 ? AppColors.accentCyan
                                 : null,
                           ),
@@ -97,7 +104,7 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
                       QuestionStatusChip(status: q.status),
                       const SizedBox(width: 4),
                       Icon(
-                        _isCardExpanded ? Icons.expand_less : Icons.expand_more,
+                        widget.isExpanded ? Icons.expand_less : Icons.expand_more,
                         size: 20,
                         color: theme.colorScheme.outline,
                       ),
@@ -107,7 +114,7 @@ class _FeedQuestionCardState extends State<FeedQuestionCard> {
               ),
 
               // ── EXPANDED CONTENT ──
-              if (_isCardExpanded) ...[
+              if (widget.isExpanded) ...[
                 Divider(height: 1, color: theme.dividerColor),
                 Padding(
                   padding: const EdgeInsets.all(16),
