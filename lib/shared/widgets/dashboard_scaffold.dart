@@ -226,9 +226,6 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
       allFabs.addAll(widget.fabs!);
     }
 
-    if (allFabs.length == 1 && !_showReturnToTop) {
-      return widget.fabs?.isNotEmpty == true ? widget.fabs!.first : null;
-    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
