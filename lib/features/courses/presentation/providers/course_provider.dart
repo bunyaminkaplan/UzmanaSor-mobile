@@ -26,5 +26,15 @@ final myCoursesProvider = FutureProvider.autoDispose<List<CourseEntity>>((
   return result.fold((f) => throw f, (courses) => courses);
 });
 
+/// Bölüm başkanının bölümündeki dersler (Ders Yönetimi sayfası)
+final departmentCoursesProvider =
+    FutureProvider.autoDispose<List<CourseEntity>>((
+  ref,
+) async {
+  final repo = ref.watch(courseRepositoryProvider);
+  final result = await repo.getMyDepartmentCourses();
+  return result.fold((f) => throw f, (courses) => courses);
+});
+
 /// Form'daki öğretmen multi-select için — tüm hocalar (department filtresi yok).
 final allTeachersForCoursesProvider = teachersProvider(null);

@@ -71,9 +71,9 @@ class BusyTermRemoteDataSource {
         .toList();
   }
 
-  /// Tüm class term'ler (toggle listesi için)
+  /// Hocanın bölümündeki class term'ler (busy mode toggle listesi)
   Future<List<ClassTermSimple>> getClassTerms() async {
-    final res = await _api.get(ApiEndpoints.classTerms);
+    final res = await _api.get(ApiEndpoints.myClassTerms);
     final data = res.data;
     final list = data is List
         ? data

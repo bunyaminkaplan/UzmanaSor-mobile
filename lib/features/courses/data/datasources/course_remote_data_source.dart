@@ -12,6 +12,9 @@ abstract class CourseRemoteDataSource {
   /// GET core/courses/my-courses/
   Future<List<CourseModel>> getMyCourses();
 
+  /// GET core/courses/my-department/
+  Future<List<CourseModel>> getMyDepartmentCourses();
+
   /// POST core/courses/
   Future<CourseModel> createCourse(Map<String, dynamic> data);
 
@@ -39,6 +42,15 @@ class CourseRemoteDataSourceImpl implements CourseRemoteDataSource {
   @override
   Future<List<CourseModel>> getMyCourses() async {
     final response = await _apiClient.get(ApiEndpoints.myCourses);
+    final data = _extractList(response.data);
+    return data
+        .map((json) => CourseModel.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<List<CourseModel>> getMyDepartmentCourses() async {
+    final response = await _apiClient.get(ApiEndpoints.myDepartmentCourses);
     final data = _extractList(response.data);
     return data
         .map((json) => CourseModel.fromJson(json as Map<String, dynamic>))

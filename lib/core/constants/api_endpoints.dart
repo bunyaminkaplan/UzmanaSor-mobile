@@ -69,6 +69,7 @@ class ApiEndpoints {
   // Courses
   static const String courses = 'core/courses/';
   static const String myCourses = 'core/courses/my-courses/';
+  static const String myDepartmentCourses = 'core/courses/my-department/';
 
   // Teachers
   static const String teachers = 'core/teachers/';
@@ -85,6 +86,7 @@ class ApiEndpoints {
 
   // Class Terms
   static const String classTerms = 'core/class-terms/';
+  static const String myClassTerms = 'core/class-terms/my-terms/';
 
   // Department Head Specific
   static const String deptHeadClassTerms = 'core/dept-head/class-terms/';

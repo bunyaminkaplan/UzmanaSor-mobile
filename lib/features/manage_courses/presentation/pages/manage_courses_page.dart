@@ -12,6 +12,8 @@ import '../../../../shared/widgets/manage_form_sheet.dart';
 import '../../../../shared/widgets/manage_list_tile.dart';
 import '../../../courses/domain/entities/course_entity.dart';
 import '../../../courses/presentation/providers/course_provider.dart';
+import '../../../manage_terms/domain/entities/class_term_entity.dart';
+import '../../../manage_advisors/presentation/providers/manage_advisors_provider.dart';
 
 /// Bölüm Başkanı — Ders Yönetimi Sayfası
 ///
@@ -22,10 +24,10 @@ class ManageCoursesPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final coursesAsync = ref.watch(coursesProvider);
+    final coursesAsync = ref.watch(departmentCoursesProvider);
 
     return DashboardScaffold(
-      onRefresh: () => ref.invalidate(coursesProvider),
+      onRefresh: () => ref.invalidate(departmentCoursesProvider),
       pageTitle: 'Ders Yönetimi',
       header: const DashboardPageHeader(
         title: 'Ders Yönetimi',
@@ -194,7 +196,7 @@ class _CourseTile extends ConsumerWidget {
           }
         },
         (_) {
-          ref.invalidate(coursesProvider);
+          ref.invalidate(departmentCoursesProvider);
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -244,6 +246,7 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
   late final TextEditingController _descCtrl;
   late final TextEditingController _codeCtrl;
   final Set<int> _selectedTeacherIds = {};
+  final Set<int> _selectedClassTermIds = {};
   bool _isSubmitting = false;
 
   bool get isEditing => widget.existing != null;
@@ -256,6 +259,7 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
     _codeCtrl = TextEditingController(text: widget.existing?.courseCode ?? '');
     if (widget.existing != null) {
       _selectedTeacherIds.addAll(widget.existing!.teachers.map((t) => t.id));
+      _selectedClassTermIds.addAll(widget.existing!.classTerms.map((ct) => ct.id));
     }
   }
 
@@ -282,6 +286,7 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
       final description = _descCtrl.text.trim();
       final courseCode = _codeCtrl.text.trim();
       final teacherIds = _selectedTeacherIds.toList();
+      final classTermIds = _selectedClassTermIds.toList();
 
       if (isEditing) {
         final result = await repo.updateCourse(
@@ -290,6 +295,7 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
           description: description.isNotEmpty ? description : null,
           courseCode: courseCode.isNotEmpty ? courseCode : null,
           teacherIds: teacherIds,
+          classTermIds: classTermIds,
         );
         result.fold((f) => throw f, (_) {});
       } else {
@@ -298,11 +304,12 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
           description: description.isNotEmpty ? description : null,
           courseCode: courseCode.isNotEmpty ? courseCode : null,
           teacherIds: teacherIds,
+          classTermIds: classTermIds,
         );
         result.fold((f) => throw f, (_) {});
       }
 
-      widget.ref.invalidate(coursesProvider);
+      widget.ref.invalidate(departmentCoursesProvider);
       if (mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -451,6 +458,43 @@ class _CourseFormSheetState extends ConsumerState<CourseFormSheet> {
               ),
             ),
           const SizedBox(height: 16),
+
+          // --- Sınıf Seçimi (Multi-select) ---
+          Text(
+            'Sınıf Ataması (Opsiyonel)',
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Dersin verildiği sınıfları seçin.',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.outline,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ref.watch(deptHeadClassTermsProvider).when(
+            loading: () => const LinearProgressIndicator(),
+            error: (e, _) => Text('Sınıflar yüklenemedi: $e'),
+            data: (classTerms) => _ClassTermMultiSelect(
+              classTerms: classTerms,
+              selectedIds: _selectedClassTermIds,
+              onChanged: () => setState(() {}),
+            ),
+          ),
+          if (_selectedClassTermIds.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                '${_selectedClassTermIds.length} sınıf seçildi',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppColors.accentOrange,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -523,6 +567,76 @@ class _TeacherMultiSelect extends StatelessWidget {
                 selectedIds.add(teacher.id);
               } else {
                 selectedIds.remove(teacher.id);
+              }
+              onChanged();
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sınıf (ClassTerm) Multi-Select checkbox listesi
+// ---------------------------------------------------------------------------
+class _ClassTermMultiSelect extends StatelessWidget {
+  final List<ClassTermEntity> classTerms;
+  final Set<int> selectedIds;
+  final VoidCallback onChanged;
+
+  const _ClassTermMultiSelect({
+    required this.classTerms,
+    required this.selectedIds,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    if (classTerms.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          border: Border.all(color: theme.colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Center(child: Text('Sistemde sınıf bulunamadı.')),
+      );
+    }
+
+    return Container(
+      constraints: const BoxConstraints(maxHeight: 180),
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemCount: classTerms.length,
+        separatorBuilder: (_, _) =>
+            Divider(height: 1, color: theme.colorScheme.outlineVariant),
+        itemBuilder: (context, index) {
+          final ct = classTerms[index];
+          final isSelected = selectedIds.contains(ct.id);
+
+          return CheckboxListTile(
+            value: isSelected,
+            dense: true,
+            controlAffinity: ListTileControlAffinity.leading,
+            activeColor: AppColors.accentOrange,
+            title: Text(
+              ct.termDisplay,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            onChanged: (checked) {
+              if (checked == true) {
+                selectedIds.add(ct.id);
+              } else {
+                selectedIds.remove(ct.id);
               }
               onChanged();
             },

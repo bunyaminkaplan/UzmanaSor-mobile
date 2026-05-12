@@ -13,6 +13,10 @@ abstract class CourseRepository {
   /// Backend: GET core/courses/my-courses/
   Future<Either<Failure, List<CourseEntity>>> getMyCourses();
 
+  /// Bölüm başkanının bölümündeki dersleri getirir.
+  /// Backend: GET core/courses/my-department/
+  Future<Either<Failure, List<CourseEntity>>> getMyDepartmentCourses();
+
   /// Yeni ders oluşturur.
   /// Backend: POST core/courses/
   Future<Either<Failure, CourseEntity>> createCourse({
@@ -20,6 +24,7 @@ abstract class CourseRepository {
     String? description,
     String? courseCode,
     List<int> teacherIds = const [],
+    List<int> classTermIds = const [],
   });
 
   /// Mevcut dersi günceller.
@@ -30,6 +35,7 @@ abstract class CourseRepository {
     String? description,
     String? courseCode,
     List<int> teacherIds = const [],
+    List<int> classTermIds = const [],
   });
 
   /// Dersi siler.

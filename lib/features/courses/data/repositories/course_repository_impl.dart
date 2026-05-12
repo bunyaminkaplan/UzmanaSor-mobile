@@ -37,17 +37,31 @@ class CourseRepositoryImpl implements CourseRepository {
   }
 
   @override
+  Future<Either<Failure, List<CourseEntity>>> getMyDepartmentCourses() async {
+    try {
+      final models = await _dataSource.getMyDepartmentCourses();
+      return Right(models.map((m) => m.toEntity()).toList());
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioError(e));
+    } catch (e) {
+      return Left(ServerFailure('Beklenmeyen hata: $e'));
+    }
+  }
+
+  @override
   Future<Either<Failure, CourseEntity>> createCourse({
     required String title,
     String? description,
     String? courseCode,
     List<int> teacherIds = const [],
+    List<int> classTermIds = const [],
   }) async {
     try {
       final data = <String, dynamic>{
         'title': title,
         'description': description ?? '',
         'teacher_ids': teacherIds,
+        'class_term_ids': classTermIds,
       };
       if (courseCode != null && courseCode.trim().isNotEmpty) {
         data['course_code'] = courseCode.trim();
@@ -68,12 +82,14 @@ class CourseRepositoryImpl implements CourseRepository {
     String? description,
     String? courseCode,
     List<int> teacherIds = const [],
+    List<int> classTermIds = const [],
   }) async {
     try {
       final data = <String, dynamic>{
         'title': title,
         'description': description ?? '',
         'teacher_ids': teacherIds,
+        'class_term_ids': classTermIds,
       };
       if (courseCode != null && courseCode.trim().isNotEmpty) {
         data['course_code'] = courseCode.trim();

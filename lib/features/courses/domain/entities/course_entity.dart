@@ -1,4 +1,5 @@
 import 'package:mobile/core/domain/entities/simple_user_entity.dart';
+import 'package:mobile/core/domain/entities/simple_class_term_entity.dart';
 
 /// Ders domain entity'si.
 ///
@@ -10,6 +11,7 @@ class CourseEntity {
   final String? title;
   final String? description;
   final List<SimpleUserEntity> teachers;
+  final List<SimpleClassTermEntity> classTerms;
 
   const CourseEntity({
     required this.id,
@@ -17,6 +19,7 @@ class CourseEntity {
     this.title,
     this.description,
     this.teachers = const [],
+    this.classTerms = const [],
   });
 
   /// Gösterim adı: "YAZM101 — Algoritma" veya sadece "Algoritma"
