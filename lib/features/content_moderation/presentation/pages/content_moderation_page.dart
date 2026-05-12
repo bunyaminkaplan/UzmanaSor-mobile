@@ -6,7 +6,7 @@ import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/content_moderation/data/report_data_source.dart';
 import 'package:mobile/shared/widgets/async_error_widget.dart';
-import 'package:mobile/shared/widgets/confirm_dialog.dart';
+import 'package:mobile/shared/widgets/inline_confirm_button.dart';
 import 'package:mobile/shared/widgets/dashboard_scaffold.dart';
 import 'package:mobile/shared/widgets/empty_state_widget.dart';
 
@@ -22,17 +22,6 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
   int? _processingId;
 
   Future<void> _handleAction(int reportId, String action) async {
-    // İçerik silme için onay dialogu
-    if (action == 'delete_content') {
-      final confirmed = await ConfirmDialog.show(
-        context: context,
-        title: 'İçeriği Sil',
-        message: 'Bu içeriği kalıcı olarak silmek istediğinize emin misiniz?',
-        confirmLabel: 'Sil',
-        confirmColor: AppColors.error,
-      );
-      if (!confirmed) return;
-    }
 
     setState(() => _processingId = reportId);
     try {
@@ -218,11 +207,12 @@ class _ContentModerationPageState extends ConsumerState<ContentModerationPage> {
                   onTap: () => _handleAction(report.id, 'dismiss'),
                 ),
                 const SizedBox(width: 8),
-                _buildActionButton(
-                  label: 'İçeriği Sil',
-                  icon: Icons.delete_forever_rounded,
-                  color: Colors.red,
-                  onTap: () => _handleAction(report.id, 'delete_content'),
+                InlineConfirmButton(
+                  normalIcon: Icons.delete_outline,
+                  confirmIcon: Icons.delete_forever_rounded,
+                  normalLabel: 'İçeriği Sil',
+                  confirmLabel: 'Onayla',
+                  onConfirm: () => _handleAction(report.id, 'delete_content'),
                 ),
               ],
               if (isProcessing)

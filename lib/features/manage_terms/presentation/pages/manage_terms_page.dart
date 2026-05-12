@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/async_stats_builder.dart';
-import '../../../../shared/widgets/confirm_dialog.dart';
+import '../../../../shared/widgets/inline_confirm_button.dart';
 import '../../../../shared/widgets/dashboard_page_header.dart';
 import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
@@ -151,11 +151,12 @@ class _TermTile extends ConsumerWidget {
             onPressed: () => _edit(context, ref),
             color: AppColors.accentCyan,
           ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline, size: 20),
-            tooltip: 'Sil',
-            onPressed: () => _delete(context, ref),
-            color: AppColors.error,
+          InlineConfirmButton(
+            normalIcon: Icons.delete_outline,
+            confirmIcon: Icons.delete_forever,
+            normalLabel: 'Sil',
+            confirmLabel: 'Onayla',
+            onConfirm: () => _delete(context, ref),
           ),
         ],
       ),
@@ -175,16 +176,6 @@ class _TermTile extends ConsumerWidget {
   }
 
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
-    final confirmed = await ConfirmDialog.show(
-      context: context,
-      title: 'Dönem Silinecek',
-      message:
-          '${term.departmentName} — ${term.termDisplay} silinecek. Bu işlem geri alınamaz.',
-      confirmLabel: 'Sil',
-      confirmColor: AppColors.error,
-    );
-    if (!confirmed) return;
-
     try {
       final repo = ref.read(classTermRepositoryProvider);
       await repo.delete(term.id);

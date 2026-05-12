@@ -34,10 +34,11 @@ class InlineConfirmButton extends StatefulWidget {
   State<InlineConfirmButton> createState() => _InlineConfirmButtonState();
 }
 
-class _InlineConfirmButtonState extends State<InlineConfirmButton> with SingleTickerProviderStateMixin {
+class _InlineConfirmButtonState extends State<InlineConfirmButton>
+    with SingleTickerProviderStateMixin {
   bool _isConfirmMode = false;
   bool _isOverlayActive = false;
-  
+
   late AnimationController _timeoutController;
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
@@ -78,28 +79,27 @@ class _InlineConfirmButtonState extends State<InlineConfirmButton> with SingleTi
 
     final overlay = Overlay.maybeOf(context);
     if (overlay != null) {
-      setState(() {
-        _isOverlayActive = true;
-      });
-      
+      // Scroll listener
       final scrollable = Scrollable.maybeOf(context);
       if (scrollable != null) {
         _scrollPosition = scrollable.position;
         _scrollPosition?.addListener(_onScroll);
       }
-      
-      _showOverlay(overlay);
-      
-      // Gecikmeli olarak confirm moda geç ki AnimatedSize overlay içinde tetiklensin
+
+      setState(() {
+        _isConfirmMode = true;
+        _isOverlayActive = true;
+      });
+
+      // Bir frame bekle: mevcut pointer event'in TapRegion tarafından
+      // "outside" olarak algılanmasını önler.
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        setState(() {
-          _isConfirmMode = true;
-        });
-        _overlayEntry?.markNeedsBuild();
+        if (!mounted || !_isConfirmMode) return;
+        _showOverlay(overlay);
         _timeoutController.forward(from: 0.0);
       });
     } else {
+      // Overlay yok — inline fallback
       setState(() {
         _isConfirmMode = true;
       });
@@ -108,34 +108,18 @@ class _InlineConfirmButtonState extends State<InlineConfirmButton> with SingleTi
   }
 
   void _cancelConfirmMode() {
-    if (!_isConfirmMode) return;
-    
+    if (!_isConfirmMode && !_isOverlayActive) return;
+
     _timeoutController.stop();
     _scrollPosition?.removeListener(_onScroll);
     _scrollPosition = null;
-    
-    if (_isOverlayActive) {
-      setState(() {
-        _isConfirmMode = false;
-      });
-      _overlayEntry?.markNeedsBuild();
-      widget.onCancel?.call();
-      
-      // Animasyonun bitmesini bekle ve overlay'i kaldır
-      Future.delayed(const Duration(milliseconds: 250), () {
-        if (mounted && !_isConfirmMode) {
-          setState(() {
-            _isOverlayActive = false;
-          });
-          _removeOverlay();
-        }
-      });
-    } else {
-      setState(() {
-        _isConfirmMode = false;
-      });
-      widget.onCancel?.call();
-    }
+
+    _removeOverlay();
+    setState(() {
+      _isConfirmMode = false;
+      _isOverlayActive = false;
+    });
+    widget.onCancel?.call();
   }
 
   void _executeConfirm() {
@@ -144,38 +128,52 @@ class _InlineConfirmButtonState extends State<InlineConfirmButton> with SingleTi
     _timeoutController.stop();
     _scrollPosition?.removeListener(_onScroll);
     _scrollPosition = null;
-    
-    if (_isOverlayActive) {
-      setState(() {
-        _isConfirmMode = false;
-        _isOverlayActive = false;
-      });
-      _removeOverlay();
-    } else {
-      setState(() {
-        _isConfirmMode = false;
-      });
-    }
-    
+
+    _removeOverlay();
+    setState(() {
+      _isConfirmMode = false;
+      _isOverlayActive = false;
+    });
+
     widget.onConfirm();
   }
 
   void _showOverlay(OverlayState overlay) {
-    if (_overlayEntry != null) return;
+    _removeOverlay();
 
     _overlayEntry = OverlayEntry(
-      builder: (context) {
+      builder: (_) {
         return Positioned(
+          left: 0,
+          top: 0,
           child: CompositedTransformFollower(
             link: _layerLink,
             showWhenUnlinked: false,
-            targetAnchor: Alignment.topLeft,
-            followerAnchor: Alignment.topLeft,
+            targetAnchor: Alignment.center,
+            followerAnchor: Alignment.center,
             child: TapRegion(
               onTapOutside: (_) => _cancelConfirmMode(),
-              child: Material(
-                color: Colors.transparent,
-                child: _buildButtonContent(),
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOutCubic,
+                builder: (_, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.scale(
+                      scale: 0.92 + (0.08 * value),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Material(
+                  color: Colors.transparent,
+                  elevation: 6,
+                  borderRadius: BorderRadius.circular(widget.borderRadius),
+                  child: IntrinsicWidth(
+                    child: _buildChip(isConfirming: true),
+                  ),
+                ),
               ),
             ),
           ),
@@ -187,114 +185,115 @@ class _InlineConfirmButtonState extends State<InlineConfirmButton> with SingleTi
 
   void _removeOverlay() {
     _overlayEntry?.remove();
+    _overlayEntry?.dispose();
     _overlayEntry = null;
   }
 
-  Widget _buildButtonContent({bool forceNormalState = false}) {
+  /// Butonun tek bir görsel halini oluşturur.
+  Widget _buildChip({required bool isConfirming}) {
     final themeNormalColor = widget.normalColor ?? context.cardBg;
     final themeConfirmColor = widget.confirmColor ?? AppColors.error;
-    
-    final isConfirming = forceNormalState ? false : _isConfirmMode;
-    
+
     final bgColor = isConfirming ? themeConfirmColor : themeNormalColor;
     final fgColor = isConfirming ? Colors.white : context.textMuted;
     final icon = isConfirming ? widget.confirmIcon : widget.normalIcon;
     final label = isConfirming ? widget.confirmLabel : widget.normalLabel;
 
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeOutBack,
-      alignment: Alignment.centerLeft,
-      child: Stack(
-        alignment: Alignment.bottomLeft,
-        children: [
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                if (!_isConfirmMode) {
-                  _enterConfirmMode();
-                } else {
-                  _executeConfirm();
-                }
-              },
-              borderRadius: BorderRadius.circular(widget.borderRadius),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(widget.borderRadius),
-                  border: Border.all(
-                    color: isConfirming ? Colors.transparent : context.theme.dividerColor.withOpacity(0.1),
+    return InkWell(
+      onTap: () {
+        if (isConfirming) {
+          _executeConfirm();
+        } else {
+          _enterConfirmMode();
+        }
+      },
+      borderRadius: BorderRadius.circular(widget.borderRadius),
+      child: Container(
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(widget.borderRadius),
+          border: Border.all(
+            color: isConfirming
+                ? Colors.transparent
+                : Theme.of(context).dividerColor.withValues(alpha: 0.1),
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 18, color: fgColor),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: fgColor,
+                    fontSize: 13,
+                    fontWeight:
+                        isConfirming ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, size: 18, color: fgColor),
-                    const SizedBox(width: 8),
-                    Text(
-                      label,
-                      style: TextStyle(
-                        color: fgColor,
-                        fontWeight: isConfirming ? FontWeight.w600 : FontWeight.w500,
-                      ),
-                    ),
-                  ],
+              ],
+            ),
+            // Progress bar (eriyen alt çizgi)
+            if (isConfirming && widget.showProgressIndicator)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: SizedBox(
+                  height: 2,
+                  child: AnimatedBuilder(
+                    animation: _timeoutController,
+                    builder: (_, _) {
+                      return FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: 1.0 - _timeoutController.value,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ),
-          if (isConfirming && widget.showProgressIndicator)
-            Positioned(
-              left: 12,
-              right: 12,
-              bottom: 4,
-              child: AnimatedBuilder(
-                animation: _timeoutController,
-                builder: (context, child) {
-                  return FractionallySizedBox(
-                    alignment: Alignment.centerLeft, // Sağdan sola erisin
-                    widthFactor: 1.0 - _timeoutController.value,
-                    child: Container(
-                      height: 2,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Determine if we are allowed to use overlay (Overlay must exist)
     final hasOverlay = Overlay.maybeOf(context) != null;
 
     if (hasOverlay) {
       return CompositedTransformTarget(
         link: _layerLink,
-        child: IgnorePointer(
-          ignoring: _isOverlayActive,
-          child: Opacity(
-            opacity: _isOverlayActive ? 0.0 : 1.0,
-            child: _buildButtonContent(forceNormalState: _isOverlayActive),
+        child: Opacity(
+          // Ghost: overlay aktifken orijinal buton görünmez ama yer tutar
+          opacity: _isOverlayActive ? 0.0 : 1.0,
+          child: IgnorePointer(
+            ignoring: _isOverlayActive,
+            child: _buildChip(isConfirming: false),
           ),
         ),
       );
     }
 
-    // Inline fallback
+    // Overlay yok — inline fallback (AnimatedSize ile genişleme kabul edilir)
     return TapRegion(
       onTapOutside: _isConfirmMode ? (_) => _cancelConfirmMode() : null,
-      child: _buildButtonContent(),
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutBack,
+        alignment: Alignment.centerLeft,
+        child: _buildChip(isConfirming: _isConfirmMode),
+      ),
     );
   }
 }
