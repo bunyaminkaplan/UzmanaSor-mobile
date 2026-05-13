@@ -48,6 +48,12 @@ abstract class UserModel with _$UserModel {
     int? faculty,
     int? department,
 
+    // SimpleUserSerializer'dan gelen flat alanlar
+    int? facultyId,
+    String? facultyName,
+    int? departmentId,
+    String? departmentName,
+
     // Detay nesneleri (SerializerMethodField — null gelebilir)
     Map<String, dynamic>? departmentDetails,
     Map<String, dynamic>? facultyDetails,
@@ -99,8 +105,14 @@ extension UserModelMapper on UserModel {
       isApproved: isApproved,
       isDepartmentHead: isDepartmentHead,
       isAdvisor: isAdvisor,
-      departmentDetails: departmentDetails,
-      facultyDetails: facultyDetails,
+      departmentDetails: departmentDetails ??
+          (departmentId != null
+              ? {'id': departmentId, 'name': departmentName ?? ''}
+              : null),
+      facultyDetails: facultyDetails ??
+          (facultyId != null
+              ? {'id': facultyId, 'name': facultyName ?? ''}
+              : null),
       phone: phone,
       studentNumber: studentNumber,
       studentTerm: studentTerm,

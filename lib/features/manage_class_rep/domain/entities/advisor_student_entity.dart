@@ -9,7 +9,7 @@ class AdvisorStudentEntity {
   final String? studentNumber;
   final String? departmentName;
 
-  /// `user_type == 'r_student'` ise mevcut temsilci.
+  /// `roles` içinde 'student_rep' varsa veya `user_type` == 'student_rep' ise temsilcidir.
   final bool isRepresentative;
 
   const AdvisorStudentEntity({
@@ -32,7 +32,8 @@ class AdvisorStudentEntity {
       lastName: (json['last_name'] as String?) ?? '',
       studentNumber: json['student_number'] as String?,
       departmentName: deptDetails?['name'] as String?,
-      isRepresentative: (json['user_type'] as String?) == 'r_student',
+      isRepresentative: (json['user_type'] as String?) == 'student_rep' ||
+          ((json['roles'] as List<dynamic>?)?.contains('student_rep') ?? false),
     );
   }
 
