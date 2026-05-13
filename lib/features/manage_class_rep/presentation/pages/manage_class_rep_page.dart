@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/async_stats_builder.dart';
-import '../../../../shared/widgets/confirm_dialog.dart';
+import '../../../../shared/widgets/inline_confirm_button.dart';
 import '../../../../shared/widgets/dashboard_page_header.dart';
 import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
@@ -26,7 +26,6 @@ class ManageClassRepPage extends ConsumerStatefulWidget {
 
 class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
   String _searchQuery = '';
-  int? _processingId;
 
   List<AdvisorStudentEntity> _filter(List<AdvisorStudentEntity> students) {
     if (_searchQuery.isEmpty) return students;
@@ -39,17 +38,6 @@ class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
   }
 
   Future<void> _setRepresentative(AdvisorStudentEntity student) async {
-    final confirmed = await ConfirmDialog.show(
-      context: context,
-      title: 'Temsilci Atama',
-      message:
-          '${student.fullName} isimli öğrenciyi Sınıf Temsilcisi yapmak istiyor musunuz?\n\nMevcut temsilci varsa yetkisi alınacaktır.',
-      confirmLabel: 'Temsilci Yap',
-      confirmColor: AppColors.accentOrange,
-    );
-    if (!confirmed) return;
-
-    setState(() => _processingId = student.id);
     try {
       final ds = ref.read(advisorStudentDataSourceProvider);
       await ds.setRepresentative(student.id);
@@ -71,8 +59,6 @@ class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
           ),
         );
       }
-    } finally {
-      if (mounted) setState(() => _processingId = null);
     }
   }
 
@@ -143,7 +129,6 @@ class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
                           padding: const EdgeInsets.only(bottom: 10),
                           child: _StudentTile(
                             student: student,
-                            isProcessing: _processingId == student.id,
                             onSetRep: () => _setRepresentative(student),
                           ),
                         ),
@@ -166,12 +151,10 @@ class _ManageClassRepPageState extends ConsumerState<ManageClassRepPage> {
 // ---------------------------------------------------------------------------
 class _StudentTile extends StatelessWidget {
   final AdvisorStudentEntity student;
-  final bool isProcessing;
   final VoidCallback onSetRep;
 
   const _StudentTile({
     required this.student,
-    required this.isProcessing,
     required this.onSetRep,
   });
 
@@ -246,28 +229,13 @@ class _StudentTile extends StatelessWidget {
                 ],
               ),
             )
-          : FilledButton.icon(
-              onPressed: isProcessing ? null : onSetRep,
-              icon: isProcessing
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Icon(Icons.workspace_premium, size: 16),
-              label: const Text('Temsilci Yap'),
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                textStyle: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+          : InlineConfirmButton(
+              normalIcon: Icons.workspace_premium,
+              confirmIcon: Icons.check,
+              normalLabel: 'Temsilci Yap',
+              confirmLabel: 'Onayla',
+              confirmColor: AppColors.accentOrange,
+              onConfirm: onSetRep,
             ),
     );
   }

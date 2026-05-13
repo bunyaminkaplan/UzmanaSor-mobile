@@ -85,14 +85,11 @@ class _RoleEditorAccordionState extends ConsumerState<RoleEditorAccordion> {
         color: Colors.transparent,
         border: Border(top: BorderSide(color: theme.dividerColor)),
       ),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: notifier.cancelConfirm,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 1. Mevcut roller
-            Padding(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. Mevcut roller
+          Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,10 +99,8 @@ class _RoleEditorAccordionState extends ConsumerState<RoleEditorAccordion> {
                   RoleDisplayChips(
                     displayRoles: displayRoles,
                     recentlyRemoved: state.recentlyRemoved,
-                    confirmingRemoveRole: state.confirmingRemoveRole,
                     onRemove: (role) => _handleRemove(notifier, role),
                     onUndo: (role) => _handleAssign(notifier, role),
-                    onCancel: notifier.cancelConfirm,
                   ),
                 ],
               ),
@@ -144,21 +139,12 @@ class _RoleEditorAccordionState extends ConsumerState<RoleEditorAccordion> {
                 ],
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
   Future<void> _handleRemove(RoleEditorNotifier notifier, String role) async {
-    // İlk tıklama: confirm mode'u aç. İkinci tıklama: gerçekten sil.
-    if (ref
-            .read(roleEditorNotifierProvider(widget.user.id))
-            .confirmingRemoveRole !=
-        role) {
-      notifier.toggleConfirmRemove(role);
-      return;
-    }
     try {
       await notifier.removeRole(role);
       _showSuccess('${mapRoleToTR(role)} rolü başarıyla silindi.');

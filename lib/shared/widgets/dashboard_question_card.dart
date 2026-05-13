@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/questions/domain/entities/question_entity.dart';
 import 'package:mobile/features/questions/presentation/widgets/question_status_chip.dart';
-import 'package:mobile/shared/widgets/confirm_dialog.dart';
+import 'package:mobile/shared/widgets/inline_confirm_button.dart';
 
 /// DashboardQuestionCard — expandable soru kartı (animasyonlu).
 ///
@@ -145,15 +145,12 @@ class _DashboardQuestionCardState extends State<DashboardQuestionCard> {
                         spacing: 8,
                         children: [
                           if (widget.onDelete != null)
-                            TextButton(
-                              onPressed: () => _confirmDelete(context),
-                              child: Text(
-                                'Sil',
-                                style: TextStyle(
-                                  color: theme.colorScheme.error,
-                                  fontSize: 12,
-                                ),
-                              ),
+                            InlineConfirmButton(
+                              normalIcon: Icons.delete_outline,
+                              confirmIcon: Icons.delete_forever,
+                              normalLabel: 'Sil',
+                              confirmLabel: 'Onayla',
+                              onConfirm: () => widget.onDelete!(),
                             ),
                           OutlinedButton(
                             onPressed: () async {
@@ -246,16 +243,6 @@ class _DashboardQuestionCardState extends State<DashboardQuestionCard> {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context) async {
-    final confirmed = await ConfirmDialog.show(
-      context: context,
-      title: 'Soruyu Sil',
-      message: 'Bu soruyu silmek istediğinize emin misiniz?\nBu işlem geri alınamaz.',
-      confirmLabel: 'Sil',
-      confirmColor: Theme.of(context).colorScheme.error,
-    );
-    if (confirmed) widget.onDelete?.call();
-  }
 
   static String _formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}.'

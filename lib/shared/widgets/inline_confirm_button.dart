@@ -10,6 +10,7 @@ class InlineConfirmButton extends StatefulWidget {
   final String normalLabel;
   final String confirmLabel;
   final Color? normalColor;
+  final Color? normalTextColor;
   final Color? confirmColor;
   final Duration timeout;
   final bool showProgressIndicator;
@@ -24,6 +25,7 @@ class InlineConfirmButton extends StatefulWidget {
     required this.confirmLabel,
     this.onCancel,
     this.normalColor,
+    this.normalTextColor,
     this.confirmColor,
     this.timeout = const Duration(seconds: 3),
     this.showProgressIndicator = true,
@@ -195,7 +197,7 @@ class _InlineConfirmButtonState extends State<InlineConfirmButton>
     final themeConfirmColor = widget.confirmColor ?? AppColors.error;
 
     final bgColor = isConfirming ? themeConfirmColor : themeNormalColor;
-    final fgColor = isConfirming ? Colors.white : context.textMuted;
+    final fgColor = isConfirming ? Colors.white : (widget.normalTextColor ?? context.textMuted);
     final icon = isConfirming ? widget.confirmIcon : widget.normalIcon;
     final label = isConfirming ? widget.confirmLabel : widget.normalLabel;
 

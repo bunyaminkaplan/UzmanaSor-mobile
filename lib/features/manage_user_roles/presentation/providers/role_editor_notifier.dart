@@ -7,7 +7,6 @@ const _unset = Object();
 /// Tek bir kullanıcının rol düzenleme panelindeki form + UI durumu.
 class RoleEditorState {
   final List<String> recentlyRemoved;
-  final String? confirmingRemoveRole;
   final String? selectedRoleToLink;
   final bool isSubmitting;
   final int? facultyId;
@@ -16,7 +15,6 @@ class RoleEditorState {
 
   const RoleEditorState({
     this.recentlyRemoved = const [],
-    this.confirmingRemoveRole,
     this.selectedRoleToLink,
     this.isSubmitting = false,
     this.facultyId,
@@ -26,7 +24,6 @@ class RoleEditorState {
 
   RoleEditorState copyWith({
     List<String>? recentlyRemoved,
-    Object? confirmingRemoveRole = _unset,
     Object? selectedRoleToLink = _unset,
     bool? isSubmitting,
     Object? facultyId = _unset,
@@ -35,9 +32,6 @@ class RoleEditorState {
   }) {
     return RoleEditorState(
       recentlyRemoved: recentlyRemoved ?? this.recentlyRemoved,
-      confirmingRemoveRole: identical(confirmingRemoveRole, _unset)
-          ? this.confirmingRemoveRole
-          : confirmingRemoveRole as String?,
       selectedRoleToLink: identical(selectedRoleToLink, _unset)
           ? this.selectedRoleToLink
           : selectedRoleToLink as String?,
@@ -74,16 +68,6 @@ class RoleEditorNotifier
     );
   }
 
-  void toggleConfirmRemove(String role) {
-    state = state.copyWith(
-      confirmingRemoveRole: state.confirmingRemoveRole == role ? null : role,
-    );
-  }
-
-  void cancelConfirm() {
-    state = state.copyWith(confirmingRemoveRole: null);
-  }
-
   void selectRoleToLink(String? role) {
     state = state.copyWith(selectedRoleToLink: role);
   }
@@ -102,7 +86,6 @@ class RoleEditorNotifier
   }
 
   Future<void> removeRole(String role) async {
-    state = state.copyWith(confirmingRemoveRole: null);
     final repo = ref.read(manageUserRolesRepositoryProvider);
     await repo.removeRole(arg, role);
     state = state.copyWith(recentlyRemoved: [...state.recentlyRemoved, role]);
