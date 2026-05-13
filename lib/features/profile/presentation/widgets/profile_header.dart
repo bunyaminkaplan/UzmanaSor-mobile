@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
+import 'package:mobile/features/manage_user_roles/presentation/utils/role_labels.dart';
 
 class ProfileHeader extends ConsumerWidget {
   final UserEntity user;
@@ -17,28 +19,7 @@ class ProfileHeader extends ConsumerWidget {
     return user.username.isNotEmpty ? user.username[0].toUpperCase() : 'U';
   }
 
-  String get _userTypeLabel {
-    return _roleToLabel(user.activeDashboard);
-  }
-
-  String _roleToLabel(String r) {
-    switch (r) {
-      case 'student':
-        return 'Öğrenci';
-      case 'student_rep':
-        return 'Öğrenci Temsilcisi';
-      case 'teacher':
-        return 'Akademisyen';
-      case 'dean':
-        return 'Dekan';
-      case 'rector':
-        return 'Rektör';
-      case 'school_admin':
-        return 'Okul Yöneticisi';
-      default:
-        return r;
-    }
-  }
+  String get _userTypeLabel => mapRoleToTR(user.activeDashboard);
 
   String get _termLabel {
     final t = user.studentTerm;
@@ -59,8 +40,8 @@ class ProfileHeader extends ConsumerWidget {
   }
 
   bool get _isStudent =>
-      user.activeDashboard == 'student' ||
-      user.activeDashboard == 'student_rep';
+      user.activeDashboard == UserRoles.student ||
+      user.activeDashboard == UserRoles.studentRep;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -187,7 +168,7 @@ class ProfileHeader extends ConsumerWidget {
                             .map(
                               (r) => PopupMenuItem(
                                 value: r,
-                                child: Text(_roleToLabel(r)),
+                                child: Text(mapRoleToTR(r)),
                               ),
                             )
                             .toList(),

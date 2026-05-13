@@ -1,3 +1,4 @@
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/features/auth/domain/entities/simple_user_entity.dart';
 
 /// [UserEntity] — Domain katmanının kullanıcı temsili.
@@ -67,7 +68,7 @@ class UserEntity {
 
   /// Kullanıcının yetkili bir rol sahibi olup olmadığını kontrol eder.
   bool get isPrivilegedRole {
-    const privileged = {'dean', 'rector', 'school_admin'};
+    const privileged = {UserRoles.dean, UserRoles.rector, UserRoles.schoolAdmin};
     return privileged.contains(userType);
   }
 

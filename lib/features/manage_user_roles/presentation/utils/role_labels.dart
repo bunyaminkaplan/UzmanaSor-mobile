@@ -1,19 +1,19 @@
+import 'package:mobile/core/constants/user_roles.dart';
+
 /// Rol string'lerini TR etiketlerine çeviren ortak yardımcı.
 String mapRoleToTR(String role) {
   switch (role) {
-    case 'student':
+    case UserRoles.student:
       return 'Öğrenci';
-    case 'teacher':
+    case UserRoles.teacher:
       return 'Öğretmen';
-    case 'department_head':
-      return 'Bölüm Başkanı';
-    case 'dean':
+    case UserRoles.dean:
       return 'Dekan';
-    case 'rector':
+    case UserRoles.rector:
       return 'Rektör';
-    case 'school_admin':
+    case UserRoles.schoolAdmin:
       return 'Sistem Yöneticisi';
-    case 'student_rep':
+    case UserRoles.studentRep:
       return 'Temsilci';
     default:
       return role;
@@ -22,22 +22,25 @@ String mapRoleToTR(String role) {
 
 /// Tüm atanabilir roller (selector chip sırası).
 const kAllAssignableRoles = [
-  'student',
-  'student_rep',
-  'teacher',
-  'department_head',
-  'dean',
-  'school_admin',
-  'rector',
+  UserRoles.student,
+  UserRoles.studentRep,
+  UserRoles.teacher,
+  UserRoles.dean,
+  UserRoles.schoolAdmin,
+  UserRoles.rector,
 ];
 
 /// Rol başına zorunlu form bağımlılıkları (form sihirbazında açılan alanlar).
 const kRoleDependencies = <String, List<String>>{
-  'student': ['faculty', 'department', 'student_number', 'student_term'],
-  'student_rep': ['faculty', 'department', 'student_number', 'student_term'],
-  'teacher': ['faculty', 'department'],
-  'department_head': ['faculty', 'department'],
-  'dean': ['faculty'],
-  'school_admin': [],
-  'rector': [],
+  UserRoles.student: ['faculty', 'department', 'student_number', 'student_term'],
+  UserRoles.studentRep: [
+    'faculty',
+    'department',
+    'student_number',
+    'student_term',
+  ],
+  UserRoles.teacher: ['faculty', 'department'],
+  UserRoles.dean: ['faculty'],
+  UserRoles.schoolAdmin: [],
+  UserRoles.rector: [],
 };

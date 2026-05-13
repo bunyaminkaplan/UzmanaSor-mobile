@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/auth/presentation/pages/auth_page.dart';
@@ -192,17 +193,16 @@ class _RoleDashboardBuilder extends ConsumerWidget {
     final role = user?.userType;
 
     switch (role) {
-      case 'student':
-      case 'r_student':
+      case UserRoles.student:
+      case UserRoles.studentRep:
         return const StudentDashboardPage();
-      case 'teacher':
-      case 'department_head':
+      case UserRoles.teacher:
         return const TeacherDashboardPage();
-      case 'dean':
+      case UserRoles.dean:
         return const DeanDashboardPage();
-      case 'rector':
+      case UserRoles.rector:
         return const RectorDashboardPage();
-      case 'school_admin':
+      case UserRoles.schoolAdmin:
         return const SchoolAdminDashboardPage();
       default:
         // Henüz oluşturulmamış roller için geçici placeholder

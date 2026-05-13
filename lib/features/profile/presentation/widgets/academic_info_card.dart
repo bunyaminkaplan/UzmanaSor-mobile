@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
@@ -8,7 +9,8 @@ class AcademicInfoCard extends StatelessWidget {
 
   const AcademicInfoCard({super.key, required this.user});
 
-  bool get _hideDepartment => ['dean', 'rector'].contains(user.userType);
+  bool get _hideDepartment =>
+      [UserRoles.dean, UserRoles.rector].contains(user.userType);
 
   @override
   Widget build(BuildContext context) {

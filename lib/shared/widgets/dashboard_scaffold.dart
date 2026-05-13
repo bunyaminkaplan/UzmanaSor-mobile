@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/shared/widgets/return_to_top_fab.dart';
 import '../../core/theme/app_colors.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
@@ -246,8 +247,13 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
 
     if (user != null) {
       final role = user.activeDashboard;
-      final reqDept = ['teacher', 'student', 'student_rep'];
-      final reqFac = ['teacher', 'student', 'student_rep', 'dean'];
+      final reqDept = [UserRoles.teacher, UserRoles.student, UserRoles.studentRep];
+      final reqFac = [
+        UserRoles.teacher,
+        UserRoles.student,
+        UserRoles.studentRep,
+        UserRoles.dean,
+      ];
 
       List<String> missing = [];
       if (reqFac.contains(role) && user.facultyDetails == null) {

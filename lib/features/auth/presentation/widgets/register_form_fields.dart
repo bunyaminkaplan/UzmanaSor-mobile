@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/academic_units/presentation/providers/academic_units_provider.dart';
 
@@ -21,10 +22,10 @@ class RoleSelector extends StatelessWidget {
   });
 
   static const _roles = [
-    {'value': 'student', 'label': 'Öğrenci'},
-    {'value': 'teacher', 'label': 'Akademisyen'},
-    {'value': 'dean', 'label': 'Dekan'},
-    {'value': 'rector', 'label': 'Rektör'},
+    {'value': UserRoles.student, 'label': 'Öğrenci'},
+    {'value': UserRoles.teacher, 'label': 'Akademisyen'},
+    {'value': UserRoles.dean, 'label': 'Dekan'},
+    {'value': UserRoles.rector, 'label': 'Rektör'},
   ];
 
   @override

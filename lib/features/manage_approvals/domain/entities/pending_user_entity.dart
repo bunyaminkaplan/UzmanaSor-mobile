@@ -1,3 +1,5 @@
+import 'package:mobile/features/manage_user_roles/presentation/utils/role_labels.dart';
+
 /// Onay bekleyen kullanıcı entity'si.
 ///
 /// Backend `GET auth/pending-approvals/` endpoint'inden dönen
@@ -26,18 +28,7 @@ class PendingUserEntity {
 
   /// Backend'den `user_type` kodu gelir (teacher, student, dean vb.),
   /// bunu UI'da gösterilecek Türkçe etikete çevirir.
-  String get userTypeDisplay {
-    const labels = {
-      'teacher': 'Akademisyen',
-      'student': 'Öğrenci',
-      'r_student': 'Temsilci Öğrenci',
-      'department_head': 'Bölüm Başkanı',
-      'dean': 'Dekan',
-      'rector': 'Rektör',
-      'school_admin': 'Yönetici',
-    };
-    return labels[userType] ?? userType;
-  }
+  String get userTypeDisplay => mapRoleToTR(userType);
 
   factory PendingUserEntity.fromJson(Map<String, dynamic> json) {
     return PendingUserEntity(

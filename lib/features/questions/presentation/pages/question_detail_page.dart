@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/features/questions/domain/entities/question_status.dart';
@@ -31,9 +32,10 @@ class QuestionDetailPage extends ConsumerWidget {
     final questionAsync = ref.watch(questionDetailProvider(questionId));
     final user = ref.watch(authProvider).value;
     final userType = user?.userType;
-    final isTeacher = userType == 'teacher';
-    final isStudent = userType == 'student' || userType == 'r_student';
-    final isRep = userType == 'r_student';
+    final isTeacher = userType == UserRoles.teacher;
+    final isStudent =
+        userType == UserRoles.student || userType == UserRoles.studentRep;
+    final isRep = userType == UserRoles.studentRep;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Soru Detay')),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
 
 /// DrawerRouteItem, her bir menü öğesini temsil eden basit bir DTO'dur.
@@ -47,7 +48,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
   // --- Rol Bazlı Özel Rotalar ---
 
   // STUDENT & STUDENT_REP
-  if (role == 'student' || role == 'student_rep') {
+  if (role == UserRoles.student || role == UserRoles.studentRep) {
     links.add(
       const DrawerRouteItem(
         title: 'Öğrenci Paneli',
@@ -57,7 +58,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
       ),
     );
 
-    if (role == 'student_rep') {
+    if (role == UserRoles.studentRep) {
       links.add(
         const DrawerRouteItem(
           title: 'Temsilci Paneli',
@@ -67,8 +68,8 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
       );
     }
   }
-  // TEACHER
-  else if (role == 'teacher' || role == 'department_head') {
+  // TEACHER (bölüm başkanı dahil — backend 'teacher' rolü gönderir, başkanlık isDepartmentHead flag'i ile ayırt edilir)
+  else if (role == UserRoles.teacher) {
     links.add(
       const DrawerRouteItem(
         title: 'Öğretmen Paneli',
@@ -116,7 +117,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
     }
   }
   // DEAN
-  else if (role == 'dean') {
+  else if (role == UserRoles.dean) {
     links.add(
       const DrawerRouteItem(
         title: 'Dekan Paneli',
@@ -141,7 +142,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
     );
   }
   // RECTOR
-  else if (role == 'rector') {
+  else if (role == UserRoles.rector) {
     links.add(
       const DrawerRouteItem(
         title: 'Rektör Paneli',
@@ -166,7 +167,7 @@ List<DrawerRouteItem> getDrawerRoutesForUser(UserEntity user) {
     );
   }
   // SCHOOL ADMIN
-  else if (role == 'school_admin') {
+  else if (role == UserRoles.schoolAdmin) {
     links.add(
       const DrawerRouteItem(
         title: 'Yönetici Paneli',

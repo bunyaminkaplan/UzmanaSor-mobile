@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/auth/presentation/widgets/register_form_fields.dart';
@@ -24,7 +25,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   final _phoneCtrl = TextEditingController();
   final _studentNumberCtrl = TextEditingController();
 
-  String _selectedRole = 'student';
+  String _selectedRole = UserRoles.student;
   String? _selectedTerm;
   bool _obscurePassword = true;
   bool _isLoading = false;
@@ -33,10 +34,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   int? _selectedFacultyId;
   int? _selectedDepartmentId;
 
-  bool get _needsFaculty =>
-      ['student', 'teacher', 'dean'].contains(_selectedRole);
-  bool get _needsDepartment => ['student', 'teacher'].contains(_selectedRole);
-  bool get _needsStudentFields => _selectedRole == 'student';
+  bool get _needsFaculty => [
+    UserRoles.student,
+    UserRoles.teacher,
+    UserRoles.dean,
+  ].contains(_selectedRole);
+  bool get _needsDepartment =>
+      [UserRoles.student, UserRoles.teacher].contains(_selectedRole);
+  bool get _needsStudentFields => _selectedRole == UserRoles.student;
 
   @override
   void dispose() {

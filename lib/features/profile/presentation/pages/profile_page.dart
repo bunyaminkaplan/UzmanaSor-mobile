@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/courses/presentation/providers/course_provider.dart';
 import 'package:mobile/features/profile/data/busy_term_data_source.dart';
@@ -24,8 +25,9 @@ class ProfilePage extends ConsumerWidget {
     }
 
     final isStudent =
-        user.userType == 'student' || user.userType == 'r_student';
-    final isTeacher = user.userType == 'teacher';
+        user.userType == UserRoles.student ||
+        user.userType == UserRoles.studentRep;
+    final isTeacher = user.userType == UserRoles.teacher;
 
     return DashboardScaffold(
       onRefresh: () async {

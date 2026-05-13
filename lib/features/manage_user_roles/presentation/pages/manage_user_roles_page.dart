@@ -1,3 +1,4 @@
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -127,15 +128,14 @@ class _UserAccordionTileState extends State<_UserAccordionTile> {
   Color _getRoleColor(BuildContext context, String role) {
     final theme = Theme.of(context);
     switch (role) {
-      case 'rector':
-      case 'school_admin':
+      case UserRoles.rector:
+      case UserRoles.schoolAdmin:
         return theme.colorScheme.error;
-      case 'dean':
-      case 'department_head':
+      case UserRoles.dean:
         return theme.colorScheme.secondary;
-      case 'teacher':
+      case UserRoles.teacher:
         return theme.colorScheme.primary;
-      case 'student_rep':
+      case UserRoles.studentRep:
         return theme.colorScheme.primary;
       default:
         return AppColors.textMuted;

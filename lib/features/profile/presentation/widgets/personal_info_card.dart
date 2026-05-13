@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/constants/user_roles.dart';
 import 'package:mobile/core/theme/app_colors.dart';
 import 'package:mobile/core/theme/app_colors_ext.dart';
 import 'package:mobile/features/auth/domain/entities/user_entity.dart';
@@ -9,7 +10,8 @@ class PersonalInfoCard extends StatelessWidget {
   const PersonalInfoCard({super.key, required this.user});
 
   bool get _isStudent =>
-      user.userType == 'student' || user.userType == 'r_student';
+      user.userType == UserRoles.student ||
+      user.userType == UserRoles.studentRep;
 
   @override
   Widget build(BuildContext context) {

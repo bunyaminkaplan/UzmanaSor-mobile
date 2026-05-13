@@ -1,3 +1,5 @@
+import 'package:mobile/core/constants/user_roles.dart';
+
 /// Danışman hoca tarafından görüntülenen öğrenci varlığı.
 ///
 /// Backend: `UserSerializer` ile dönen veriden parse edilir.
@@ -32,8 +34,10 @@ class AdvisorStudentEntity {
       lastName: (json['last_name'] as String?) ?? '',
       studentNumber: json['student_number'] as String?,
       departmentName: deptDetails?['name'] as String?,
-      isRepresentative: (json['user_type'] as String?) == 'student_rep' ||
-          ((json['roles'] as List<dynamic>?)?.contains('student_rep') ?? false),
+      isRepresentative:
+          (json['user_type'] as String?) == UserRoles.studentRep ||
+          ((json['roles'] as List<dynamic>?)?.contains(UserRoles.studentRep) ??
+              false),
     );
   }
 
