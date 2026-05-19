@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 /// Uygulamanın MaterialApp ThemeData'sını oluşturur.
@@ -17,6 +18,7 @@ abstract final class AppTheme {
     useMaterial3: true,
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.scaffoldBg,
+    textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
     colorScheme: const ColorScheme.light(
       primary: AppColors.accentNavy,
       secondary: AppColors.accentCyan,
@@ -26,13 +28,14 @@ abstract final class AppTheme {
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: AppColors.textHeading,
-      outline: AppColors.borderColor,
+      outline: AppColors.textMuted,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.accentNavy,
       foregroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
+      toolbarHeight: 44,
     ),
     cardTheme: CardThemeData(
       color: AppColors.cardBg,
@@ -104,6 +107,7 @@ abstract final class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.scaffoldBgDark,
+    textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
     colorScheme: const ColorScheme.dark(
       primary: AppColors.accentCyan,
       secondary: AppColors.accentOrange,
@@ -113,13 +117,14 @@ abstract final class AppTheme {
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: AppColors.textHeadingDark,
-      outline: AppColors.borderColorDark,
+      outline: AppColors.textMutedDark,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.accentNavyDark,
       foregroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
+      toolbarHeight: 44,
     ),
     cardTheme: CardThemeData(
       color: AppColors.cardBgDark,

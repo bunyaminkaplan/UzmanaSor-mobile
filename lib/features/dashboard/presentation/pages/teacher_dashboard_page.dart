@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
 import 'package:mobile/shared/widgets/dashboard_question_list.dart';
@@ -66,7 +65,6 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(authProvider).value;
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
     return DashboardScaffold(
@@ -77,9 +75,6 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
         title: 'Öğretmen Paneli',
         description: 'Öğrencilerden gelen soruları cevapla ve yönet.',
         borderColor: Theme.of(context).colorScheme.primary,
-        userName: user?.username ?? '',
-        userNameColor: Theme.of(context).colorScheme.primary,
-        roleName: 'Öğretmen Hesabı',
       ),
       body: Column(
         children: [

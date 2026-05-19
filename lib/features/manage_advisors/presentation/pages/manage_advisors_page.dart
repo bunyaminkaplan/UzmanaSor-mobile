@@ -5,7 +5,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/dashboard_page_header.dart';
 import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/empty_state_widget.dart';
-import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/manage_terms/domain/entities/class_term_entity.dart';
 import '../providers/manage_advisors_provider.dart';
 
@@ -18,7 +17,6 @@ class ManageAdvisorsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authProvider).value;
     final termsAsync = ref.watch(deptHeadClassTermsProvider);
     final teachersAsync = ref.watch(deptHeadTeachersProvider);
 
@@ -33,9 +31,6 @@ class ManageAdvisorsPage extends ConsumerWidget {
         description:
             'Bölümünüze ait sınıflara (dönemlere) danışman hoca atayın.',
         borderColor: AppColors.accentCyan,
-        userName: user?.username ?? 'Kullanıcı',
-        roleName: 'BÖLÜM BAŞKANI',
-        userNameColor: AppColors.accentCyan,
       ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),

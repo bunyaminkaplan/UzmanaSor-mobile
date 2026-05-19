@@ -20,7 +20,6 @@ class ManageHeadsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider).value;
-    final facultyName = user?.facultyDetails?['name']?.toString() ?? 'Fakülte';
     final departments = _extractDepartments(user);
 
     return DashboardScaffold(
@@ -31,9 +30,6 @@ class ManageHeadsPage extends ConsumerWidget {
         description:
             'Fakültenizdeki bölümleri seçip Bölüm Başkanlarını atayın.',
         borderColor: AppColors.accentCyan,
-        userName: facultyName,
-        roleName: 'FAKÜLTE',
-        userNameColor: AppColors.accentOrange,
       ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),

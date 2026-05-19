@@ -157,14 +157,14 @@ class _DashboardScaffoldState extends ConsumerState<DashboardScaffold> {
           : const Text('Uzmana Sor'),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 12.0),
+          padding: const EdgeInsets.only(right: 8.0, bottom: 4.0),
           child: Container(
             padding: const EdgeInsets.all(1),
             decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
             ),
-            child: Image.asset('assets/images/logo.png', height: 40),
+            child: Image.asset('assets/images/logo.png', height: 36),
           ),
         ),
       ],

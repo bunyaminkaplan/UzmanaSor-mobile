@@ -35,7 +35,6 @@ class _RectorDashboardPageState extends ConsumerState<RectorDashboardPage> {
         title: 'Rektörlük Genel Bakış',
         description: 'Üniversite geneli soru ve cevaplanma performansı',
         borderColor: AppColors.accentNavy,
-        roleName: 'Rektör Hesabı',
       ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),

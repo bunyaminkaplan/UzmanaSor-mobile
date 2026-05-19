@@ -7,7 +7,6 @@ import '../../../../shared/widgets/dashboard_page_header.dart';
 import '../../../../shared/widgets/dashboard_scaffold.dart';
 import '../../../../shared/widgets/department_performance_list.dart';
 import '../../../../shared/widgets/stats_summary_grid.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../stats/domain/entities/dashboard_stats_entity.dart';
 import '../../../stats/presentation/providers/stats_provider.dart';
 
@@ -16,7 +15,6 @@ class DeanDashboardPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authProvider).value;
     final statsAsync = ref.watch(deanStatsProvider);
 
     return DashboardScaffold(
@@ -26,9 +24,6 @@ class DeanDashboardPage extends ConsumerWidget {
         title: 'Fakülte Genel Bakış',
         description: 'Bölümlerin soru ve cevaplanma performansı',
         borderColor: AppColors.accentNavy,
-        userName: user?.facultyDetails?['name'] ?? 'Fakülte Bilgisi Yok',
-        userNameColor: AppColors.accentOrange,
-        roleName: 'Dekan Hesabı',
       ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),

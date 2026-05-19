@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mobile/core/theme/app_colors.dart';
-import 'package:mobile/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mobile/features/questions/presentation/providers/question_provider.dart';
 import 'package:mobile/shared/widgets/dashboard_page_header.dart';
 import 'package:mobile/shared/widgets/dashboard_question_list.dart';
@@ -76,7 +75,6 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(authProvider).value;
     final questionsAsync = ref.watch(questionsProvider(_cachedParams));
 
     return DashboardScaffold(
@@ -87,9 +85,6 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
         title: 'Öğrenci Paneli',
         description: 'Sorularını yönet, cevaplarını takip et.',
         borderColor: AppColors.accentCyan,
-        userName: user?.username ?? '',
-        userNameColor: AppColors.accentOrange,
-        roleName: 'Öğrenci Hesabı',
       ),
       fabs: [
         FloatingActionButton.extended(

@@ -25,25 +25,6 @@ class SchoolAdminDashboardPage extends ConsumerWidget {
         title: 'Sistem Genel Bakış',
         description: 'Sistem istatistikleri ve yönetim araçları',
         borderColor: AppColors.accentOrange,
-        trailing: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 4,
-          ),
-          decoration: BoxDecoration(
-            color: AppColors.accentNavy,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.accentOrange, width: 1),
-          ),
-          child: const Text(
-            'Yetkili Yönetici',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
       ),
       body: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
