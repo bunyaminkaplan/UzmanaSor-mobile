@@ -87,8 +87,8 @@ class ManageFormSheet extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
@@ -99,8 +99,6 @@ class ManageFormSheet extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(),
-
           // --- Form Body (scrollable) ---
           Flexible(
             child: SingleChildScrollView(
@@ -112,11 +110,6 @@ class ManageFormSheet extends StatelessWidget {
           // --- Alt Butonlar ---
           Container(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: theme.colorScheme.outlineVariant),
-              ),
-            ),
             child: Row(
               children: [
                 Expanded(

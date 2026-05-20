@@ -62,12 +62,10 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
             .read(questionsProvider(_currentQueryParams).notifier)
             .refresh();
       },
-      body: Column(
+      header: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Arama
           _buildSearchBar(),
-
-          // Filtreler
           FilterBar(
             activeFilterCount: _sortOrder != 'newest' ? 1 : 0,
             onClearAll: () {
@@ -101,26 +99,21 @@ class _PublicFeedPageState extends ConsumerState<PublicFeedPage> {
               ),
             ],
           ),
-
-          // Soru listesi
-          Expanded(
-            child: questionsAsync.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) =>
-                  const AsyncErrorWidget(message: 'Sorular yüklenemedi'),
-              data: (s) {
-                final showFooter = s.hasMore || s.loadMoreError != null;
-                return FeedQuestionList(
-                  items: s.items,
-                  footer: showFooter ? _buildFooter(s) : null,
-                  onNearEnd: () => ref
-                      .read(questionsProvider(_currentQueryParams).notifier)
-                      .loadMore(),
-                );
-              },
-            ),
-          ),
         ],
+      ),
+      body: questionsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => const AsyncErrorWidget(message: 'Sorular yüklenemedi'),
+        data: (s) {
+          final showFooter = s.hasMore || s.loadMoreError != null;
+          return FeedQuestionList(
+            items: s.items,
+            footer: showFooter ? _buildFooter(s) : null,
+            onNearEnd: () => ref
+                .read(questionsProvider(_currentQueryParams).notifier)
+                .loadMore(),
+          );
+        },
       ),
     );
   }

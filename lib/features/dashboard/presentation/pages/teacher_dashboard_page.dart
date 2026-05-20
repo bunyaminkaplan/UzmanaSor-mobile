@@ -71,20 +71,18 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
       onRefresh: () =>
           ref.read(questionsProvider(_cachedParams).notifier).refresh(),
       pageTitle: 'Öğretmen Paneli',
-      header: DashboardPageHeader(
-        title: 'Öğretmen Paneli',
-        description: 'Öğrencilerden gelen soruları cevapla ve yönet.',
-        borderColor: Theme.of(context).colorScheme.primary,
-      ),
-      body: Column(
+      header: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
-          // Filter Bar
+          DashboardPageHeader(
+            title: 'Öğretmen Paneli',
+            description: 'Öğrencilerden gelen soruları cevapla ve yönet.',
+            borderColor: Theme.of(context).colorScheme.primary,
+          ),
           FilterBar(
             activeFilterCount: _activeFilterCount,
             onClearAll: _clearFilters,
             children: [
-              // Arama
               FilterItem(
                 label: 'Arama',
                 child: TextField(
@@ -100,7 +98,6 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
                   },
                 ),
               ),
-              // Durum
               FilterItem(
                 label: 'Durum',
                 child: DropdownButtonHideUnderline(
@@ -111,18 +108,9 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
                     icon: const Icon(Icons.keyboard_arrow_down, size: 20),
                     items: const [
                       DropdownMenuItem(value: '', child: Text('Tümü')),
-                      DropdownMenuItem(
-                        value: 'reviewing',
-                        child: Text('İnceleniyor'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'answered',
-                        child: Text('Cevaplandı'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'forwarded',
-                        child: Text('Yönlendirildi'),
-                      ),
+                      DropdownMenuItem(value: 'reviewing', child: Text('İnceleniyor')),
+                      DropdownMenuItem(value: 'answered', child: Text('Cevaplandı')),
+                      DropdownMenuItem(value: 'forwarded', child: Text('Yönlendirildi')),
                     ],
                     onChanged: (val) {
                       setState(() {
@@ -133,7 +121,6 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
                   ),
                 ),
               ),
-              // Sıralama
               FilterItem(
                 label: 'Sıralama',
                 child: DropdownButtonHideUnderline(
@@ -142,10 +129,7 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
                     isExpanded: true,
                     icon: const Icon(Icons.sort, size: 20),
                     items: const [
-                      DropdownMenuItem(
-                        value: 'priority',
-                        child: Text('Öncelikli'),
-                      ),
+                      DropdownMenuItem(value: 'priority', child: Text('Öncelikli')),
                       DropdownMenuItem(value: 'newest', child: Text('En Yeni')),
                       DropdownMenuItem(value: 'oldest', child: Text('En Eski')),
                     ],
@@ -162,29 +146,17 @@ class _TeacherDashboardPageState extends ConsumerState<TeacherDashboardPage> {
               ),
             ],
           ),
-
-          // Soru Listesi (Scrollable)
-          questionsAsync.when(
-            loading: () => const Expanded(
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            error: (err, stack) => const Expanded(
-              child: AsyncErrorWidget(message: 'Bir hata oluştu'),
-            ),
-            data: (s) {
-              return Expanded(
-                child: DashboardQuestionList(
-                  questions: s.items,
-                  onRefresh: () async {
-                    await ref
-                        .read(questionsProvider(_cachedParams).notifier)
-                        .refresh();
-                  },
-                ),
-              );
-            },
-          ),
         ],
+      ),
+      body: questionsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => const AsyncErrorWidget(message: 'Bir hata oluştu'),
+        data: (s) => DashboardQuestionList(
+          questions: s.items,
+          onRefresh: () async {
+            await ref.read(questionsProvider(_cachedParams).notifier).refresh();
+          },
+        ),
       ),
     );
   }

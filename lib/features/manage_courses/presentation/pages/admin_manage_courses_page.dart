@@ -10,7 +10,7 @@ import '../../../../shared/widgets/empty_state_widget.dart';
 import '../../../../shared/widgets/manage_list_tile.dart';
 import '../../../courses/domain/entities/course_entity.dart';
 import '../../../courses/presentation/providers/course_provider.dart';
-import 'manage_courses_page.dart' show CourseFormSheet;
+import '../widgets/course_form_sheet.dart';
 
 /// School Admin — Ders Yönetimi Sayfası
 ///

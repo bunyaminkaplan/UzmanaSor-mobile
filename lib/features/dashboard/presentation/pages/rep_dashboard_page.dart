@@ -62,16 +62,14 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
       onRefresh: () =>
           ref.read(questionsProvider(_cachedParams).notifier).refresh(),
       pageTitle: 'Sınıfına Gelen Sorular',
-      header: const DashboardPageHeader(
-        title: 'Sınıfına Gelen Sorular',
-        description:
-            'Onaylaman veya reddetmen gereken soruları buradan yönetebilirsin.',
-        borderColor: AppColors.accentNavy,
-      ),
-      body: Column(
+      header: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
-          // 2. Filtre Çubuğu
+          const DashboardPageHeader(
+            title: 'Sınıfına Gelen Sorular',
+            description: 'Onaylaman veya reddetmen gereken soruları buradan yönetebilirsin.',
+            borderColor: AppColors.accentNavy,
+          ),
           FilterBar(
             activeFilterCount:
                 (_selectedStatus != 'pending' ? 1 : 0) +
@@ -99,11 +97,10 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
                     ),
                   ),
                   onChanged: (v) => _updateFilter(() {}),
-                  controller:
-                      TextEditingController(text: _searchController.text)
-                        ..selection = TextSelection.fromPosition(
-                          TextPosition(offset: _searchController.text.length),
-                        ),
+                  controller: TextEditingController(text: _searchController.text)
+                    ..selection = TextSelection.fromPosition(
+                      TextPosition(offset: _searchController.text.length),
+                    ),
                 ),
               ),
               FilterItem(
@@ -124,18 +121,9 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
                         }
                       },
                       items: const [
-                        DropdownMenuItem(
-                          value: 'pending',
-                          child: Text('Onay Bekleyenler'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'approved',
-                          child: Text('Onaylananlar'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'rejected',
-                          child: Text('Reddedilenler'),
-                        ),
+                        DropdownMenuItem(value: 'pending', child: Text('Onay Bekleyenler')),
+                        DropdownMenuItem(value: 'approved', child: Text('Onaylananlar')),
+                        DropdownMenuItem(value: 'rejected', child: Text('Reddedilenler')),
                       ],
                     ),
                   ),
@@ -143,29 +131,17 @@ class _RepDashboardPageState extends ConsumerState<RepDashboardPage> {
               ),
             ],
           ),
-
-          // 3. Ortak Soru Listesi Bileşeni
-          questionsAsync.when(
-            loading: () => const Expanded(
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            error: (err, stack) => const Expanded(
-              child: AsyncErrorWidget(message: 'Bir hata oluştu'),
-            ),
-            data: (s) {
-              return Expanded(
-                child: DashboardQuestionList(
-                  questions: s.items,
-                  onRefresh: () async {
-                    await ref
-                        .read(questionsProvider(_cachedParams).notifier)
-                        .refresh();
-                  },
-                ),
-              );
-            },
-          ),
         ],
+      ),
+      body: questionsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => const AsyncErrorWidget(message: 'Bir hata oluştu'),
+        data: (s) => DashboardQuestionList(
+          questions: s.items,
+          onRefresh: () async {
+            await ref.read(questionsProvider(_cachedParams).notifier).refresh();
+          },
+        ),
       ),
     );
   }

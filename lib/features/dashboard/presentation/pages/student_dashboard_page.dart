@@ -81,27 +81,18 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
       onRefresh: () =>
           ref.read(questionsProvider(_cachedParams).notifier).refresh(),
       pageTitle: 'Öğrenci Paneli',
-      header: DashboardPageHeader(
-        title: 'Öğrenci Paneli',
-        description: 'Sorularını yönet, cevaplarını takip et.',
-        borderColor: AppColors.accentCyan,
-      ),
-      fabs: [
-        FloatingActionButton.extended(
-          onPressed: () => GoRouter.of(context).push('/ask'),
-          icon: const Icon(Icons.add),
-          label: const Text('Soru Sor'),
-        ),
-      ],
-      body: Column(
+      header: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
-          // Filter Bar
+          const DashboardPageHeader(
+            title: 'Öğrenci Paneli',
+            description: 'Sorularını yönet, cevaplarını takip et.',
+            borderColor: AppColors.accentCyan,
+          ),
           FilterBar(
             activeFilterCount: _activeFilterCount,
             onClearAll: _clearFilters,
             children: [
-              // Arama
               FilterItem(
                 label: 'Ara',
                 child: TextField(
@@ -124,8 +115,6 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
                     ),
                 ),
               ),
-
-              // Durum Filtresi
               FilterItem(
                 label: 'Durum',
                 child: Wrap(
@@ -135,37 +124,23 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
                       label: 'Bekliyor',
                       value: 'reviewing',
                       selected: _statusFilter == 'reviewing',
-                      onTap: () => setState(
-                        () => _statusFilter = _statusFilter == 'reviewing'
-                            ? ''
-                            : 'reviewing',
-                      ),
+                      onTap: () => setState(() => _statusFilter = _statusFilter == 'reviewing' ? '' : 'reviewing'),
                     ),
                     _StatusChip(
                       label: 'Cevaplanmış',
                       value: 'answered',
                       selected: _statusFilter == 'answered',
-                      onTap: () => setState(
-                        () => _statusFilter = _statusFilter == 'answered'
-                            ? ''
-                            : 'answered',
-                      ),
+                      onTap: () => setState(() => _statusFilter = _statusFilter == 'answered' ? '' : 'answered'),
                     ),
                     _StatusChip(
                       label: 'Yönlendirildi',
                       value: 'forwarded',
                       selected: _statusFilter == 'forwarded',
-                      onTap: () => setState(
-                        () => _statusFilter = _statusFilter == 'forwarded'
-                            ? ''
-                            : 'forwarded',
-                      ),
+                      onTap: () => setState(() => _statusFilter = _statusFilter == 'forwarded' ? '' : 'forwarded'),
                     ),
                   ],
                 ),
               ),
-
-              // Sıralama
               FilterItem(
                 label: 'Sıralama',
                 child: DropdownButtonFormField<String>(
@@ -192,29 +167,24 @@ class _StudentDashboardPageState extends ConsumerState<StudentDashboardPage> {
               ),
             ],
           ),
-
-          // Soru Listesi (Scrollable)
-          questionsAsync.when(
-            loading: () => const Expanded(
-              child: Center(child: CircularProgressIndicator()),
-            ),
-            error: (err, stack) => const Expanded(
-              child: AsyncErrorWidget(message: 'Bir hata oluştu'),
-            ),
-            data: (s) {
-              return Expanded(
-                child: DashboardQuestionList(
-                  questions: s.items,
-                  onRefresh: () async {
-                    await ref
-                        .read(questionsProvider(_cachedParams).notifier)
-                        .refresh();
-                  },
-                ),
-              );
-            },
-          ),
         ],
+      ),
+      fabs: [
+        FloatingActionButton.extended(
+          onPressed: () => GoRouter.of(context).push('/ask'),
+          icon: const Icon(Icons.add),
+          label: const Text('Soru Sor'),
+        ),
+      ],
+      body: questionsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => const AsyncErrorWidget(message: 'Bir hata oluştu'),
+        data: (s) => DashboardQuestionList(
+          questions: s.items,
+          onRefresh: () async {
+            await ref.read(questionsProvider(_cachedParams).notifier).refresh();
+          },
+        ),
       ),
     );
   }

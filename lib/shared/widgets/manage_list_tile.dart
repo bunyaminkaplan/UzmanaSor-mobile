@@ -54,7 +54,6 @@ class ManageListTile extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: theme.colorScheme.outlineVariant),
             // Sol kenar vurgu
             gradient: borderColor != null
                 ? LinearGradient(
